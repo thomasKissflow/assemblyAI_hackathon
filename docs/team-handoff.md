@@ -4,7 +4,28 @@
 
 ---
 
-## Latest Handoff — 2026-09-16 (Claude Code, initial setup)
+## Latest Handoff — 2026-09-16 (Claude Code, additional research pass)
+
+### Current Progress
+
+Extended the initial research with AssemblyAI's product pages, docs index, GitHub org, and the co-organizer NativelyAI. Two things worth knowing before the next session:
+
+- **The token-mint-server question is now resolved, not just proposed.** AssemblyAI's own official starter kits (`voice-agent-starter-js`, `realtime-transcription-browser-js-example`) both do exactly what [architecture.md](architecture.md) recommended — a small server that mints short-lived tokens, permanent API key never touching the browser. See [research.md §6](research.md#6-official-starter-kits-sdks--example-repos).
+- **New open decision:** fork AssemblyAI's official starter kit (fast, officially supported, already has token minting + declarative agent config + working tool-calling examples + Twilio phone deploy) vs. build our frontend from scratch (more UI control for ideas like RehearsAI or Workflow Voice Console). Logged in [decisions.md](decisions.md), not yet decided — should be resolved alongside idea selection.
+- Full product/pricing details added to [research.md §3](research.md#3-assemblyai-productapi-notes) ($4.50/hr Voice Agent API, ~1s end-to-end latency, 4 streaming STT model options, ~150ms streaming latency).
+- One new risk flagged: the official browser example's README notes real-time API access has historically required an "upgraded account" (card on file) — need to confirm this doesn't apply to hackathon credits.
+
+### What Is Being Worked On
+
+Still nothing in progress — idea selection remains the blocking item (unchanged from previous handoff).
+
+### Next Actions
+
+Same as before, plus: when accepting an idea, also decide fork-vs-scratch (see [decisions.md](decisions.md)).
+
+---
+
+## Handoff — 2026-09-16 (Claude Code, initial setup)
 
 ### Current Progress
 

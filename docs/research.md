@@ -80,21 +80,52 @@ The hackathon's live submissions page already lists **40+ shipped projects** as 
 
 ## 3. AssemblyAI Product/API Notes
 
-- **Universal-3 Pro** — the STT model behind the Voice Agent API; used for the end-to-end path.
-- **Universal-Streaming** — the real-time STT model (immutable transcripts — text already emitted is never rewritten, unlike many competitors; supports word-level timestamps, speaker diarization, keyterm prompting, intelligent endpointing, unlimited concurrent streams). Priced at $0.15/hr for English + multilingual.
-- **Tool calling** — Voice Agent API supports JSON-schema tool calling and a `Tool Call` / `Tool Result` message pair over the same WebSocket — this is how an idea like a workflow agent or a game would drive app state from voice, without a backend beyond the token mint.
+The full product suite (per [docs.assemblyai.com](https://www.assemblyai.com/docs), fetched 2026-09-16) is seven products: Pre-recorded STT (async, 99 languages, diarization, PII redaction), Streaming STT, Synchronous STT (single request/response, clips ≤120s, no polling), **Voice Agent API**, Speech Understanding API (summarization/sentiment/topic — LeMUR-style), Guardrails API (PII handling, content moderation), and LLM Gateway API (unified access to frontier LLMs). We only need the first four for anything in [brainstorming.md](brainstorming.md), but Speech Understanding/Guardrails are worth knowing about if an idea's requirements shift.
+
+- **Voice Agent API pricing:** $4.50/hr ($0.075/min), unified billing (covers STT+LLM+TTS in one rate). PCI-certified end-to-end encryption. Claimed ~1 second end-to-end latency (mic input → agent audio response). Targets called out on the product page: customer support automation, scheduling/routing, medical intake, sales qualification, field service — i.e. AssemblyAI's own marketing leans toward the ops/workflow cluster that's already crowded in the submissions list (see §2) — worth keeping in mind, not a reason to avoid it.
+- **Streaming STT models (pick one per session):** **Universal-3.5 Pro Realtime** (highest accuracy, for voice agents/critical workflows), **Universal-Streaming** (cost-efficient, English), **Universal-Streaming Multilingual** (lower-cost multilingual), **Whisper-Streaming** (broadest language coverage). Streaming STT alone claims ~150ms latency. Universal-Streaming pricing noted earlier: $0.15/hr.
+- **Tool calling** — Voice Agent API supports JSON-schema tool calling. Two distinct execution models, and this matters for our "no backend" constraint:
+  - **Client-side (WebSocket) tools** — a `Tool Call` event arrives over the same WebSocket the browser already holds; the browser executes the tool (e.g., mutate local app state) and sends `Tool Result` back. **This is the one that fits frontend-only** — no extra backend needed beyond the token mint.
+  - **Server-side (HTTP) tools** — the official starter kit's `http-tools` example has AssemblyAI call a webhook URL directly on the agent's behalf. This requires a public HTTP endpoint we control, i.e. a real backend component — **avoid this pattern** unless an idea specifically needs a server-side integration (e.g. a real CRM write) that can't happen in-browser.
+- **Agents can be declarative** — an agent (system prompt, greeting, tools, input/output config) can be defined as a JSON file and published via `POST /v1/agents`, then referenced by `agent_id` at connect time instead of sending full inline config every session (the WebSocket spec calls this "stored agent" mode). AssemblyAI's own starter kit is built entirely around this pattern (see §6) — worth adopting once we pick an idea, since it keeps agent behavior in version-controlled config rather than scattered in app code.
 - **Session model** — WebSocket sessions have a `max_session_duration_seconds` cap and a 30-second grace/resume window; explicitly call `session.end` to stop billing immediately rather than just closing the socket.
-- **LLM Gateway** — mentioned in hackathon resources as available if we need LLM access outside what the Voice Agent API bundles (relevant mainly for the Realtime STT path). Not yet explored in depth — open item below.
+- **LLM Gateway** — unified access to frontier LLMs, relevant mainly for the Realtime STT path (bring-your-own-LLM) or the Voice Agent API's `byo-llm` mode. Not yet explored in API-reference depth — open item below.
 
-## 4. Useful Libraries / Hosting (unresearched — flagged for follow-up)
+## 4. Useful Libraries / Hosting
 
+- **Official SDKs:** Python (`assemblyai-python-sdk`) and TypeScript/JS (`assemblyai-node-sdk`), both MIT-licensed, on the [AssemblyAI GitHub org](https://github.com/AssemblyAI) (69 public repos total). Also an MCP server integration for AI coding agents, and pre-built connectors for LiveKit, Pipecat, Twilio, and Langflow.
 - Frontend framework: not yet decided (React/Vite is the likely default given Claude Code + shadcn ecosystem familiarity from other projects, but open — see [decisions.md](decisions.md))
-- Token-mint hosting candidates: Vercel/Netlify Edge Functions, Cloudflare Workers — all deploy alongside a static frontend with no server to operate. Needs a spike once we pick a deployment target.
+- Token-mint hosting candidates: Vercel/Netlify Edge Functions, Cloudflare Workers — all deploy alongside a static frontend with no server to operate. Needs a spike once we pick a deployment target. (AssemblyAI's own starter kit instead ships a tiny Node/Express server for this — see §6 — which is also a fine option if we're already deploying to something that can run a small Node process, e.g. Render.)
 - Demo hosting for the required "Application URL" — same platform as above likely covers this.
 
 ## 5. Open Research Questions
 
 - [ ] Does AssemblyAI or lablab.ai provide a hackathon-specific hosted token-mint service (so we truly need zero backend)? Worth asking in the hackathon Discord before building our own.
-- [ ] LLM Gateway docs — what models/providers does it route to, and do we need it if we take the Voice Agent API path? (Likely only relevant for Realtime STT path.)
+- [ ] LLM Gateway docs — what models/providers does it route to, and do we need it if we take the Voice Agent API path? (Likely only relevant for Realtime STT path or `byo-llm`.)
 - [ ] Rate limits / concurrency limits on the free hackathon credits — affects how much we can live-demo/test.
-- [ ] Confirm TTS voice options and latency characteristics for the Voice Agent API (matters for demo polish).
+- [ ] Confirm TTS voice options for the Voice Agent API (matters for demo polish).
+- [ ] **New, from the browser example repo's README:** historically, AssemblyAI's real-time API required an "upgraded account" (card on file) to avoid a 402 error — need to confirm whether the hackathon's free credit grant waives this, or whether we/teammates need to add a card regardless.
+
+## 6. Official Starter Kits, SDKs & Example Repos
+
+From the [AssemblyAI GitHub org](https://github.com/AssemblyAI) (fetched 2026-09-16) — these are directly relevant scaffolding options once we pick an idea and path:
+
+| Repo | What it is | Relevance |
+|---|---|---|
+| [`voice-agent-starter-js`](https://github.com/AssemblyAI/voice-agent-starter-js) | Official Voice Agent API starter. Agents are JSON files (`agents/*.jsonc`), published via `npm run publish`; `npm start` serves a browser page with a call button **and mints session tokens itself — API key stays on the server**; `npm run phone` attaches the agent to a Twilio number. Node 18+, zero dependencies. Ships a `render.yaml` for one-click Render hosting. **Ships `AGENTS.md`/`CLAUDE.md` — built for coding-agent-assisted use.** | **This independently confirms our token-mint recommendation in [architecture.md](architecture.md) is AssemblyAI's own blessed pattern, not something we invented.** Strong candidate as our actual scaffold once we pick an idea — see open decision below. Nine example agents demonstrate keyterm biasing, turn-taking tuning, BYO-LLM, client/server tool calling, web search (Exa), CRM read/write (Airtable), calendar booking (Cal.com), and PCI-safe DTMF card entry — several map directly onto our candidate ideas (e.g. `cal-booking` is close to what CareCheck or a scheduling-flavored idea would need; `http-tools`/`airtable-crm` show the server-side-tool pattern we're deliberately avoiding). |
+| [`voice-agent-starter-python`](https://github.com/AssemblyAI/voice-agent-starter-python) | Same starter, Python instead of Node. | Alternate if the team prefers Python for the token-mint piece. |
+| [`realtime-transcription-browser-js-example`](https://github.com/AssemblyAI/realtime-transcription-browser-js-example) | Official Realtime STT browser demo. Express backend generates the temp token (`tokenGenerator.js`), browser uses `AudioWorklet` to stream mic audio. 134 stars, MIT. | Confirms the same token-mint pattern applies to the Realtime STT path, and is the reference implementation if we end up needing custom orchestration (e.g. Idea 3, LiveMeetingCoPilot). |
+| [`assemblyai-node-sdk`](https://github.com/AssemblyAI/assemblyai-node-sdk) / [`assemblyai-python-sdk`](https://github.com/AssemblyAI/assemblyai-python-sdk) | Official SDKs, MIT. | Use instead of hand-rolled `fetch`/WebSocket calls once we're building. |
+| [`blurt`](https://github.com/AssemblyAI/blurt) | Open-source macOS dictation app powered by AssemblyAI. | Not directly relevant (native macOS, not browser) — noted for completeness. |
+
+**Open decision to raise with the team:** should we fork/build on `voice-agent-starter-js` directly (fastest path, official support, coding-agent-ready docs already in the repo) rather than scaffolding our own React app from scratch? This trades some frontend flexibility for speed and an officially-validated token-mint + agent-publish flow. Logged in [decisions.md](decisions.md) as pending, to be decided alongside the idea and framework choice.
+
+## 7. NativelyAI (hackathon co-organizer)
+
+[NativelyAI](https://nativelyai.com) — Andrea Marazzi (Founder/CEO) is a listed speaker/judge. Their platform ("AIFoundry") has three pieces:
+
+- **native.builder** — "describe it, agents build it" AI software factory (not relevant to us as builders)
+- **native.relay** — an OpenAI-compatible endpoint routing to 40+ models (GPT-5, Claude, DeepSeek, etc.), pitched as up to 55% cheaper than going direct. **Potentially relevant as an alternative LLM source** if we take the Realtime STT / BYO-LLM path and want model choice beyond AssemblyAI's own LLM Gateway — worth a quick pricing/access comparison if that path is chosen.
+- **native.compute** — decentralized GPU network (not relevant to a frontend-only voice agent)
+
+No hackathon-specific rules, resources, or requirements were found on their site — their role here appears to be co-organizer/sponsor rather than a mandatory dependency.

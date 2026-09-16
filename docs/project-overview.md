@@ -48,14 +48,29 @@ See [tasks.md](tasks.md) for the live task board and [team-handoff.md](team-hand
 
 ## Important Links
 
+**Hackathon**
 - Hackathon page: https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon
 - Live submissions / leaderboard: https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon/live
-- Voice Agent API docs: https://www.assemblyai.com/docs/voice-agents/voice-agent-api
-- Realtime STT docs: https://www.assemblyai.com/docs/speech-to-text/streaming
-- Voice Agent WebSocket API spec: https://www.assemblyai.com/docs/voice-agents/voice-agent-api/api-spec/voice-agent-websocket
-- LLM Gateway docs: (linked from hackathon Resources section — fetch link when we pick a path)
 - lablab.ai Discord (team formation, mentors, Q&A): linked from hackathon page
-- AssemblyAI GitHub quickstarts: linked from hackathon page
+
+**AssemblyAI docs**
+- Docs home: https://www.assemblyai.com/docs
+- Voice Agent API product page: https://www.assemblyai.com/products/voice-agent-api
+- Voice Agent API docs: https://www.assemblyai.com/docs/voice-agents/voice-agent-api
+- Voice Agent WebSocket API spec: https://www.assemblyai.com/docs/voice-agents/voice-agent-api/api-spec/voice-agent-websocket
+- Realtime STT product page: https://www.assemblyai.com/products/streaming-speech-to-text
+- Realtime STT docs: https://www.assemblyai.com/docs/speech-to-text/streaming
+- LLM Gateway docs: linked from docs home — not yet fetched in depth, see [research.md §5](research.md#5-open-research-questions)
+
+**Code / starter kits** (see [research.md §6](research.md#6-official-starter-kits-sdks--example-repos) for detail)
+- AssemblyAI GitHub org: https://github.com/AssemblyAI
+- Official Voice Agent starter (JS): https://github.com/AssemblyAI/voice-agent-starter-js
+- Official Voice Agent starter (Python): https://github.com/AssemblyAI/voice-agent-starter-python
+- Official Realtime STT browser example: https://github.com/AssemblyAI/realtime-transcription-browser-js-example
+- Official SDKs: https://github.com/AssemblyAI/assemblyai-node-sdk · https://github.com/AssemblyAI/assemblyai-python-sdk
+
+**Other**
+- NativelyAI (co-organizer): https://nativelyai.com — see [research.md §7](research.md#7-nativelyai-hackathon-co-organizer)
 
 ## Judging Criteria (from lablab.ai)
 

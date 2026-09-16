@@ -17,10 +17,19 @@ Per [research.md](research.md#critical-technical-finding-frontend-only-no-backen
 This means "zero server-side code" isn't quite achievable if we want to follow AssemblyAI's documented security practice. Three options:
 
 1. **Ship the permanent API key client-side anyway.** Simplest, truly zero backend. Acceptable risk for a hackathon demo with a rate-limited/free-tier key, but the key is visible to anyone who opens devtools on the deployed demo — a judge could see it. Not recommended for the public "Application URL" we have to submit.
-2. **Add one stateless token-minting function** (Vercel/Netlify Edge Function or Cloudflare Worker) that does nothing but call AssemblyAI's `GET /v1/token` and return it. Deploys alongside the static frontend, no server to run or maintain, no database, no business logic. This is the recommended middle ground — it satisfies the spirit of "frontend only, no backend" (no app server, no persistent state) while following AssemblyAI's own security guidance.
+2. **Add one stateless token-minting function** (Vercel/Netlify Edge Function, Cloudflare Worker, or a tiny Node/Express server) that does nothing but call AssemblyAI's `GET /v1/token` and return it. Deploys alongside the static frontend, no database, no business logic. This is the recommended middle ground — it satisfies the spirit of "frontend only, no backend" (no app server holding state, no persistent store) while following AssemblyAI's own security guidance.
 3. **Ask in the hackathon Discord** whether lablab.ai/AssemblyAI provide a hosted token-mint service for participants — would let us hit option 1's simplicity with option 2's safety. Logged as an open research question.
 
-**Recommendation:** default to option 2, revisit if option 3 turns out to be available. This will be finalized in [decisions.md](decisions.md) once we scope it against the accepted idea.
+**This is no longer just our guess — it's AssemblyAI's own documented pattern.** Both of AssemblyAI's official example repos do exactly this: [`voice-agent-starter-js`](https://github.com/AssemblyAI/voice-agent-starter-js)'s `npm start` "serves a page with a call button and mints session tokens — the API key stays on the server," and [`realtime-transcription-browser-js-example`](https://github.com/AssemblyAI/realtime-transcription-browser-js-example) does the same with a small Express server. See [research.md §6](research.md#6-official-starter-kits-sdks--example-repos).
+
+**Recommendation:** default to option 2, revisit if option 3 turns out to be available. This will be finalized in [decisions.md](decisions.md) once we scope it against the accepted idea. Also worth deciding then: build our own minimal token-mint function from scratch, or fork AssemblyAI's official starter kit (which already includes this, plus a declarative agent-publishing flow) — see the open decision in [research.md §6](research.md#6-official-starter-kits-sdks--example-repos).
+
+### Related constraint: how tool calls execute
+
+Once an idea uses tool calling (most of our candidates do), there are two execution models AssemblyAI supports, and only one keeps us backend-free:
+
+- **Client-side / WebSocket tools** (`Tool Call` → app executes locally → `Tool Result` back over the same socket) — **use this.** The browser already holds the WebSocket; no extra infrastructure needed.
+- **Server-side / HTTP tools** (AssemblyAI calls a webhook URL we host, per the starter kit's `http-tools` example) — **avoid**, since it requires a public backend endpoint beyond the token mint. Only reach for this if an idea needs a real third-party write (e.g., an actual CRM) that truly can't happen client-side.
 
 ## Frontend Architecture
 

@@ -42,9 +42,36 @@ Each entry: date, decision, reasoning, alternatives considered, impact. Nothing 
 
 ---
 
+---
+
+### 2026-09-16 — Token-mint-server pattern confirmed as AssemblyAI's own official approach
+
+**Decision:** Treat the token-minting-function approach (proposed above) as confirmed, not just our best guess — no longer "pending confirmation" on the *pattern* itself, only on *which idea/framework* it gets built into.
+
+**Reasoning:** AssemblyAI's own official example repos (`voice-agent-starter-js`, `realtime-transcription-browser-js-example`) both implement exactly this — a small server whose only real job is minting short-lived tokens, with the permanent API key never reaching the browser. See [research.md §6](research.md#6-official-starter-kits-sdks--example-repos).
+
+**Alternatives Considered:** No new alternatives surfaced; this just upgrades our confidence in the option already chosen over shipping the permanent key client-side.
+
+**Impact:** Removes one open risk from [architecture.md](architecture.md). Still open: whether we hand-roll this (edge function) or adopt AssemblyAI's starter kit wholesale (see next entry).
+
+---
+
+### 2026-09-16 — Open: build our own scaffold vs. fork AssemblyAI's official starter kit *(pending confirmation)*
+
+**Decision (not yet made):** Whether to build our frontend from scratch (e.g. React/Vite + a hand-rolled edge function for token minting) or fork [`voice-agent-starter-js`](https://github.com/AssemblyAI/voice-agent-starter-js) as our starting point.
+
+**Reasoning for considering the fork:** it already has the token-mint server, a declarative JSON-based agent-publish flow, nine working tool-calling examples (BYO-LLM, web search, CRM read/write, calendar booking), Twilio phone deployment for free, a Render one-click deploy config, and — notably — ships `CLAUDE.md`/`AGENTS.md` files, meaning it's designed to be extended by a coding agent like the one building this project.
+
+**Reasoning for considering a from-scratch build:** more control over frontend UX/design (several of our candidate ideas, e.g. RehearsAI's scoreccard UI or Workflow Voice Console's kanban board, need a fair amount of custom UI the starter kit doesn't provide out of the box); avoids inheriting structure/conventions we don't need.
+
+**Impact:** Affects how fast we can move once an idea is picked. Needs a decision alongside idea selection and framework choice — not blocking brainstorming, but should be resolved in the same conversation as accepting an idea.
+
+---
+
 ## Open Decisions (not yet made)
 
 - Which idea from [brainstorming.md](brainstorming.md) are we building?
 - Frontend framework/tooling
+- Build from scratch vs. fork AssemblyAI's official starter kit (see above)
 - Hosting platform (also covers token-mint function + the required demo "Application URL")
 - Developer B's name and preferred task split
