@@ -5,7 +5,7 @@
 - **Event:** [AssemblyAI - Voice Agent Hackathon](https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon) (run by lablab.ai + AssemblyAI)
 - **Format:** Fully online, month-long
 - **Dates:** September 1 – 30, 2026 (submissions close Sep 30, 8:30 PM IST)
-- **Days remaining (as of 2026-09-16):** ~14 days
+- **Days remaining (as of 2026-09-25):** ~5 days. Budget the final day for submission assets (video, slides, cover, hosted URL), which leaves about 4 build days.
 - **Prize pool:** $10,000 total — **5 winners**, each $1,000 cash + $1,000 AssemblyAI API credits
 - **Team size:** 1–6 people (we are 2)
 - **Tagline:** "The fastest path to a working voice agent"
@@ -43,6 +43,7 @@ Full technical detail in [research.md](research.md).
 | Date | Milestone |
 |---|---|
 | 2026-09-16 | Repo created, hackathon requirements extracted, initial doc set + 6 candidate ideas drafted |
+| 2026-09-25 | Rescanned submissions (~150 now). Ideas 1, 4 and 6 collided; re-ideating in the BPM/workflow whitespace |
 
 See [tasks.md](tasks.md) for the live task board and [team-handoff.md](team-handoff.md) for the latest handoff note.
 

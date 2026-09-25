@@ -160,6 +160,8 @@ All ideas below are scored against the hackathon's actual judging criteria (Appl
 
 ## Recommendation (proposed, not yet accepted)
 
+> **Superseded 2026-09-25.** The Sep 25 rescan ([research.md](research.md#rescan--2026-09-25-supersedes-the-whitespace-notes-above)) found near-identical entries for Ideas 1, 4 and 6, and the generic version of Idea 2. Also, the deadline is now ~5 days out, not ~14, so the "1–1.5 week" feasibility estimates above no longer fit. The original recommendation is kept below for the record. A new direction is being discussed; see "Notes from Discussions".
+
 **Primary: Idea 1 (RehearsAI).** Best balance across all four judging criteria, lowest execution risk, no meaningful prior-art collision, comfortably buildable frontend-only on the Voice Agent API in the remaining ~14 days.
 
 **Strong alternate: Idea 2 (Workflow Voice Console)** if the team wants to lean into Kissflow-adjacent domain expertise for an even stronger Business Value narrative — but only with a sharply differentiated angle (audit-trail/approval-chain framing), given how crowded that cluster already is.
@@ -175,3 +177,6 @@ This is a proposal for discussion, not a decision — see [decisions.md](decisio
 ## Notes from Discussions
 
 - 2026-09-16: Initial batch of 6 ideas generated from hackathon requirements + competitor scan, before any live discussion with the team. Next step is for Thomas (and Developer B, TBD) to react to these and either accept one, request a pivot, or ask for a new batch along a different axis.
+- 2026-09-25: Rescanned the submissions board (~150 entries now). Ideas 1, 4 and 6 have near-identical entries (MockMate/Interview Lab, Talkie/Aalto, EverCall). **Recommending they be marked Rejected (Originality)**, pending team confirmation. Two new seeds emerged from the remaining whitespace, both in Thomas's BPM domain. Not yet templated; discussion starting:
+  - **Seed A — Voice Approvals Inbox:** a manager clears their pending approval queue by voice (POs, expenses, leave), with context read aloud, policy flags, and approve/reject/ask/delegate.
+  - **Seed B — Talk-to-Build Process Designer:** an AI business analyst interviews a process owner and builds a live workflow diagram plus request form while they speak.

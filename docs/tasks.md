@@ -32,7 +32,8 @@ Owners: **Thomas** (thomas@kissflow.com) and **Developer B** (TBD — name not y
 | Competitor/prior-art scan of existing hackathon submissions | Claude Code | High | Done (2026-09-16) |
 | Set up docs/ structure (this file + 6 others) | Claude Code | High | Done (2026-09-16) |
 | Generate and compare 6 candidate ideas | Claude Code | High | Done (2026-09-16) |
+| Rescan submissions board for new collisions (~150 entries) | Claude Code | High | Done (2026-09-25) |
 
 ## Notes on Priority
 
-Given the hard deadline (Sep 30, 8:30 PM IST — ~14 days out as of 2026-09-16), the single highest-priority open item is **converging on one idea**. Everything else (framework choice, token-mint function, task split) is blocked on that decision and should move fast once it lands — see [decisions.md](decisions.md) for how that decision will be recorded.
+Given the hard deadline (Sep 30, 8:30 PM IST, **~5 days out as of 2026-09-25**), the single highest-priority open item is **converging on one idea today**. Everything else (framework choice, token-mint function, task split) is blocked on that decision and should move fast once it lands — see [decisions.md](decisions.md) for how that decision will be recorded.

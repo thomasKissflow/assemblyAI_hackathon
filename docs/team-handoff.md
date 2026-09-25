@@ -4,7 +4,27 @@
 
 ---
 
-## Latest Handoff — 2026-09-16 (Claude Code, additional research pass)
+## Latest Handoff — 2026-09-25 (Claude Code, rescan + re-ideation kickoff)
+
+### Current Progress
+
+- **Timeline reset:** about 5 days left (deadline Sep 30, 8:30 PM IST), not 14. Every "1–1.5 week" estimate in brainstorming.md is stale.
+- **Field rescan:** about 150 submissions now. Our top pick (RehearsAI) and dark horse (CareCheck) each have near-identical entries, and so does AccessNav. Details in [research.md, Rescan 2026-09-25](research.md#rescan--2026-09-25-supersedes-the-whitespace-notes-above).
+- Whitespace that remains is in BPM/workflow: approver-side approvals, and voice-driven process design. Both fit Thomas's Kissflow background. Logged as seeds in [brainstorming.md](brainstorming.md).
+
+### What Is Being Worked On
+
+Re-ideation with Thomas. Goal for today: confirm one idea, then write the build plan.
+
+### Next Actions
+
+1. Pick the direction and confirm the idea.
+2. Resolve open decisions in the same sitting: fork-vs-scratch, framework, hosting, Developer B's split.
+3. Write the build plan (4 build days plus 1 submission day).
+
+---
+
+## Handoff — 2026-09-16 (Claude Code, additional research pass)
 
 ### Current Progress
 

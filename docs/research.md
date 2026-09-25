@@ -78,6 +78,29 @@ The hackathon's live submissions page already lists **40+ shipped projects** as 
 - **Originality** is the criterion most at risk from the crowded clusters above — picking an idea that clones an existing entry's core loop (even with a different UI) will read as derivative to judges who see the whole submission list.
 - **Business Value** rewards a crisp, named buyer/user and a believable "who pays for this" story — several existing entries are vague on this; we can differentiate by being specific.
 
+### Rescan — 2026-09-25 (supersedes the whitespace notes above)
+
+The field grew from ~45 submissions / 3,136 participants (Sep 16) to **~150 submissions / 3,748 participants**. Three of our six ideas now have near-identical entries:
+
+| Our idea | New collisions | Verdict |
+|---|---|---|
+| 1. RehearsAI (interview/pitch coach) | **MockMate** (résumé-aware interviewer, live JSON-schema scoring, filler words + pace, report card: almost exactly our spec), **Interview Lab** (clarity/structure/delivery report), **Mockrill**, VoxHire, CodeTalk, Readdy AI, Probe, Viva (oral exam), LinguSim, and Officer Parker from before | **Dead on Originality.** About 10 entries. |
+| 4. AccessNav (voice-drives-a-web-app) | **Talkie** (voice assistant for any website that acts on the page), **Aalto** (Chrome side-panel agent that fills forms and scrolls), Heed, VoiceNova, Koi Charts, and voicebridgeai from before | **Dead.** |
+| 6. CareCheck (elder check-ins) | **EverCall "Jarvis for Grandma"** (daily calls to elderly parents, mood/medication/memory analysis, family dashboard alerts: almost exactly our spec), **SilverLine** (elderly patient line, medication confirmations, receipt for family), **Tell** (medication adherence) | **Dead.** |
+| 2. Workflow Voice Console | The ops cluster roughly tripled: **CampusFlow** (voice ops desk with a live dashboard reflecting every action, the closest to our demo), EchoLogic, Relay, Benchback, CrewVoice, WalkAround, DockWitness, RECEBE, RouteProof, Recount, EchoAgent, Wavelink, OpenLine, Night Desk | **Generic version is dead.** A narrow angle may survive (see whitespace below). |
+| 3. LiveMeetingCoPilot | Meeting Shadow Agent, ClauseCatcher, Saakshi, Second Chair, Echos, plus IncidentBridge (a team still forming) | Crowding fast; still technically risky for us. |
+| 5. VoiceQuest (game) | Voice Case, Radio Universe, Playhead (interruptible audiobook) | Unchanged: weak Business Value. |
+
+**Meta-trends that matter for positioning:**
+- **"Refuses to guess" / transcript-evidence / human-approval / hash-chained audit** is now claimed by 30+ entries. It's table stakes. Don't pitch it as a differentiator.
+- New clusters: **voice-agent reliability tooling** (Tally, Patchline, Say Less, Voice Action Gate, ToneGap, Voxrede), **healthcare intake/triage** (MediVoice ×2, MediScribe, Voicemed, Veritas, Kwik 112, Rollcall), **agents that phone on your behalf** (Afterward, Orion, Rollcall).
+- **Voice → structured artifact builders** are a growing pattern: STICK (slides), NovelOS (story bible), CVoxPuzzle (CV), Legal-Voice (legal forms), NodeFlow (knowledge-graph plans), Koi Charts (flowcharts, accessibility-focused). Nobody has applied this pattern to **business processes / workflow apps**.
+
+**Whitespace that remains (as of 2026-09-25):**
+- **Approver-side enterprise approvals.** Everyone builds the *intake* side (a caller submits a request). Nobody builds the manager clearing an approval queue by voice (POs, expenses, leave, invoices), with context read out, policy flags, and approve/reject/ask/delegate.
+- **Voice-driven process design / low-code building.** An "AI business analyst" interviews a process owner and assembles a live workflow diagram plus a request form as they talk. The nearest neighbors are generic (Koi Charts' accessible flowcharts, NodeFlow's plans), not BPM.
+- Both sit squarely in Thomas's professional domain (Kissflow: low-code workflow/BPM). That's a real advantage for realism and the Business Value story, and no other entry appears to come from a BPM vendor's perspective.
+
 ## 3. AssemblyAI Product/API Notes
 
 The full product suite (per [docs.assemblyai.com](https://www.assemblyai.com/docs), fetched 2026-09-16) is seven products: Pre-recorded STT (async, 99 languages, diarization, PII redaction), Streaming STT, Synchronous STT (single request/response, clips ≤120s, no polling), **Voice Agent API**, Speech Understanding API (summarization/sentiment/topic — LeMUR-style), Guardrails API (PII handling, content moderation), and LLM Gateway API (unified access to frontier LLMs). We only need the first four for anything in [brainstorming.md](brainstorming.md), but Speech Understanding/Guardrails are worth knowing about if an idea's requirements shift.
