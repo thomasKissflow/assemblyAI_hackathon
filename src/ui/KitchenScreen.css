@@ -37,9 +37,15 @@
 
 .pass-tickets {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(186px, 1fr));
   gap: var(--space-5);
   align-items: start;
+}
+
+@media (max-width: 1180px) {
+  .pass-tickets {
+    gap: var(--space-4);
+  }
 }
 
 .side {
@@ -106,5 +112,12 @@
   }
   .heard {
     max-height: 360px;
+  }
+}
+
+/* On a phone the tickets already carry every time; the rail would be too cramped to read. */
+@media (max-width: 600px) {
+  .pass .rail {
+    display: none;
   }
 }

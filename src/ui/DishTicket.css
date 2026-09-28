@@ -286,6 +286,9 @@
 
 /* Narrow tickets (phone stack): photo beside the headline. */
 @container (max-width: 250px) {
+  .ticket-hero {
+    padding-top: var(--space-4);
+  }
   .ticket-ring {
     width: 108px;
     height: 108px;
@@ -296,6 +299,11 @@
   }
   .ticket-name {
     font-size: var(--text-lg);
+  }
+  .ticket-row {
+    grid-template-columns: 14px 2.9em 1fr;
+    gap: 6px;
+    padding-inline: 6px;
   }
 }
 
