@@ -152,3 +152,26 @@ From the [AssemblyAI GitHub org](https://github.com/AssemblyAI) (fetched 2026-09
 - **native.compute** — decentralized GPU network (not relevant to a frontend-only voice agent)
 
 No hackathon-specific rules, resources, or requirements were found on their site — their role here appears to be co-organizer/sponsor rather than a mandatory dependency.
+
+## 8. Measured Voice Agent API behavior (probes run 2026-09-28)
+
+These come from real probes with our key: synthetic speech from macOS `say`, streamed at real-time pace from Node. Scripts are in [`spikes/`](../spikes/) (`AAI_KEY=... node spikes/va-probe.mjs <scenario>`). The audio fixtures are regenerable with `say` and aren't committed. Treat single-run numbers as indicative, not benchmarks.
+
+**Protocol shape (confirmed):**
+- Connect: `wss://agents.assemblyai.com/v1/ws?token=<API_KEY>`. The raw key works from the browser, and a bogus key gets `session.error: unauthorized`, close 1008.
+- The first message is `{type:'session.update', session:{system_prompt, greeting, tools:[{type:'function', name, description, parameters}], input:{keyterms:[...], turn_detection:{min_silence, vad_threshold}}}}`, answered by `session.ready` / `session.updated`.
+- Audio in: `{type:'input.audio', audio:<base64 PCM16 mono @ 24 kHz>}` in 50 ms chunks. Audio out: `reply.audio` (base64 PCM16).
+- Events seen: `session.ready`, `session.updated`, `input.speech.started/stopped`, `transcript.user.delta`, `transcript.user`, `reply.started`, `reply.audio`, `transcript.agent`, `tool.call {call_id, name, arguments}`, `reply.done`.
+- Tool results: collect every `tool.call`, then after `reply.done` send `{type:'tool.result', call_id, result:<JSON string>}`. The agent then speaks a follow-up.
+- `reply.create {instructions}` makes the agent speak unprompted, driven by app state.
+- A mid-session `session.update` works: new system_prompt, keyterms, turn_detection, and `output.volume`.
+- End with `{type:'session.end'}` to stop billing immediately.
+
+**Timing and behavior:**
+- `reply.create` when idle: `reply.started` at ~163 ms, first audio at ~681 ms, and it said the exact line.
+- ⚠️ `reply.create` sent **while the user is mid-sentence is silently dropped**: `reply.done` "completed", with no audio and no error. Any proactive callout needs a queue. Send only after `input.speech.stopped`, and only when no reply is in progress. Always mirror the callout on screen as well.
+- Default `min_silence` 1000 ms gives 1.2–3.0 s from end of speech to `tool.call`, and 2.0–3.7 s to spoken confirmation. Recommended: `min_silence` ≈ 500 ms, and update the UI optimistically on `tool.call` rather than waiting for the result round trip.
+- Several events in one utterance ("she's done, and it was a wet diaper") produced **two parallel tool.calls** in one reply. That works.
+- `transcript.user.delta` partials arrive about every 1.2 s and are unstable early, so they aren't word by word.
+- **Realtime STT v3** (`wss://streaming.assemblyai.com/v3/ws?...&token=<API_KEY>`) also accepts the raw key from the browser. Its partials grow word by word every 100–300 ms, but still run about 1.1 s behind the audio.
+- Whisper: synthetic whisper was mis-transcribed, though an enum tool argument still fired correctly. Quiet normal speech at −22 dB was transcribed perfectly. A real human whisper on a laptop mic is untested.
