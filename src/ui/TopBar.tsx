@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ChefHat, Maximize2, Pause, Play, SkipForward } from 'lucide-react';
+import { ChefHat, Maximize2, Pause, Play, SkipForward, X } from 'lucide-react';
 import { fmtTime } from '../kitchen/planner';
 import { SPEEDS, type KitchenState } from '../kitchen/store';
 import { SplitFlap } from './SplitFlap';
@@ -11,6 +11,7 @@ export interface TopBarProps {
   onPause: () => void;
   onSkip: () => void;
   onGlance: () => void;
+  onEnd: () => void;
 }
 
 function useServeShift(shift: KitchenState['lastServeShift']) {
@@ -26,37 +27,35 @@ function useServeShift(shift: KitchenState['lastServeShift']) {
   return shown;
 }
 
-export function TopBar({ state, onSpeed, onPause, onSkip, onGlance }: TopBarProps) {
+export function TopBar({ state, onSpeed, onPause, onSkip, onGlance, onEnd }: TopBarProps) {
   const shift = useServeShift(state.lastServeShift);
   const plan = state.plan;
   const paused = state.clock.paused;
 
   return (
     <header className="topbar">
-      <div className="brand">
+      <h1 className="brand">
         <span className="brand-mark" aria-hidden="true">
           <ChefHat size={22} strokeWidth={2.25} />
         </span>
         <span className="brand-name">Heard, Chef</span>
-      </div>
+      </h1>
 
       <div className="clocks">
         <div className={paused ? 'clock-block is-paused' : 'clock-block'}>
-          <span className="clock-label">{paused ? 'Kitchen · paused' : 'Kitchen time'}</span>
+          <span className="clock-label">{paused ? 'Paused' : 'Kitchen time'}</span>
           <SplitFlap value={fmtTime(state.now)} label="Kitchen time" testId="kitchen-clock" />
         </div>
         {plan && (
           <div className="clock-block clock-serve">
             <span className="clock-label">Serving at</span>
-            <div className="clock-serve-row">
-              <SplitFlap value={fmtTime(plan.serveAt)} label="Serving at" tone="saffron" testId="serve-time" />
-              {shift && (
-                <span className="serve-delta num" key={shift.id} data-testid="serve-delta">
-                  {shift.minutes > 0 ? '+' : '−'}
-                  {Math.abs(shift.minutes)} min
-                </span>
-              )}
-            </div>
+            <SplitFlap value={fmtTime(plan.serveAt)} label="Serving at" tone="saffron" testId="serve-time" />
+            {shift && (
+              <span className="serve-delta num" key={shift.id} data-testid="serve-delta">
+                {shift.minutes > 0 ? '+' : '−'}
+                {Math.abs(shift.minutes)} min
+              </span>
+            )}
           </div>
         )}
       </div>
@@ -82,8 +81,11 @@ export function TopBar({ state, onSpeed, onPause, onSkip, onGlance }: TopBarProp
         <button type="button" className="icon-btn" onClick={onSkip} aria-label="Skip to next call (N)" title="Skip to next call (N)">
           <SkipForward size={18} />
         </button>
-        <button type="button" className="icon-btn" onClick={onGlance} aria-label="Glance mode (G)" title="Glance mode (G)">
-          <Maximize2 size={18} />
+        <button type="button" className="btn btn-ghost glance-btn" onClick={onGlance} title="Glance mode (G)">
+          <Maximize2 size={16} aria-hidden="true" /> Glance
+        </button>
+        <button type="button" className="icon-btn" onClick={onEnd} aria-label="End dinner" title="End dinner">
+          <X size={18} />
         </button>
       </div>
     </header>

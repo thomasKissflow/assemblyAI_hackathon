@@ -4,7 +4,19 @@ import { useFrame } from './useFrame';
 const IS_JSDOM = typeof navigator !== 'undefined' && /jsdom/i.test(navigator.userAgent);
 
 /** Scrolling bar waveform drawn from a level source (0..1 RMS). Color comes from CSS `color`. */
-export function Waveform({ level, bars = 36, gain = 7, className }: { level: () => number; bars?: number; gain?: number; className?: string }) {
+export function Waveform({
+  level,
+  bars = 36,
+  gain = 7,
+  className,
+  active = true,
+}: {
+  level: () => number;
+  bars?: number;
+  gain?: number;
+  className?: string;
+  active?: boolean;
+}) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const history = useRef<number[]>(new Array(bars).fill(0));
   const last = useRef({ push: 0, colorAt: 0, color: '#888' });
@@ -42,7 +54,7 @@ export function Waveform({ level, bars = 36, gain = 7, className }: { level: () 
       ctx.roundRect(i * (bw + gap), (h - bh) / 2, bw, bh, bw / 2);
       ctx.fill();
     });
-  });
+  }, active);
 
   return <canvas ref={canvas} className={className} aria-hidden="true" />;
 }

@@ -5,7 +5,7 @@
   display: grid;
   place-items: center;
   padding: var(--space-5);
-  background: oklch(0.1 0 0 / 0.86);
+  background: var(--scrim);
   animation: service-fade var(--dur-slow) var(--ease-out-quart) both;
 }
 
@@ -107,5 +107,5 @@
 }
 
 .service-stat:last-child dd {
-  color: var(--fire-deep);
+  color: var(--herb-deep);
 }

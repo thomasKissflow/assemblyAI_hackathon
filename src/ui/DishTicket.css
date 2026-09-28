@@ -1,22 +1,37 @@
 .ticket-wrap {
+  position: relative;
+  isolation: isolate;
   container-type: inline-size;
-  filter: drop-shadow(0 16px 22px oklch(0 0 0 / 0.55)) drop-shadow(0 2px 3px oklch(0 0 0 / 0.4));
   min-width: 0;
 }
 
-.ticket-wrap.is-fire {
-  animation: ticket-fire 1.8s var(--ease-out-quart) 1;
+/* Shadow and fire glow live on unmasked pseudo-elements: cheaper than filter: drop-shadow. */
+.ticket-wrap::before,
+.ticket-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 10px 2px 0;
+  border-radius: var(--radius-md);
+  z-index: -1;
+  pointer-events: none;
 }
 
-@keyframes ticket-fire {
-  0% {
-    filter: drop-shadow(0 16px 22px oklch(0 0 0 / 0.55)) drop-shadow(0 0 0 oklch(0.64 0.21 29 / 0));
-  }
+.ticket-wrap::before {
+  box-shadow: 0 18px 30px -12px oklch(0 0 0 / 0.75), 0 2px 6px oklch(0 0 0 / 0.4);
+}
+
+.ticket-wrap::after {
+  box-shadow: 0 0 30px 6px var(--fire-glow);
+  opacity: 0;
+}
+
+.ticket-wrap.is-fire::after {
+  animation: ticket-glow 1.8s var(--ease-out-quart) 1;
+}
+
+@keyframes ticket-glow {
   25% {
-    filter: drop-shadow(0 16px 22px oklch(0 0 0 / 0.55)) drop-shadow(0 0 22px oklch(0.64 0.21 29 / 0.75));
-  }
-  100% {
-    filter: drop-shadow(0 16px 22px oklch(0 0 0 / 0.55)) drop-shadow(0 0 0 oklch(0.64 0.21 29 / 0));
+    opacity: 1;
   }
 }
 
@@ -25,11 +40,10 @@
   background: var(--ticket);
   color: var(--ticket-ink);
   border-radius: 0 0 var(--radius-md) var(--radius-md);
-  padding-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
   /* Perforated top edge, like a torn order ticket. */
   -webkit-mask: radial-gradient(circle at 7px 0, transparent 4.5px, #000 5px) -7px 0 / 14px 100% repeat-x;
   mask: radial-gradient(circle at 7px 0, transparent 4.5px, #000 5px) -7px 0 / 14px 100% repeat-x;
-  transition: transform var(--dur-med) var(--ease-out-quart);
 }
 
 .ticket-band {
@@ -37,12 +51,12 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  min-height: 42px;
+  min-height: 44px;
   padding: var(--space-3) var(--space-4) var(--space-2);
   font-stretch: var(--wdth-condensed);
   font-weight: 750;
-  font-size: var(--text-sm);
-  letter-spacing: 0.06em;
+  font-size: var(--text-base);
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   overflow: hidden;
   background: var(--ticket-2);
@@ -130,15 +144,15 @@
 .ticket-hero {
   display: grid;
   justify-items: center;
-  gap: var(--space-3);
-  padding: var(--space-5) var(--space-4) var(--space-3);
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-4) var(--space-2);
   text-align: center;
 }
 
 .ticket-ring {
   position: relative;
-  width: 132px;
-  height: 132px;
+  width: 112px;
+  height: 112px;
   display: grid;
   place-items: center;
 }
@@ -150,8 +164,8 @@
 }
 
 .ticket-ring img {
-  width: 104px;
-  height: 104px;
+  width: 86px;
+  height: 86px;
   border-radius: 50%;
   object-fit: cover;
   box-shadow: 0 0 0 3px var(--ticket), 0 6px 14px oklch(0 0 0 / 0.25);
@@ -168,7 +182,7 @@
   stroke: var(--ticket-ink);
   stroke-width: 6;
   stroke-linecap: round;
-  transition: stroke-dashoffset 260ms linear, stroke var(--dur-med);
+  transition: stroke-dashoffset 200ms linear, stroke var(--dur-med);
 }
 
 .is-fire .ring-fill {
@@ -181,7 +195,7 @@
 
 .ticket-head {
   display: grid;
-  gap: var(--space-1);
+  gap: 2px;
   min-width: 0;
 }
 
@@ -192,21 +206,25 @@
   letter-spacing: -0.005em;
 }
 
-.ticket-step {
-  font-weight: 600;
+.ticket-big {
+  font-size: var(--text-2xl);
+  font-stretch: var(--wdth-condensed);
+  font-weight: 820;
+  line-height: 1.05;
   color: var(--ticket-ink);
-  line-height: 1.3;
 }
 
-.ticket-time {
-  font-size: var(--text-md);
-  font-weight: 700;
-  font-stretch: var(--wdth-condensed);
+.is-fire .ticket-big {
+  color: var(--fire);
+}
+
+.is-waiting .ticket-big,
+.is-holding .ticket-big {
   color: var(--ticket-muted);
 }
 
-.is-fire .ticket-time {
-  color: var(--fire-deep);
+.is-ready .ticket-big {
+  color: var(--herb-deep);
 }
 
 .ticket-steps {
@@ -231,10 +249,14 @@
   transition: background-color var(--dur-med) var(--ease-out-quart), color var(--dur-med);
 }
 
-.ticket-row.is-active {
+.ticket-row.is-current {
   background: var(--ticket-2);
   color: var(--ticket-ink);
   font-weight: 650;
+}
+
+.is-fire .ticket-row.is-current {
+  background: var(--fire-wash);
 }
 
 .ticket-row.is-done .row-label {
@@ -284,21 +306,69 @@
   min-width: 0;
 }
 
-/* Narrow tickets (phone stack): photo beside the headline. */
-@container (max-width: 250px) {
-  .ticket-hero {
-    padding-top: var(--space-4);
+/* Manual re-plan: a mouse-and-keyboard way to do what the cook would say. */
+.ticket-actions {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-3) 0;
+}
+
+.ticket-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 40px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--ticket-line);
+  background: transparent;
+  color: var(--ticket-muted);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out-quart), border-color var(--dur-fast), opacity var(--dur-fast);
+}
+
+.ticket-btn:hover {
+  background: var(--ticket-2);
+  border-color: var(--ticket-muted);
+  color: var(--ticket-ink);
+}
+
+.ticket-btn:focus-visible {
+  outline-color: var(--ticket-ink);
+}
+
+/* Reduced motion: re-plan cues appear and disappear without animating (React removes them). */
+@media (prefers-reduced-motion: reduce) {
+  .ticket-delta,
+  .ticket-row.is-moved {
+    animation: none !important;
   }
+  .ticket-row.is-moved {
+    background: var(--saffron);
+    color: var(--saffron-ink);
+  }
+  .ticket-heat {
+    display: none;
+  }
+}
+
+@container (max-width: 250px) {
   .ticket-ring {
-    width: 108px;
-    height: 108px;
+    width: 96px;
+    height: 96px;
   }
   .ticket-ring img {
-    width: 84px;
-    height: 84px;
+    width: 74px;
+    height: 74px;
   }
   .ticket-name {
     font-size: var(--text-lg);
+  }
+  .ticket-big {
+    font-size: var(--text-xl);
   }
   .ticket-row {
     grid-template-columns: 14px 2.9em 1fr;

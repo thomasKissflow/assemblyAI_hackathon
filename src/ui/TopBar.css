@@ -15,6 +15,8 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  font-size: inherit;
+  line-height: 1;
 }
 
 .brand-mark {
@@ -23,8 +25,8 @@
   width: 40px;
   height: 40px;
   border-radius: var(--radius-md);
-  background: var(--fire);
-  color: var(--fire-ink);
+  background: var(--ink);
+  color: var(--bg);
 }
 
 .brand-name {
@@ -43,6 +45,7 @@
 }
 
 .clock-block {
+  position: relative;
   display: grid;
   gap: 4px;
   justify-items: start;
@@ -57,23 +60,22 @@
 
 .is-paused .clock-label {
   color: var(--saffron);
+  font-weight: 800;
 }
 
 .is-paused .split-flap {
-  opacity: 0.6;
+  opacity: 0.55;
 }
 
 .clock-serve .clock-label {
   color: var(--saffron);
 }
 
-.clock-serve-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
+/* The chip sits beside the flaps without pushing them: the signature flip never jumps sideways. */
 .serve-delta {
+  position: absolute;
+  left: calc(100% + var(--space-3));
+  bottom: 0.35rem;
   padding: 0.2em 0.65em;
   border-radius: var(--radius-pill);
   border: 1.5px solid var(--saffron);
@@ -102,6 +104,12 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .serve-delta {
+    animation: none !important;
+  }
+}
+
 .controls {
   display: flex;
   align-items: center;
@@ -119,7 +127,7 @@
 
 .speed-btn {
   min-width: 44px;
-  height: 36px;
+  height: 44px;
   padding: 0 var(--space-2);
   border: 0;
   border-radius: var(--radius-pill);
@@ -138,6 +146,10 @@
 .speed-btn[aria-pressed='true'] {
   background: var(--ink);
   color: var(--bg);
+}
+
+.glance-btn {
+  padding-inline: var(--space-4);
 }
 
 @media (max-width: 1100px) {
@@ -174,7 +186,8 @@
   .brand-name {
     font-size: var(--text-lg);
   }
-  .speed {
+  .speed,
+  .glance-btn {
     display: none;
   }
   .clocks {
@@ -183,5 +196,8 @@
   }
   .clocks .split-flap--md {
     font-size: var(--text-xl);
+  }
+  .serve-delta {
+    font-size: var(--text-sm);
   }
 }

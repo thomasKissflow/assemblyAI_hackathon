@@ -28,8 +28,8 @@
   width: 60px;
   height: 60px;
   border-radius: var(--radius-lg);
-  background: var(--fire);
-  color: var(--fire-ink);
+  background: var(--ink);
+  color: var(--bg);
   flex: none;
 }
 
@@ -78,6 +78,7 @@
 }
 
 /* The teaser: the signature interaction, shown before anyone speaks. */
+/* The teaser is printed on an order ticket, like the kitchen it leads into. */
 .teaser {
   margin: var(--space-3) 0 0;
   display: grid;
@@ -87,11 +88,15 @@
     'chef flap';
   gap: var(--space-2) var(--space-5);
   align-items: center;
-  padding: var(--space-5);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  border: 1px solid var(--line);
+  padding: var(--space-6) var(--space-5) var(--space-5);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  background: var(--ticket);
+  color: var(--ticket-ink);
   max-width: 560px;
+  -webkit-mask: radial-gradient(circle at 7px 0, transparent 4.5px, #000 5px) -7px 0 / 14px 100% repeat-x;
+  mask: radial-gradient(circle at 7px 0, transparent 4.5px, #000 5px) -7px 0 / 14px 100% repeat-x;
+  transform: rotate(-1deg);
+  transform-origin: left top;
 }
 
 .teaser-line {
@@ -104,17 +109,17 @@
 
 .teaser-you {
   grid-area: you;
-  color: var(--muted);
+  color: var(--ticket-muted);
   font-style: italic;
 }
 
 .teaser-chef {
   grid-area: chef;
-  font-weight: 650;
+  font-weight: 700;
 }
 
 .teaser-chef svg {
-  color: var(--saffron);
+  color: var(--ticket-ink);
   flex: none;
   transform: translateY(2px);
 }
@@ -124,11 +129,17 @@
   display: grid;
   gap: 4px;
   justify-items: start;
+  padding-left: var(--space-4);
+  border-left: 1px dashed var(--ticket-line);
 }
 
 .teaser-flap .label {
-  color: var(--saffron);
+  color: var(--ticket-muted);
   font-size: var(--text-xs);
+}
+
+.teaser .split-flap--saffron {
+  --flap-colon: var(--ticket-ink);
 }
 
 /* Setup panel */
@@ -191,7 +202,7 @@
 }
 
 .menu-tile[aria-pressed='true'] .menu-plates img {
-  border-color: oklch(0.24 0.03 29);
+  border-color: var(--surface-2);
 }
 
 .menu-plates img + img {
@@ -256,7 +267,7 @@
 }
 
 .segmented button {
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 var(--space-4);
   border: 0;
   border-radius: var(--radius-pill);
@@ -481,7 +492,7 @@
 }
 
 .check-status.is-error {
-  color: var(--fire);
+  color: var(--fire-text);
   font-weight: 600;
 }
 

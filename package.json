@@ -12,11 +12,11 @@
     "test:watch": "vitest",
     "test:e2e": "vitest run agent.e2e",
     "test:ui": "playwright test flow",
-    "test:voice": "VOICE_E2E=1 playwright test voice"
+    "test:voice": "VOICE_E2E=1 playwright test voice",
+    "shot:hero": "HERO_SHOT=1 playwright test hero"
   },
   "dependencies": {
     "lucide-react": "^1.48.0",
-    "motion": "^13.4.4",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },

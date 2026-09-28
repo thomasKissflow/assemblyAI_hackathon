@@ -30,7 +30,7 @@ test('a full dinner: fire, re-plan, glance, service', async ({ page }) => {
   await expect(page.getByTestId('serve-time')).toHaveAttribute('data-value', /8:10\sPM/);
   await expect(page.getByTestId('serve-delta')).toContainText('10');
   await expect(page.getByTestId('ticket-delta-jeera_rice')).toContainText('+10 min');
-  await expect(page.getByTestId('heard-log')).toContainText(/Serving now 8:10\sPM/);
+  await expect(page.getByTestId('heard-log')).toContainText(/Serving 8:00 → 8:10\sPM/);
   await expect(page.getByTestId('rail-marker').first()).toBeVisible();
   await page.screenshot({ path: 'test-results/screens/1440-replan.png' });
 

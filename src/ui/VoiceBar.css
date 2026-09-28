@@ -1,21 +1,26 @@
 .voice-bar {
+  position: relative;
+  overflow: hidden;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
-    'state state'
-    'wave actions';
-  align-items: center;
-  gap: var(--space-3) var(--space-4);
+    'state'
+    'wave'
+    'actions';
+  gap: var(--space-3);
   padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-lg);
   background: var(--surface);
   border: 1px solid var(--line);
-  transition: border-color var(--dur-med) var(--ease-out-quart), background-color var(--dur-med);
+  transition: border-color var(--dur-med) var(--ease-out-quart), background-color var(--dur-med), color var(--dur-med);
 }
 
+/* Ears open: the whole bar inverts so "Chef is listening" reads from across the room. */
 .voice-bar.is-listening,
 .voice-bar.is-followup {
+  background: var(--ink);
   border-color: var(--ink);
+  color: var(--bg);
 }
 
 .voice-bar.is-chef {
@@ -31,12 +36,11 @@
 }
 
 .voice-dot {
-  position: relative;
   display: grid;
   place-items: center;
   flex: none;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: var(--surface-2);
   color: var(--muted);
@@ -45,8 +49,8 @@
 
 .is-listening .voice-dot,
 .is-followup .voice-dot {
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--bg);
+  color: var(--ink);
 }
 
 .is-chef .voice-dot {
@@ -56,45 +60,21 @@
 
 .is-error .voice-dot,
 .is-muted .voice-dot {
-  color: var(--fire);
-}
-
-.voice-arc {
-  position: absolute;
-  inset: -4px;
-  width: calc(100% + 8px);
-  height: calc(100% + 8px);
-  transform: rotate(-90deg);
-}
-
-.voice-arc circle {
-  fill: none;
-  stroke: var(--saffron);
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-dasharray: 100.53;
-  stroke-dashoffset: 0;
-  animation: arc-drain 7s linear forwards;
-}
-
-@keyframes arc-drain {
-  to {
-    stroke-dashoffset: 100.53;
-  }
+  color: var(--fire-text);
 }
 
 .voice-label {
-  font-size: var(--text-lg);
-  font-weight: 700;
+  font-size: var(--text-xl);
+  font-weight: 750;
   font-stretch: var(--wdth-condensed);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.1;
+  min-width: 0;
 }
 
 .is-asleep .voice-label,
 .is-connecting .voice-label {
   color: var(--muted);
+  font-size: var(--text-lg);
 }
 
 .voice-wave {
@@ -107,7 +87,7 @@
 
 .is-listening .voice-wave,
 .is-followup .voice-wave {
-  color: var(--ink);
+  color: var(--bg);
 }
 
 .is-chef .voice-wave {
@@ -121,24 +101,52 @@
   gap: var(--space-2);
 }
 
+.is-listening .voice-actions .icon-btn,
+.is-followup .voice-actions .icon-btn,
+.is-listening .voice-ptt,
+.is-followup .voice-ptt {
+  background: transparent;
+  color: var(--bg);
+  border-color: oklch(0.14 0 0 / 0.3);
+}
+
 .voice-ptt {
+  flex: 1;
   padding-inline: var(--space-4);
   touch-action: none;
   user-select: none;
 }
 
 .voice-ptt[aria-pressed='true'] {
-  background: var(--ink);
-  color: var(--bg);
-  border-color: var(--ink);
+  background: var(--bg);
+  color: var(--ink);
+  border-color: var(--bg);
 }
 
 .voice-ptt kbd {
-  margin-left: 2px;
+  margin-left: auto;
 }
 
-@media (max-width: 1320px) {
-  .voice-ptt kbd {
-    display: none;
+/* The follow-up window drains across the bottom of the bar. */
+.voice-window {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: var(--saffron);
+  transform-origin: left center;
+  animation: window-drain 7s linear forwards;
+}
+
+@keyframes window-drain {
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .voice-window {
+    animation: none !important;
   }
 }

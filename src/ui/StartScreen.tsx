@@ -51,7 +51,7 @@ function SoundCheck({ session, onBegin, onBack, onWithoutVoice }: Pick<StartScre
         ? 'Connecting to Chef…'
         : heard
           ? 'Chef is ready when you are.'
-          : 'Chef is listening. Try it now.';
+          : 'Chef is listening. Say it once to check, or just start cooking.';
 
   return (
     <main className="start start--check">
@@ -87,13 +87,7 @@ function SoundCheck({ session, onBegin, onBack, onWithoutVoice }: Pick<StartScre
                 </button>
               )}
             </>
-          ) : (
-            !heard && (
-              <button type="button" className="btn btn-quiet" disabled={!live} onClick={onBegin} data-testid="soundcheck-skip">
-                Skip the test
-              </button>
-            )
-          )}
+          ) : null}
         </div>
         <p className="check-tip">
           <Headphones size={16} aria-hidden="true" /> Headphones keep Chef from hearing itself.

@@ -1,15 +1,20 @@
 /* Desktop: a fixed app shell. The pass scrolls inside itself if it ever outgrows the screen;
    the right column always fills the height, with the Heard log taking what's left. */
-.kitchen {
+.kitchen,
+.kitchen-shell {
   height: 100dvh;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
 }
 
+.kitchen {
+  grid-template-rows: minmax(0, 1fr);
+}
+
 .kitchen-main {
   min-height: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(340px, 29vw, 440px);
+  grid-template-columns: minmax(0, 1fr) clamp(360px, 31vw, 480px);
   grid-template-rows: auto minmax(0, 1fr);
   column-gap: var(--space-5);
   padding: var(--space-5);
@@ -40,6 +45,49 @@
   grid-template-columns: repeat(auto-fit, minmax(186px, 1fr));
   gap: var(--space-5);
   align-items: start;
+  transition: opacity var(--dur-med) var(--ease-out-quart);
+}
+
+.pass-tickets.is-paused {
+  opacity: 0.55;
+}
+
+.paused-band {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--saffron);
+  color: var(--saffron-ink);
+  font-size: var(--text-md);
+  animation: paused-in var(--dur-med) var(--ease-out-quart) both;
+}
+
+@keyframes paused-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.paused-band p {
+  flex: 1;
+}
+
+.btn-dark {
+  background: var(--saffron-ink);
+  color: var(--saffron);
+}
+
+.btn-dark:hover {
+  background: oklch(0.12 0.02 80);
+}
+
+.btn-dark kbd {
+  background: transparent;
+  border-color: oklch(0.86 0.16 85 / 0.4);
+  color: var(--saffron);
 }
 
 @media (max-width: 1180px) {
@@ -60,10 +108,15 @@
 
 .side > .heard {
   flex: 1 1 auto;
-  min-height: 120px;
+  min-height: 96px;
 }
 
-.side > :not(.heard) {
+.side > .captions {
+  flex: 0 1 auto;
+  max-height: 36%;
+}
+
+.side > :not(.heard, .captions) {
   flex: none;
 }
 
@@ -73,16 +126,30 @@
   gap: var(--space-3);
   padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-lg);
-  background: var(--surface);
-  border: 1px dashed var(--line);
+  border: 1px dashed var(--line-strong);
   color: var(--muted);
   font-size: var(--text-sm);
   line-height: 2;
 }
 
+.keys-hint strong {
+  color: var(--ink);
+}
+
+/* Short laptop screens: tighten so the rail stays in view. */
+@media (max-height: 820px) and (min-width: 901px) {
+  .kitchen-main {
+    padding-block: var(--space-4);
+  }
+  .pass {
+    gap: var(--space-4);
+  }
+}
+
 /* Phones and small tablets: normal document flow, most glanceable things first. */
 @media (max-width: 900px) {
-  .kitchen {
+  .kitchen,
+  .kitchen-shell {
     height: auto;
     min-height: 100dvh;
   }
@@ -94,7 +161,7 @@
   }
   .kitchen-banner {
     margin: 0;
-    order: -4;
+    order: -5;
   }
   .pass {
     overflow: visible;
@@ -104,14 +171,20 @@
     display: contents;
   }
   .kitchen-main .next-up {
-    order: -3;
+    order: -4;
   }
   .kitchen-main .voice-bar,
   .kitchen-main .keys-hint {
+    order: -3;
+  }
+  .kitchen-main .captions {
     order: -2;
   }
   .heard {
     max-height: 360px;
+  }
+  .paused-band {
+    flex-wrap: wrap;
   }
 }
 

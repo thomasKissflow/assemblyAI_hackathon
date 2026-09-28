@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, type KeyboardEvent } from 'react';
 import { Hand, Mic, MicOff } from 'lucide-react';
 import type { SessionPhase, VoiceStatus } from '../voice/useChefSession';
 import { Waveform } from './Waveform';
@@ -10,6 +10,7 @@ export interface VoiceBarProps {
   levels: () => { mic: number; out: number };
   onToggleMute: () => void;
   onPushToTalk: (down: boolean) => void;
+  active?: boolean;
 }
 
 function describe(voice: VoiceStatus, phase: SessionPhase): { label: string; mode: string } {
@@ -20,11 +21,11 @@ function describe(voice: VoiceStatus, phase: SessionPhase): { label: string; mod
   if (voice.userSpeaking && voice.ears !== 'asleep') return { label: 'Heard you…', mode: 'listening' };
   if (voice.chefSpeaking) return { label: 'Chef is talking', mode: 'chef' };
   if (voice.ears === 'awake') return { label: 'Listening…', mode: 'listening' };
-  if (voice.ears === 'followup') return { label: 'Go on…', mode: 'followup' };
+  if (voice.ears === 'followup') return { label: 'Go on, I’m listening', mode: 'followup' };
   return { label: 'Say “Hey Chef”', mode: 'asleep' };
 }
 
-export function VoiceBar({ voice, phase, levels, onToggleMute, onPushToTalk }: VoiceBarProps) {
+export function VoiceBar({ voice, phase, levels, onToggleMute, onPushToTalk, active = true }: VoiceBarProps) {
   const { label, mode } = describe(voice, phase);
   const modeRef = useRef(mode);
   modeRef.current = mode;
@@ -34,23 +35,26 @@ export function VoiceBar({ voice, phase, levels, onToggleMute, onPushToTalk }: V
     return m === 'chef' ? out : m === 'muted' || m === 'error' ? 0 : mic;
   };
   const release = () => onPushToTalk(false);
+  const onKey = (down: boolean) => (e: KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key !== 'Enter' || e.repeat) return;
+    e.preventDefault();
+    onPushToTalk(down);
+  };
 
   return (
-    <section className={`voice-bar is-${mode}`} data-testid="voice-bar" data-ears={voice.ears} aria-label="Chef's ears">
+    <section className={`voice-bar is-${mode}`} data-testid="voice-bar" data-ears={voice.ears} aria-labelledby="voice-title">
+      <h2 id="voice-title" className="visually-hidden">
+        Chef’s ears
+      </h2>
       <div className="voice-state">
         <span className="voice-dot" aria-hidden="true">
-          {voice.ears === 'followup' && !voice.chefSpeaking && (
-            <svg viewBox="0 0 36 36" className="voice-arc">
-              <circle cx="18" cy="18" r="16" />
-            </svg>
-          )}
           {voice.muted ? <MicOff size={18} /> : <Mic size={18} />}
         </span>
         <span className="voice-label" aria-live="polite">
           {label}
         </span>
       </div>
-      <Waveform level={level} className="voice-wave" />
+      <Waveform level={level} className="voice-wave" active={active && mode !== 'muted' && mode !== 'error'} />
       <div className="voice-actions">
         <button
           type="button"
@@ -70,11 +74,14 @@ export function VoiceBar({ voice, phase, levels, onToggleMute, onPushToTalk }: V
           onPointerUp={release}
           onPointerLeave={() => voice.pushToTalk && release()}
           onPointerCancel={release}
+          onKeyDown={onKey(true)}
+          onKeyUp={onKey(false)}
           title="Hold to talk to Chef (hold Space)"
         >
           <Hand size={16} aria-hidden="true" /> Hold to talk <kbd>Space</kbd>
         </button>
       </div>
+      {voice.ears === 'followup' && !voice.chefSpeaking && <span className="voice-window" aria-hidden="true" />}
     </section>
   );
 }

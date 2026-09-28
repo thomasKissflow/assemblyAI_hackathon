@@ -71,6 +71,7 @@ export function createKitchenStore(realNow: () => number = () => performance.now
     if (!state.plan || state.phase === 'setup' || state.phase === 'ready') return;
     const now = currentNow();
     const { plan, events } = advance(state.plan, now);
+    if (now === state.now && events.length === 0) return;
     const served = events.some(e => e.type === 'serve');
     set({ plan, now, phase: served ? 'served' : state.phase });
     if (events.length) eventSubs.forEach(fn => fn(events));

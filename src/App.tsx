@@ -21,6 +21,10 @@ export default function App() {
     return () => window.clearInterval(id);
   }, []);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [state.phase === 'setup' || state.phase === 'ready']);
+
   useEffect(() => store.onKitchenEvents(events => {
     for (const e of events) {
       const text = callText(e);

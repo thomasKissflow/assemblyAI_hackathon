@@ -24,7 +24,7 @@
   height: 36px;
   border-radius: 50%;
   background: var(--fire-wash);
-  color: var(--fire);
+  color: var(--fire-text);
 }
 
 .error-text {

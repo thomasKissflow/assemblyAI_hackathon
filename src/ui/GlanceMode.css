@@ -45,7 +45,16 @@
 
 .is-fire .split-flap--fire {
   --flap-bg: var(--fire-deep);
-  --flap-bg-2: oklch(0.45 0.17 27);
+  --flap-bg-2: var(--fire-deeper);
+}
+
+/* Saffron on flame is too low-contrast for the colon, suffix and focus ring. */
+.is-fire .split-flap--saffron {
+  --flap-colon: var(--fire-ink);
+}
+
+.glance.is-fire :focus-visible {
+  outline-color: var(--fire-ink);
 }
 
 .glance-close {

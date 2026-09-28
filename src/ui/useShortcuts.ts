@@ -7,23 +7,34 @@ export interface ShortcutMap {
 
 const isTyping = (t: EventTarget | null) => {
   const el = t as HTMLElement | null;
-  return !!el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
+  return !!el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || el.isContentEditable);
 };
+
+// Space/Enter belong to a focused control (except the hold-to-talk button, which wants Space).
+const ownsActivationKey = (t: EventTarget | null) => {
+  const el = t as HTMLElement | null;
+  return !!el?.closest?.('button, a[href], [role="button"], summary') && !el.closest('.voice-ptt');
+};
+
 const keyName = (e: KeyboardEvent) => (e.key === ' ' ? 'space' : e.key.toLowerCase());
 
 export function useShortcuts(map: ShortcutMap) {
   useEffect(() => {
     const onDown = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey || e.repeat || isTyping(e.target)) return;
-      const fn = map.down[keyName(e)];
+      const key = keyName(e);
+      if ((key === 'space' || key === 'enter') && ownsActivationKey(e.target)) return;
+      const fn = map.down[key];
       if (fn) {
         e.preventDefault();
         fn();
       }
     };
     const onUp = (e: KeyboardEvent) => {
-      const fn = map.up?.[keyName(e)];
-      if (fn && !isTyping(e.target)) {
+      const key = keyName(e);
+      if (isTyping(e.target) || ((key === 'space' || key === 'enter') && ownsActivationKey(e.target))) return;
+      const fn = map.up?.[key];
+      if (fn) {
         e.preventDefault();
         fn();
       }
