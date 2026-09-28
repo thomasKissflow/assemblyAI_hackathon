@@ -101,10 +101,51 @@ Each entry: date, decision, reasoning, alternatives considered, impact. Nothing 
 
 ---
 
+### 2026-09-28 — Build "Heard, Chef"
+
+**Decision:** Build **Heard, Chef** (brainstorming B1), a voice head chef that runs the timing of a multi-dish dinner. It calls each step out loud and re-plans every dish when the cook reports a problem.
+
+**Reasoning:** Of the Sep 28 shortlist, it's the clearest case of "voice is actually useful": raw-chicken hands, eyes on the pan. None of the 216 submissions covers cooking. It gives the richest frontend and a visible showcase of AssemblyAI (unprompted spoken calls driven by app state, plus client-side tool calls). The skeptics' main risk, "Alexa does timers", is handled by leading with the re-plan.
+
+**Alternatives Considered:** Sideline (youth-sports playing time: useful, less visual), Buzzkill (the most original, but a toy), Hush (Amazon already ships voice baby logging).
+
+**Impact:** Spec at [specs/2026-09-28-heard-chef-design.md](superpowers/specs/2026-09-28-heard-chef-design.md), plan at [plans/2026-09-28-heard-chef.md](superpowers/plans/2026-09-28-heard-chef.md). MVP to be built overnight Sep 28→29.
+
+---
+
+### 2026-09-28 — Stack and scope for the MVP
+
+**Decision:**
+- Vite + React + TypeScript, built from scratch rather than forking `voice-agent-starter-js`, because the starter needs a Node server and we want no backend.
+- Vitest for tests. lucide-react for icons, motion for animation, and Archivo as the only font.
+- Voice Agent API with inline session config (no stored agent), client-side tools only, and a callout queue for proactive speech.
+- Deliverables: the codebase plus the demo video. Hosting is optional and deferred.
+
+**Reasoning:** "Keep it simple, no backend at all" (Thomas). Every piece above runs in the browser. Fewer moving parts means less to go wrong overnight.
+
+**Alternatives Considered:** Forking the official starter kit (it has a server), a stored agent via `POST /v1/agents` (an extra publish step), and Realtime STT with our own LLM/TTS (more to build).
+
+**Impact:** The architecture is final; see the spec §4.
+
+---
+
+### 2026-09-28 — Design direction (Impeccable)
+
+**Decision:**
+- **Voice:** a calm head chef on the pass.
+- **Look:** a dark "kitchen pass": near-black surfaces, bright white tickets, flame orange only for "do this now", saffron for time, herb green for ready.
+- **Demo menu:** Indian dinner (chicken curry, jeera rice, garlic naan). The Western menu is included too.
+- **Palette seed:** Impeccable seed-016 (hue 20).
+
+**Reasoning:** Thomas's picks via Impeccable's discovery questions. The scene is a laptop glanced at from 2 m under evening kitchen light, which favors a dark surface with a few high-contrast elements.
+
+**Alternatives Considered:** For the voice: a friendly home cook, a playful sous-chef. For the look: bright and fresh, bold tomato-red. For the demo menu: Western dinner.
+
+**Impact:** Captured in [PRODUCT.md](../PRODUCT.md) and spec §8. Note: the Impeccable update to v4.4.0 failed (their server returned a 404); tonight uses v3.9.1.
+
+---
+
 ## Open Decisions (not yet made)
 
-- Which idea from [brainstorming.md](brainstorming.md) are we building?
-- Frontend framework/tooling
-- Build from scratch vs. fork AssemblyAI's official starter kit (see above)
-- Hosting platform (also covers token-mint function + the required demo "Application URL")
-- Developer B's name and preferred task split
+- Hosting for the lablab "Application URL" field. It's optional; the build is static. Decide on Sep 30, weighing that the key would be visible in the deployed bundle.
+- Developer B's name and role in the final polish, video and slides.

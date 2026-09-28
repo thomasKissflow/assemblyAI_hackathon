@@ -1,6 +1,23 @@
 # Architecture Notes
 
-Status: **draft / pre-idea-selection.** This captures constraints and one active challenge to those constraints. Concrete component design starts once an idea from [brainstorming.md](brainstorming.md) is accepted (see [decisions.md](decisions.md)).
+Status: **final for the MVP (2026-09-28).** The authoritative design is the [Heard, Chef spec](superpowers/specs/2026-09-28-heard-chef-design.md) (§4 architecture, §5 planner, §6 agent config). In short:
+
+```
+Browser (Vite + React + TS, static, no backend)
+ ├─ kitchen/  recipes · planner (pure maths) · clock (virtual, 30× demo speed) · store (useSyncExternalStore)
+ ├─ voice/    AudioWorklet mic → PCM16 24 kHz → WebSocket ⇄ AssemblyAI Voice Agent API → speaker
+ │            tool.call → tools.ts mutates the plan (optimistic UI) → tool.result after reply.done
+ │            clock tick → step-started → bell + on-screen call + CalloutQueue → reply.create (never while the cook talks)
+ └─ ui/       dark "kitchen pass": tickets, rail, NEXT UP, Heard log (designed with Impeccable)
+```
+
+Two-developer split for the remaining days:
+- **Thomas:** voice runs and prompt tuning, the demo video.
+- **Developer B:** slides, cover image, optional deploy.
+
+The MVP itself is built by Claude Code overnight; see [tasks.md](tasks.md).
+
+The sections below are the earlier research-phase notes, kept for history.
 
 ## Starting Constraints (as given)
 

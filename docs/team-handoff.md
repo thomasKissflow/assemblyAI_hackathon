@@ -4,7 +4,36 @@
 
 ---
 
-## Latest Handoff — 2026-09-25 (Claude Code, rescan + re-ideation kickoff)
+## Latest Handoff — 2026-09-28 (Claude Code, idea locked, plan written)
+
+### Current Progress
+
+- **Idea accepted: Heard, Chef.** It's a voice head chef that runs the timing of a multi-dish dinner: it calls each step out loud and re-plans every dish when you report a problem. Why it won: [decisions.md](decisions.md).
+- **No backend, verified.** The browser connects to `wss://agents.assemblyai.com/v1/ws?token=<API_KEY>` directly.
+- **The real protocol is measured and written down** in [research.md §8](research.md#8-measured-voice-agent-api-behavior-probes-run-2026-09-28). Most important: a proactive `reply.create` is silently dropped if the cook is talking, so the app uses a callout queue.
+- **Design decided with Thomas via Impeccable:** calm head-chef voice, dark kitchen-pass look, Indian dinner demo. See [PRODUCT.md](../PRODUCT.md).
+- **Spec:** [superpowers/specs/2026-09-28-heard-chef-design.md](superpowers/specs/2026-09-28-heard-chef-design.md)
+- **Plan:** [superpowers/plans/2026-09-28-heard-chef.md](superpowers/plans/2026-09-28-heard-chef.md), 7 tasks. The planner and callout-queue code in it was already run against its tests.
+
+### What Is Being Worked On
+
+Waiting for Thomas's OK. Then Claude Code builds the MVP overnight (plan tasks T1–T7).
+
+### Known Issues / Open Items
+
+- The API key goes only in `.env.local` (gitignored). Never commit it; rotate it after judging.
+- Passing the raw key as `token` is undocumented. The fallback is a same-origin rewrite proxy.
+- The Impeccable update failed (their server returned a 404); v3.9.1 is in use.
+- Real-voice testing needs a human with a mic. That's Thomas's first job in the morning.
+
+### Next Actions
+
+1. Thomas approves the plan, then the overnight build starts.
+2. Morning: pull, `npm install`, copy the key into `.env.local`, `npm run dev`, and cook a fake dinner with headphones.
+
+---
+
+## Handoff — 2026-09-25 (Claude Code, rescan + re-ideation kickoff)
 
 ### Current Progress
 

@@ -21,29 +21,25 @@ Full technical detail in [research.md](research.md).
 
 ## Vision
 
-*Not yet decided — pending idea selection. See [brainstorming.md](brainstorming.md) for candidate ideas and [decisions.md](decisions.md) for the decision log.*
+**Heard, Chef: the dinner timer you can talk back to.** A calm voice head chef runs the timing of a multi-dish dinner. It calls every step out loud when it's due, and it re-plans every dish the moment you say what the food is doing ("the curry needs ten more minutes", "guests are running late").
 
 ## Target Users
 
-*Depends on which idea we converge on — see [brainstorming.md](brainstorming.md).*
+Home cooks making a meal with several dishes that must land hot at the same time: people hosting dinner, busy parents, beginner cooks and meal-kit customers. They're cooking with messy hands and their eyes on the stove, with a laptop or tablet on the counter. Likely buyers: recipe apps, meal-kit companies, and smart-appliance makers. Full context is in [PRODUCT.md](../PRODUCT.md).
 
 ## High-Level Solution
 
-*TBD once an idea is accepted.* Known constraints going in (see [architecture.md](architecture.md) for the full discussion, including one constraint we're challenging):
-
-- Frontend-only, API-driven — no custom backend server
-- AssemblyAI is mandatory infrastructure (either path above)
-- Built and iterated on with Claude Code, versioned in Git
-- Two developers working in parallel — needs a clean vertical split
+A static browser app with **no backend**. The browser talks straight to the AssemblyAI Voice Agent API over one WebSocket, which handles speech-to-text, the LLM, the voice and tool calls. A deterministic planner in the browser does all the timing maths. Chef changes the plan through client-side tool calls and speaks unprompted calls when steps are due. Design: [spec](superpowers/specs/2026-09-28-heard-chef-design.md). Build: [plan](superpowers/plans/2026-09-28-heard-chef.md).
 
 ## Current Status
 
-**Stage:** Research & brainstorming — no idea accepted yet.
+**Stage:** Idea accepted (Heard, Chef). The spec and build plan are written. The MVP is being built overnight Sep 28→29.
 
 | Date | Milestone |
 |---|---|
 | 2026-09-16 | Repo created, hackathon requirements extracted, initial doc set + 6 candidate ideas drafted |
 | 2026-09-25 | Rescanned submissions (~150 now). Ideas 1, 4 and 6 collided; re-ideating in the BPM/workflow whitespace |
+| 2026-09-28 | No-backend connection verified. Multi-agent brainstorm against 216 entries. **Heard, Chef accepted.** Spec, plan and PRODUCT.md written |
 
 See [tasks.md](tasks.md) for the live task board and [team-handoff.md](team-handoff.md) for the latest handoff note.
 

@@ -1,23 +1,32 @@
 # Task Board
 
-Owners: **Thomas** (thomas@kissflow.com) and **Developer B** (TBD — name not yet provided).
+Owners: **Thomas** (thomas@kissflow.com), **Developer B** (name not yet provided), **Claude Code** (overnight build).
+Deadline: **Sep 30, 8:30 PM IST.** Build plan: [plans/2026-09-28-heard-chef.md](superpowers/plans/2026-09-28-heard-chef.md).
 
 ## Backlog
 
 | Task | Owner | Priority | Status |
 |---|---|---|---|
-| React to the 6 candidate ideas in brainstorming.md — accept, pivot, or request a new batch | Thomas + Dev B | High | Backlog |
-| Confirm Developer B's name/role for this doc set | Thomas | Medium | Backlog |
-| Ask in hackathon Discord whether a hosted token-mint service exists (avoids building our own) | Unassigned | Medium | Backlog |
-| Read LLM Gateway docs (only needed if Realtime STT path is chosen) | Unassigned | Low | Backlog |
-| Once idea accepted: scope out AssemblyAI + any other API needed, confirm free-tier limits | Unassigned | High | Backlog |
-| Once idea accepted: pick frontend framework/tooling and scaffold repo | Unassigned | High | Backlog |
-| Once idea accepted: build token-mint edge function (see architecture.md) | Unassigned | High | Backlog |
-| Draft submission assets checklist (cover image, video, slides) — see project-overview.md submission requirements | Unassigned | Low | Backlog |
+| Plan T1: project skeleton, recipes, planner (TDD) | Claude Code | High | Backlog, starts on Thomas's go-ahead |
+| Plan T2: kitchen clock, ticket views, store (TDD) | Claude Code | High | Backlog |
+| Plan T3: voice core (PCM, callout queue, agent config, tools) | Claude Code | High | Backlog |
+| Plan T4: voice runtime + live agent test against the real API | Claude Code | High | Backlog |
+| Plan T5: kitchen-pass UI with Impeccable | Claude Code | High | Backlog |
+| Plan T6: browser verification + Impeccable polish | Claude Code | High | Backlog |
+| Plan T7: README, demo script, docs, handoff | Claude Code | High | Backlog |
+| Morning Sep 29: real voice run with headphones, report what feels off | Thomas | High | Backlog |
+| Sep 29: prompt/voice tuning from Thomas's run | Thomas + Claude Code | High | Backlog |
+| Sep 29–30: record demo video (script in `docs/demo-script.md`) | Thomas | High | Backlog |
+| Sep 29–30: slide deck + cover image for lablab submission | Developer B / Thomas | High | Backlog |
+| Sep 30: push public GitHub repo, confirm `.env.local` is not in it | Thomas | High | Backlog |
+| Sep 30: decide on hosting for the "Application URL" field (optional; key exposure trade-off) | Thomas | Medium | Backlog |
+| Sep 30: submit on lablab.ai (title, short/long description, tags, video, slides, repo, URL) | Thomas | High | Backlog |
+| After judging: rotate the AssemblyAI API key | Thomas | Medium | Backlog |
+| Confirm Developer B's name/role for the docs | Thomas | Low | Backlog |
 
 ## In Progress
 
-*(none)*
+*(none; waiting for Thomas to approve the plan)*
 
 ## Blocked
 
@@ -28,12 +37,15 @@ Owners: **Thomas** (thomas@kissflow.com) and **Developer B** (TBD — name not y
 | Task | Owner | Priority | Status |
 |---|---|---|---|
 | Extract hackathon requirements, judging criteria, timeline, submission requirements | Claude Code | High | Done (2026-09-16) |
-| Research AssemblyAI Voice Agent API vs Realtime STT API, including browser auth constraint | Claude Code | High | Done (2026-09-16) |
-| Competitor/prior-art scan of existing hackathon submissions | Claude Code | High | Done (2026-09-16) |
-| Set up docs/ structure (this file + 6 others) | Claude Code | High | Done (2026-09-16) |
-| Generate and compare 6 candidate ideas | Claude Code | High | Done (2026-09-16) |
-| Rescan submissions board for new collisions (~150 entries) | Claude Code | High | Done (2026-09-25) |
+| Research Voice Agent API vs Realtime STT, including browser auth | Claude Code | High | Done (2026-09-16) |
+| Competitor/prior-art scans (~45 → ~150 → 216 entries) | Claude Code | High | Done (2026-09-16, 09-25, 09-28) |
+| Set up docs/ structure | Claude Code | High | Done (2026-09-16) |
+| Verify the no-backend connection (raw key on the WebSocket, browser + Node) | Claude Code | High | Done (2026-09-28) |
+| Multi-agent brainstorm: 24 ideas → 8 ranked → 3 skeptics | Claude Code | High | Done (2026-09-28) |
+| Pick the idea: Heard, Chef | Thomas | High | Done (2026-09-28) |
+| Design discovery (voice, look, demo menu) + PRODUCT.md | Thomas + Claude Code | High | Done (2026-09-28) |
+| Spec + implementation plan (planner and callout queue logic pre-verified) | Claude Code | High | Done (2026-09-28) |
 
 ## Notes on Priority
 
-Given the hard deadline (Sep 30, 8:30 PM IST, **~5 days out as of 2026-09-25**), the single highest-priority open item is **converging on one idea today**. Everything else (framework choice, token-mint function, task split) is blocked on that decision and should move fast once it lands — see [decisions.md](decisions.md) for how that decision will be recorded.
+About two days are left. Tonight is the build. Sep 29 is Thomas's real-voice check and tuning. Sep 30 is video, slides and submission. Anything not on the list above is out of scope; see spec §12.
