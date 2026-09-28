@@ -68,6 +68,39 @@ Each entry: date, decision, reasoning, alternatives considered, impact. Nothing 
 
 ---
 
+### 2026-09-28 — Drop BPM/Kissflow-adjacent ideas; pick a use case where voice is genuinely useful
+
+**Decision:** Thomas rejected the Sep 25 seeds (Voice Approvals Inbox, Talk-to-Build Process Designer) as too close to Kissflow. New filter: the use case must be one where a voice agent is *actually* useful, meaning voice clearly beats typing or tapping in the real moment.
+
+**Reasoning:** Thomas's call. It also avoids any employer-IP ambiguity in a public MIT repo.
+
+**Alternatives Considered:** Seeds A and B from 2026-09-25 (logged in brainstorming.md, now Rejected).
+
+**Impact:** Re-ideation on Sep 28, with about 2.5 days to the deadline. The plan: MVP built overnight Sep 28, polish Sep 29, video and submission Sep 30.
+
+---
+
+### 2026-09-28 — No backend at all: connect the browser straight to the Voice Agent WebSocket with the API key
+
+**Decision:** The MVP is a pure static frontend. The browser opens `wss://agents.assemblyai.com/v1/ws?token=<API_KEY>` directly with the hard-coded key. No token-mint function and no proxy. This **supersedes** the 2026-09-16 token-mint decisions above.
+
+**Reasoning (spike run 2026-09-28):**
+- `GET /v1/token` works server-side (200, token minted), but it has **no CORS headers** and the preflight returns **405**. A browser `fetch` to it is blocked ("Failed to fetch", confirmed in a real browser on `http://localhost`).
+- The WebSocket **accepts the permanent API key as the `token` query param**. From a real browser on a localhost origin it returned `open` → `session.updated`.
+- A bogus key is rejected (`session.error: unauthorized`, close 1008), so the key really is being authenticated.
+- Thomas explicitly asked for hard-coded credentials and no backend.
+
+**Alternatives Considered:**
+- Token-mint edge function: needs hosting config and adds a failure point. Unnecessary now.
+- Same-origin rewrite proxy (Vercel/Netlify) for `/v1/token`: works with config only, and is the **fallback** if AssemblyAI stops accepting the raw key on the WebSocket.
+
+**Impact / risks:**
+- Passing the raw key as `token` is **not documented** behavior (docs describe `token` as a temporary token), so it could change. The rewrite-proxy fallback above covers that.
+- The key is visible in the deployed JS bundle. Accepted for the demo. **Rotate the key after judging.**
+- Keep the key out of the public repo: it lives in a gitignored `.env.local` (`VITE_ASSEMBLYAI_API_KEY`). Vite inlines it at build time, so it's still hard-coded in the built app but never committed.
+
+---
+
 ## Open Decisions (not yet made)
 
 - Which idea from [brainstorming.md](brainstorming.md) are we building?

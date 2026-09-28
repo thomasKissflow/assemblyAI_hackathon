@@ -10,7 +10,13 @@ Status: **draft / pre-idea-selection.** This captures constraints and one active
 - Git workflow, two developers working in parallel
 - Claude Code–assisted development
 
-## Constraint Under Challenge: "No custom backend"
+## Resolved 2026-09-28: truly no backend
+
+The browser connects straight to `wss://agents.assemblyai.com/v1/ws?token=<API_KEY>` with the hard-coded key. This was verified in a real browser on a localhost origin, and a bogus key is correctly rejected. The token endpoint is CORS-blocked, so the browser can't mint tokens, but it doesn't need to. The key lives in a gitignored `.env.local` and is inlined by Vite at build time. Fallback if AssemblyAI stops accepting the raw key: a same-origin rewrite proxy to `/v1/token` (Vercel/Netlify config only, no code). Full reasoning in [decisions.md](decisions.md).
+
+The section below is kept for history; its recommendation is superseded.
+
+## Constraint Under Challenge: "No custom backend" (superseded 2026-09-28)
 
 Per [research.md](research.md#critical-technical-finding-frontend-only-no-backend-needs-a-caveat), both AssemblyAI WebSocket APIs (Voice Agent API and Realtime STT) require a **short-lived auth token minted server-side** — browsers can't send the permanent API key as a WebSocket header, and AssemblyAI's own docs recommend against shipping the permanent key to the client.
 
