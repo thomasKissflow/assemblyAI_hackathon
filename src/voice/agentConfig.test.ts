@@ -26,6 +26,9 @@ describe('buildSession', () => {
     expect(s.input?.keyterms).toEqual(expect.arrayContaining(['Hey Chef', 'Heard', 'naan', 'Jeera rice']));
     expect(s.input?.turn_detection?.min_silence).toBe(500);
   });
+  it('speaks in a calm, warm head-chef voice', () => {
+    expect(s.output?.voice).toBe('michael');
+  });
 });
 
 it('gives the STT the wake phrase and dish names as keyterms', () => {

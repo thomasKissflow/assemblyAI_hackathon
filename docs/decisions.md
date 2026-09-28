@@ -181,6 +181,36 @@ Each entry: date, decision, reasoning, alternatives considered, impact. Nothing 
 
 ---
 
+### 2026-09-29 — Task 4: Chef speaks in the `michael` voice
+
+**Decision:** `buildSession` sets `output: { voice: 'michael' }`, and `agentConfig.test.ts` asserts it.
+
+**Reasoning:** The [Voices](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/voices) page lists 11 English voices by accent only, with no notes on tone. All 11 were auditioned live on the same kitchen call, measuring pace and pitch as proxies for "calm, warm":
+- `michael` (US) was low (median about 94 Hz), one of the slowest (about 4.7 words/s), paused between sentences, and kept a moderate intonation range (about 41 Hz), so it wasn't flat.
+- `anna` (the default) was higher (about 200 Hz) and faster (about 5.2 words/s).
+- `charles` and `paul` were low but flat (range about 20 Hz).
+
+**Alternatives Considered:** Keeping `anna`, or choosing British male `paul` or `charles`. A human should still listen before the demo. The voice is fixed once the session starts, so switching is a one-line change in `buildSession` plus its test.
+
+**Impact:** No behaviour change beyond the sound of Chef. The live suite passes with it.
+
+---
+
+### 2026-09-29 — Task 4: live agent tuning and one typings cast
+
+**Decision:** The live suite (`npm run test:e2e`) passes 7/7 after three prompt and tool-description changes in `src/voice/agentConfig.ts`:
+1. **Dish vs ingredient.** "I burnt the garlic for the curry" got "Which dish? The curry or the naan?" in 3 of 3 runs, because "garlic" collides with "Garlic naan". The prompt now says to go by the dish the cook names, not an ingredient that sounds like a dish, and to ask which dish only when none is named. `restart_step` now covers an ingredient in a dish's step, with the same example. After the change: 3 of 3 runs called `restart_step {dish: chicken_curry}`.
+2. **Guard example gave a made-up time.** Both off-topic cases repeated the prompt's example word for word: "Not my station. The rice goes on in two minutes, though." That time came from the model, not the planner, which breaks the "truthful numbers" constraint, and it names rice even on the western menu. The example is now "Not my station. Let's get back to dinner.", and the rule adds "without quoting any times". Chef now says exactly that.
+3. **Say what the answer is about.** "Can I use butter instead of ghee?" sometimes got "Yep. It'll be a bit creamier but will work just fine." That's right, but it doesn't work by ear from across the kitchen. A new line asks Chef to name the thing it's answering about, with a lime/lemon example so the test isn't just echoed. After the change: 3 of 3 answers started with "Butter works fine for the rice" or "Butter's fine for the rice", and none called a tool.
+
+Also, `SttSocket.sendPcm` casts `chunk as Int16Array<ArrayBuffer>` for `WebSocket.send`. This is the same TS ≥ 5.7 typed-array generics issue the plan notes for `audio.ts`. It's a typings difference only; mic chunks are always `ArrayBuffer`-backed.
+
+**Reasoning:** The plan's rule is to tune only the prompt and tool descriptions until the live cases pass, keeping `agentConfig.test.ts` green. That test still passes unchanged.
+
+**Impact:** One live run also failed with a WebSocket `socket error` before `session.ready`, right after the voice auditions. The next run connected normally, so treat it as transient.
+
+---
+
 ## Open Decisions (not yet made)
 
 - Hosting for the lablab "Application URL" field. It's optional; the build is static. Decide on Sep 30, weighing that the key would be visible in the deployed bundle.
