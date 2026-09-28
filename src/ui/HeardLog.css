@@ -1,0 +1,111 @@
+.heard {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 0;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.heard-title {
+  padding: var(--space-3) var(--space-5) 0;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.heard-list {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  overflow-y: auto;
+  min-height: 0;
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  -webkit-mask: linear-gradient(to bottom, transparent, #000 18px);
+  mask: linear-gradient(to bottom, transparent, #000 18px);
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface-3) transparent;
+}
+
+.heard-empty {
+  padding: var(--space-3) var(--space-2);
+  color: var(--faint);
+  font-size: var(--text-sm);
+}
+
+.heard-entry {
+  display: grid;
+  grid-template-columns: 2.6em 22px 1fr;
+  gap: var(--space-2);
+  align-items: baseline;
+  padding: 6px var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  color: var(--muted);
+  animation: heard-in var(--dur-med) var(--ease-out-quart) both;
+}
+
+@keyframes heard-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.heard-time {
+  color: var(--faint);
+  font-weight: 600;
+  font-stretch: var(--wdth-condensed);
+}
+
+.heard-icon {
+  display: grid;
+  place-items: center;
+  align-self: center;
+}
+
+.is-call .heard-icon {
+  color: var(--fire);
+}
+
+.is-call .heard-text {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.is-chef .heard-icon {
+  color: var(--saffron);
+}
+
+.is-chef .heard-text {
+  color: var(--ink);
+}
+
+.is-cook .heard-text {
+  font-style: italic;
+}
+
+.is-change {
+  background: var(--saffron-wash);
+}
+
+.is-change .heard-icon,
+.is-change .heard-text {
+  color: var(--saffron);
+}
+
+.is-system .heard-text {
+  color: var(--faint);
+}
+
+.log-you {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}

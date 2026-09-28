@@ -1,0 +1,111 @@
+.service {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: grid;
+  place-items: center;
+  padding: var(--space-5);
+  background: oklch(0.1 0 0 / 0.86);
+  animation: service-fade var(--dur-slow) var(--ease-out-quart) both;
+}
+
+@keyframes service-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.service-card {
+  width: min(560px, 100%);
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+  padding: var(--space-7) var(--space-6) var(--space-6);
+  border-radius: var(--radius-xl);
+  background: var(--ticket);
+  color: var(--ticket-ink);
+  text-align: center;
+  box-shadow: var(--shadow-lift);
+  animation: service-card 600ms var(--ease-out-expo) both;
+}
+
+@keyframes service-card {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+}
+
+.service-plates {
+  display: flex;
+  margin-top: calc(-1 * var(--space-9));
+}
+
+.service-plates img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid var(--ticket);
+  box-shadow: 0 10px 24px oklch(0 0 0 / 0.35);
+  animation: plate-in 520ms var(--ease-out-expo) both;
+}
+
+.service-plates img + img {
+  margin-left: -26px;
+}
+
+@keyframes plate-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) rotate(-8deg);
+  }
+}
+
+.service-title {
+  font-size: var(--glance-sm);
+  font-stretch: var(--wdth-condensed);
+  font-weight: 850;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.service-sub {
+  font-size: var(--text-md);
+  color: var(--ticket-muted);
+  margin-top: calc(-1 * var(--space-2));
+}
+
+.service-stats {
+  width: 100%;
+  margin: var(--space-3) 0 var(--space-2);
+  display: grid;
+  gap: 0;
+  border-top: 1px dashed var(--ticket-line);
+}
+
+.service-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-2);
+  border-bottom: 1px dashed var(--ticket-line);
+  text-align: left;
+}
+
+.service-stat dt {
+  color: var(--ticket-muted);
+  font-weight: 600;
+}
+
+.service-stat dd {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 800;
+  font-stretch: var(--wdth-condensed);
+}
+
+.service-stat:last-child dd {
+  color: var(--fire-deep);
+}

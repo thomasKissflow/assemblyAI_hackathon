@@ -1,0 +1,87 @@
+.glance {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-glance);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: var(--space-6) var(--space-7);
+  background: var(--bg);
+  animation: glance-in var(--dur-slow) var(--ease-out-expo) both;
+  transition: background-color var(--dur-slow) var(--ease-out-quart);
+}
+
+.glance.is-fire {
+  background: var(--fire);
+  color: var(--fire-ink);
+}
+
+@keyframes glance-in {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+}
+
+.glance-top {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-7);
+}
+
+.glance-clock {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.glance-label {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.is-fire .glance-label {
+  color: var(--fire-ink);
+}
+
+.is-fire .split-flap--fire {
+  --flap-bg: var(--fire-deep);
+  --flap-bg-2: oklch(0.45 0.17 27);
+}
+
+.glance-close {
+  margin-left: auto;
+  align-self: flex-start;
+}
+
+.glance-main {
+  display: grid;
+  place-items: center;
+}
+
+.is-fire .next-up--glance .next-up-dish,
+.is-fire .next-up--glance .next-up-meta {
+  color: var(--fire-ink);
+}
+
+.glance-hint {
+  justify-self: center;
+  color: var(--faint);
+  font-size: var(--text-sm);
+}
+
+.is-fire .glance-hint {
+  color: var(--fire-ink);
+}
+
+@media (max-width: 700px) {
+  .glance {
+    padding: var(--space-5) var(--space-4);
+  }
+  .glance-top {
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .glance-clock .split-flap--lg {
+    font-size: var(--text-2xl);
+  }
+}

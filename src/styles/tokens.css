@@ -1,0 +1,100 @@
+:root {
+  /* Palette: Impeccable seed-016 (hue 20). Restrained: neutrals carry the surface, flame only means "do this now". */
+  --bg: oklch(0.14 0 0);
+  --surface: oklch(0.19 0 0);
+  --surface-2: oklch(0.24 0 0);
+  --surface-3: oklch(0.29 0 0);
+  --line: oklch(0.30 0 0);
+  --ink: oklch(0.97 0 0);
+  --muted: oklch(0.72 0 0);
+  --faint: oklch(0.56 0 0);
+
+  --ticket: oklch(0.96 0 0);
+  --ticket-2: oklch(0.91 0 0);
+  --ticket-line: oklch(0.84 0 0);
+  --ticket-ink: oklch(0.17 0 0);
+  --ticket-muted: oklch(0.45 0 0);
+
+  --fire: oklch(0.64 0.21 29);
+  --fire-deep: oklch(0.52 0.19 27);
+  --fire-ink: oklch(0.99 0 0);
+  --fire-wash: oklch(0.64 0.21 29 / 0.14);
+
+  --saffron: oklch(0.86 0.16 85);
+  --saffron-deep: oklch(0.74 0.15 80);
+  --saffron-ink: oklch(0.2 0.03 80);
+  --saffron-wash: oklch(0.86 0.16 85 / 0.12);
+
+  --herb: oklch(0.80 0.17 150);
+  --herb-deep: oklch(0.55 0.13 150);
+  --herb-ink: oklch(0.2 0.04 150);
+
+  /* Type: one family, Archivo (variable wdth + wght). */
+  --font: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --wdth-condensed: 72%;
+  --wdth-normal: 100%;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.2rem;
+  --text-lg: 1.44rem;
+  --text-xl: 1.728rem;
+  --text-2xl: 2.074rem;
+  --text-3xl: 2.488rem;
+
+  /* Glance sizes: deliberately oversized for a two-metre read. */
+  --glance-sm: 3rem;
+  --glance-md: 4.25rem;
+  --glance-lg: 6rem;
+
+  /* 4pt spacing scale. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-pill: 999px;
+
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-quad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+  --dur-fast: 160ms;
+  --dur-med: 240ms;
+  --dur-slow: 400ms;
+
+  --shadow-ticket: 0 1px 0 oklch(1 0 0 / 0.6) inset, 0 14px 28px -18px oklch(0 0 0 / 0.9), 0 2px 6px oklch(0 0 0 / 0.35);
+  --shadow-lift: 0 18px 40px -20px oklch(0 0 0 / 0.95);
+
+  --z-base: 0;
+  --z-sticky: 10;
+  --z-banner: 20;
+  --z-overlay: 30;
+  --z-glance: 40;
+  --z-toast: 50;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0.01ms;
+    --dur-med: 0.01ms;
+    --dur-slow: 0.01ms;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

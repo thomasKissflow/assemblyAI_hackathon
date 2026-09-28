@@ -4,12 +4,15 @@ export interface CaptionWord {
   endMs: number;
 }
 
+// transcript.agent.delta pieces are whole words, but only some carry a trailing space
+// (measured: "serving ", "at ", "8:00", "PM.", "First"), so normalise the spacing here.
 export function splitCaption(words: CaptionWord[], elapsedMs: number): { spoken: string; upcoming: string } {
-  let spoken = '';
-  let upcoming = '';
+  const spoken: string[] = [];
+  const upcoming: string[] = [];
   for (const w of words) {
-    if (w.startMs <= elapsedMs) spoken += w.text;
-    else upcoming += w.text;
+    const text = w.text.trim();
+    if (!text) continue;
+    (w.startMs <= elapsedMs ? spoken : upcoming).push(text);
   }
-  return { spoken: spoken.trimEnd(), upcoming: upcoming.trim() };
+  return { spoken: spoken.join(' '), upcoming: upcoming.join(' ') };
 }
