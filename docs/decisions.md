@@ -224,6 +224,54 @@ Also, `SttSocket.sendPcm` casts `chunk as Int16Array<ArrayBuffer>` for `WebSocke
 
 ---
 
+### 2026-09-29 — UI build decisions (Task 5)
+
+**Decision:**
+- **Caption spacing is normalised.** Measured: `transcript.agent.delta` sends whole words, but only some have a trailing space (`"serving "`, `"8:00"`, `"PM."`), so `splitCaption` trims each word and joins with single spaces.
+- **Captions roll** like live TV captions (a window of the newest words) so a long reply never pushes the voice bar off screen.
+- **The rail shows one labelled marker per dish** (its next call) and small pips for later steps, and it is hidden on phones. The first version labelled every call and the labels collided.
+- **The AM/PM suffix on the split-flaps is plain text, not flaps.** Tiny flaps read as a glitch.
+
+**Reasoning:** Each came from reading real screenshots of the running app, including a real-voice run.
+
+**Alternatives Considered:** Keeping the motion library for rail animation. Dropped after the audit (see below).
+
+**Impact:** No change to the spec's intent.
+
+---
+
+### 2026-09-29 — Design review and fixes (Task 7)
+
+**Decision:** Ran Impeccable's critique as three isolated agents: design review, detector, technical audit. The results were a design score of 26/40, a clean detector scan, and an audit score of 13/20. Every major issue and most minor ones were fixed:
+- **NEXT UP is the hero** (54 px call, 48 px countdown), and simultaneous calls show as "Also now: …".
+- **Tickets carry plain-language state** (Waiting, Fire · start now, Cooking, Holding, Ready) and one big time. They also gain **+5 min / Done** buttons, so re-planning works without voice and a misheard re-plan can be fixed by hand.
+- **Pause is loud:** a saffron banner with a Resume button, and the tickets dim.
+- **Contrast:** `--fire` darkened to L 0.58 so small white text passes AA (4.6:1). `--fire-text` is used for flame text on dark, and `--faint` rose to L 0.62.
+- **Accessibility:**
+  - Overlays make the page `inert` and restore focus when closed.
+  - The countdown is no longer an `aria-live` region; a hidden announcer speaks only when the call changes.
+  - Re-plan chips show under reduced motion.
+  - Space and Enter are no longer stolen from focused buttons.
+  - The kitchen has an h1 and h2 structure, and hold-to-talk works from the keyboard.
+- **Performance:**
+  - The motion library is gone; the rail uses CSS transitions, gliding only on a re-plan. The bundle dropped from 133 KB to 92 KB gzipped.
+  - Ticket shadows use pseudo-elements instead of `filter`.
+  - The store skips renders while paused, and the rAF loops stop when idle.
+- **Other fixes:**
+  - An "End" button leaves the kitchen.
+  - The serve-delta chip no longer shifts the clocks.
+  - The start-screen teaser is printed on an order ticket, and the brand mark is neutral so flame keeps its meaning.
+
+**Reasoning:** The core principle, glanceable from two metres, wasn't being met between calls, and several WCAG AA failures sat on the most important surfaces.
+
+**Alternatives Considered:**
+- Auto-entering glance mode when idle. Not done; it would take control away from the cook.
+- A '?' help overlay. Rotating "Try saying…" examples in the captions area cover the key need.
+
+**Impact:** All 84 unit/component tests, the 4 browser flows, the real-voice test and the 7 live agent tests pass after the changes.
+
+---
+
 ## Open Decisions (not yet made)
 
 - Hosting for the lablab "Application URL" field. It's optional; the build is static. Decide on Sep 30, weighing that the key would be visible in the deployed bundle.

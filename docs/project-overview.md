@@ -33,13 +33,14 @@ A static browser app with **no backend**. The browser talks straight to the Asse
 
 ## Current Status
 
-**Stage:** Idea accepted (Heard, Chef). The spec and build plan are written. The MVP is being built overnight Sep 28→29.
+**Stage:** The MVP is built and tested (Sep 29). What's left: Thomas's real-voice run, tuning, the video, slides, and the submission. See [team-handoff.md](team-handoff.md).
 
 | Date | Milestone |
 |---|---|
 | 2026-09-16 | Repo created, hackathon requirements extracted, initial doc set + 6 candidate ideas drafted |
 | 2026-09-25 | Rescanned submissions (~150 now). Ideas 1, 4 and 6 collided; re-ideating in the BPM/workflow whitespace |
 | 2026-09-28 | No-backend connection verified. Multi-agent brainstorm against 216 entries. **Heard, Chef accepted.** Spec, plan and PRODUCT.md written |
+| 2026-09-29 | Overnight build done: planner, "Hey Chef" voice, kitchen-pass UI, 84 tests + 7 live + real-voice e2e, design review fixes, pitch, demo script, README |
 
 See [tasks.md](tasks.md) for the live task board and [team-handoff.md](team-handoff.md) for the latest handoff note.
 

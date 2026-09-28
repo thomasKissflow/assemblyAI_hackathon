@@ -72,7 +72,7 @@
 }
 
 .paused-band p {
-  flex: 1;
+  flex: 1 1 220px;
 }
 
 .btn-dark {

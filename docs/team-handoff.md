@@ -4,7 +4,70 @@
 
 ---
 
-## Latest Handoff — 2026-09-28 (Claude Code, idea locked, plan written)
+## Latest Handoff — 2026-09-29 morning (Claude Code, overnight build done)
+
+### Morning checklist (about 15 minutes)
+
+1. `git pull` (if you're on another machine), then `npm install`.
+2. Make sure `.env.local` exists with `VITE_ASSEMBLYAI_API_KEY=…`. It's already on Thomas's machine; it's gitignored.
+3. `npm run dev`, then open http://localhost:5173 in **Chrome**, with **headphones on**.
+4. Pick Indian dinner, then **Continue with voice**, then say "Hey Chef" (the ring should turn green), then **Start cooking**.
+5. Try these:
+   - Chef calls the naan on its own. Wait for it.
+   - "Hey Chef, what's next?"
+   - Press **N** until the curry starts, then say "Hey Chef, the curry needs ten more minutes." Serving should flip 8:00 → 8:10.
+   - While Chef is talking: "Hey Chef, wait…" It should stop immediately.
+   - "Hey Chef, can I use butter instead of ghee?"
+   - "Hey Chef, who won the cricket?" Chef should steer you back to dinner.
+   - Press **G** for glance mode, **P** to pause, and **N** to skip to service.
+6. Tell Claude Code what felt off (wake reliability, voice, pace, wording). Most tuning lives in `src/voice/agentConfig.ts` (prompt and tools) and `src/voice/ears.ts` (listening windows).
+
+### What was built overnight
+
+- **The whole app,** following plan v2 in 8 tasks. Everything is committed; see `git log`.
+- **Kitchen logic:**
+  - a pure-TypeScript planner that back-schedules every dish and re-plans on a delay, a serve shift, a restart or an early finish
+  - a virtual clock (30× demo speed)
+  - a store that emits step events
+- **Voice, with no backend:**
+  - **Universal-Streaming** is the always-on "Hey Chef" ears. Word timestamps drive a pre-roll replay from the "hey".
+  - **The Voice Agent API** is Chef ("michael" voice): 5 client-side tools, proactive calls through a queue that never talks over you, word-synced captions, barge-in and push-to-talk (hold Space).
+- **UI with Impeccable:**
+  - a dark kitchen pass: split-flap clocks, perforated order tickets with countdown rings, a rail of the next calls, a flame NOW card
+  - glance mode, a sound check, a service report
+  - **+5 min / Done** buttons on each ticket for a voice-free re-plan
+- **Design review:** an isolated Impeccable critique scored 26/40 and a technical audit scored 13/20. All the major findings and most minor ones are fixed; details are in [decisions.md](decisions.md).
+- **Deliverables:** [pitch.md](pitch.md) (what's unique, the comparison, lablab copy, slide outline), [demo-script.md](demo-script.md), the README, and `docs/screenshot.png` (a real-voice re-plan).
+
+### Test status (all green at hand-off)
+
+- `npm test`: **84** unit and component tests.
+- `npm run test:e2e`: **7/7** live agent tests (re-plan routing, the butter question, cricket and the "ignore your instructions" guardrails).
+- `npm run test:ui`: **4/4** Playwright flows (a full dinner, the Western menu, 1024 px, 390 px), with no console errors and no horizontal overflow.
+- `npm run test:voice`: **passes**. A fake mic says "Hey Chef, the curry needs ten more minutes" through the real APIs and serving flips to 8:10.
+- The Impeccable detector is clean, and `npm run build` succeeds.
+
+### Known issues and caveats
+
+- **A real human voice on a real mic hasn't been tested**; synthetic speech has. That's your step 5.
+- **Without headphones,** Chef's voice can leak into the mic. Chrome's echo cancellation usually handles it, but record the video with headphones.
+- **Passing the raw key as `token` is undocumented.** If it ever stops working, the fallback is a same-origin rewrite to `/v1/token` (hosting config only).
+- **The kitchen clock always starts at 7:15 PM** (demo framing), even at 1× speed.
+- **Occasional network flake:** one live run had a transient socket error, and one hero-screenshot run failed once and then passed.
+- **Tech stack versions:** TypeScript 7, Vite 8, Vitest 5, React 19.3.
+
+### Next actions
+
+See [tasks.md](tasks.md). In short:
+1. Your voice run.
+2. Tune.
+3. Video.
+4. Slides and cover.
+5. Repo, optional hosting, then submit on lablab (the copy is in pitch.md).
+
+---
+
+## Handoff — 2026-09-28 (Claude Code, idea locked, plan written)
 
 ### Current Progress
 

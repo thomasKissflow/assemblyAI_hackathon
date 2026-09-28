@@ -1,11 +1,12 @@
 # Architecture Notes
 
-Status: **final for the MVP (2026-09-28).** The authoritative design is the [Heard, Chef spec](superpowers/specs/2026-09-28-heard-chef-design.md) (§4 architecture, §5 planner, §6 agent config). In short:
+Status: **built (2026-09-29).** The authoritative design is the [Heard, Chef spec](superpowers/specs/2026-09-28-heard-chef-design.md) (§4 architecture, §5 planner, §6 agent config). In short:
 
 ```
 Browser (Vite + React + TS, static, no backend)
  ├─ kitchen/  recipes · planner (pure maths) · clock (virtual, 30× demo speed) · store (useSyncExternalStore)
- ├─ voice/    AudioWorklet mic → PCM16 24 kHz → WebSocket ⇄ AssemblyAI Voice Agent API → speaker
+ ├─ voice/    AudioWorklet mic → PCM16 24 kHz ─┬→ Universal-Streaming (always on) → "Hey Chef" → ears open
+ │                                               └→ Voice Agent API (real audio only while ears are open, pre-roll from "hey")
  │            tool.call → tools.ts mutates the plan (optimistic UI) → tool.result after reply.done
  │            clock tick → step-started → bell + on-screen call + CalloutQueue → reply.create (never while the cook talks)
  └─ ui/       dark "kitchen pass": tickets, rail, NEXT UP, Heard log (designed with Impeccable)
@@ -15,7 +16,7 @@ Two-developer split for the remaining days:
 - **Thomas:** voice runs and prompt tuning, the demo video.
 - **Developer B:** slides, cover image, optional deploy.
 
-The MVP itself is built by Claude Code overnight; see [tasks.md](tasks.md).
+The MVP was built by Claude Code overnight Sep 28→29. The built system differs from the original spec in one way: the always-on "Hey Chef" ears on Universal-Streaming (plan v2). Test status and caveats are in [team-handoff.md](team-handoff.md).
 
 The sections below are the earlier research-phase notes, kept for history.
 
