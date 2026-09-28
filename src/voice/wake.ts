@@ -25,5 +25,8 @@ export function findWake(words: SttWord[]): WakeHit | null {
   return null;
 }
 
-export const stripWake = (text: string) =>
-  text.replace(/^\s*(?:(?:hey|hi|okay|ok|yo|oi|hello)[\s,]+)?(?:chef|shef|jeff)\b[\s,.!?]*/i, '');
+// Built from the same word sets as findWake, longest first, so every wake phrase it accepts is stripped whole.
+const anyOf = (words: Iterable<string>) => [...words].sort((a, b) => b.length - a.length).join('|');
+const LEADING_WAKE = new RegExp(`^\\s*(?:(?:${anyOf(PREFIXES)})[\\s,]+)?(?:${anyOf([...NAMES, ...SOUNDALIKES])})\\b[\\s,.!?]*`, 'i');
+
+export const stripWake = (text: string) => text.replace(LEADING_WAKE, '');

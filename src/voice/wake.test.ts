@@ -26,6 +26,13 @@ describe('stripWake', () => {
     expect(stripWake('hey chef how long')).toBe('how long');
     expect(stripWake('Chef, stop.')).toBe('stop.');
   });
+  it('removes every sound-alike wake phrase that findWake accepts', () => {
+    for (const phrase of ['Hey Chevy,', 'hey sheff', 'Hey chefs,', "Okay chef's,"]) {
+      const line = `${phrase} how long for the rice?`;
+      expect(findWake(W(line))).not.toBeNull();
+      expect(stripWake(line)).toBe('how long for the rice?');
+    }
+  });
   it('leaves other text alone', () => {
     expect(stripWake('the curry needs ten more minutes')).toBe('the curry needs ten more minutes');
   });

@@ -171,6 +171,16 @@ Each entry: date, decision, reasoning, alternatives considered, impact. Nothing 
 
 ---
 
+### 2026-09-28 — Task 3 review: `stripWake` shares `findWake`'s vocabulary
+
+**Decision:** `src/voice/wake.ts` now builds the `stripWake` pattern from the same `PREFIXES`, `NAMES` and `SOUNDALIKES` sets that `findWake` uses, instead of the plan's hand-written regex. A test covers the sound-alikes.
+
+**Reasoning:** The plan's regex only stripped `chef`/`shef`/`jeff`, but `findWake` also wakes on `chefs`, `chef's`, `chevy` and `sheff`. After a wake like "Hey Chevy, how long?", the cook's live caption and log line (Task 4 passes them through `stripWake`) would have shown the wake phrase, or a stray `'s,` for "chef's".
+
+**Impact:** Deviation from the plan's Task 3 code for `stripWake` only. The plan's tests are unchanged and still pass.
+
+---
+
 ## Open Decisions (not yet made)
 
 - Hosting for the lablab "Application URL" field. It's optional; the build is static. Decide on Sep 30, weighing that the key would be visible in the deployed bundle.
