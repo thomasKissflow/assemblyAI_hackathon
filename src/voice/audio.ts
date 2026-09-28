@@ -90,6 +90,7 @@ export class AudioEngine {
     this.flush();
     this.node?.disconnect();
     this.stream?.getTracks().forEach(t => t.stop());
-    if (this.ctx.state !== 'closed') await this.ctx.close();
+    // A runtime can be torn down twice (stop, then its own failed or stale start), so a second close is fine.
+    if (this.ctx.state !== 'closed') await this.ctx.close().catch(() => {});
   }
 }

@@ -30,6 +30,7 @@ const SILENCE = int16ToBase64(new Int16Array(1200));
 const WAKE_PAD_MS = 150;
 const WAKE_DEDUPE_MS = 1500;
 const WAKE_STALE_MS = 6000;
+const FOLLOW_UP_WAIT_MS = 3000;
 const QUIET: VoiceStatus = { ears: 'asleep', pushToTalk: false, userSpeaking: false, chefSpeaking: false, muted: false };
 const LOST = 'Lost the connection to Chef. Check your internet, then reconnect.';
 
@@ -43,6 +44,8 @@ interface Runtime {
   gate: VoiceGate;
   results: { callId: string; result: ToolResult }[];
   replyIsCall: boolean;
+  hushed: boolean;
+  followUpBy: number;
   streamMs: number;
   lastWakeAt: number;
   muted: boolean;
@@ -113,12 +116,15 @@ export function useChefSession(store: KitchenStore) {
     const gate: VoiceGate = { userSpeaking: false, replyInProgress: false, pendingToolResults: 0 };
     const queue = new CalloutQueue(instructions => socket.replyCreate(instructions));
     const r: Runtime = {
-      socket, stt, engine, queue, ears, preroll, gate, results: [], replyIsCall: false,
+      socket, stt, engine, queue, ears, preroll, gate, results: [], replyIsCall: false, hushed: false, followUpBy: 0,
       streamMs: 0, lastWakeAt: Number.NEGATIVE_INFINITY, muted: false, timer: 0, unsubscribe: () => {},
     };
     rt.current = r;
 
-    const interruptChef = () => {
+    // reply.audio arrives at about real time, so a flush alone only drops the ~150 ms already buffered and Chef talks on.
+    // `hush` also drops the rest of the reply in progress, until the next reply starts.
+    const interruptChef = (hush = false) => {
+      if (hush && (gate.replyInProgress || engine.speaking)) r.hushed = true;
       if (engine.speaking) engine.flush();
       captions.chefEnd();
     };
@@ -130,7 +136,8 @@ export function useChefSession(store: KitchenStore) {
         const wasOpen = ears.open;
         r.lastWakeAt = hit.at;
         ears.wake(now);
-        interruptChef();
+        // With the ears asleep, whatever Chef is saying can't be the answer to this question: cut it off.
+        interruptChef(!wasOpen);
         if (!wasOpen) for (const chunk of preroll.since(hit.at - WAKE_PAD_MS)) socket.sendAudio(chunk);
         setWakeCount(c => c + 1);
       }
@@ -158,16 +165,19 @@ export function useChefSession(store: KitchenStore) {
         }
         case 'reply.started':
           gate.replyInProgress = true;
+          gate.pendingToolResults = 0;
+          r.hushed = false;
           r.replyIsCall = queue.busy;
           if (!r.replyIsCall) ears.chefReplyStarted();
           captions.chefBegin();
           break;
         case 'reply.audio':
+          if (r.hushed) break;
           captions.chefStartAt(engine.play(String(e.data ?? '')));
           queue.onReplyAudio();
           break;
         case 'transcript.agent.delta':
-          captions.chefWord({ text: String(e.delta ?? ''), startMs: Number(e.start_ms ?? 0), endMs: Number(e.end_ms ?? 0) });
+          if (!r.hushed) captions.chefWord({ text: String(e.delta ?? ''), startMs: Number(e.start_ms ?? 0), endMs: Number(e.end_ms ?? 0) });
           break;
         case 'transcript.agent':
           if (!r.replyIsCall && e.text) store.log('chef', String(e.text));
@@ -177,15 +187,20 @@ export function useChefSession(store: KitchenStore) {
           r.results.push({ callId: String(e.call_id), result: executeTool(store, String(e.name), e.arguments) });
           gate.pendingToolResults = r.results.length;
           break;
-        case 'reply.done':
+        case 'reply.done': {
           gate.replyInProgress = false;
           if (e.status === 'interrupted') interruptChef();
-          for (const x of r.results.splice(0)) socket.sendToolResult(x.callId, x.result);
-          gate.pendingToolResults = 0;
+          const answered = r.results.splice(0);
+          for (const x of answered) socket.sendToolResult(x.callId, x.result);
+          // Chef speaks the results in a follow-up reply. Hold callouts until it starts: a reply.create sent now
+          // collides with it (measured: the follow-up ends at once with no audio and the call is said twice).
+          gate.pendingToolResults = answered.length;
+          r.followUpBy = now + FOLLOW_UP_WAIT_MS;
           queue.onReplyDone();
           if (!r.replyIsCall) ears.chefReplyDone(now);
           captions.chefEnd();
           break;
+        }
         case 'session.error':
           store.log('system', `Voice error: ${String(e.message ?? e.code ?? 'unknown')}`);
           break;
@@ -215,9 +230,15 @@ export function useChefSession(store: KitchenStore) {
       });
       await Promise.all([stt.connect(API_KEY, sttKeyterms(plan)), socket.connect(API_KEY, buildSession(plan))]);
     } catch (err) {
-      if (rt.current === r) rt.current = null;
+      const current = rt.current === r;
+      if (current) rt.current = null;
       await teardown(r);
-      fail(describeError(err));
+      if (current) fail(describeError(err));
+      return;
+    }
+    if (rt.current !== r) {
+      // Stopped or restarted while connecting: teardown already ran, but the mic may have opened since.
+      await teardown(r);
       return;
     }
 
@@ -225,6 +246,7 @@ export function useChefSession(store: KitchenStore) {
       const now = performance.now();
       ears.tick(now);
       if (!ears.open && captions.getSnapshot().you) captions.you('', false);
+      if (gate.pendingToolResults > 0 && !gate.replyInProgress && now > r.followUpBy) gate.pendingToolResults = 0;
       queue.pump(gate, now);
       const next: VoiceStatus = { ears: ears.state, pushToTalk: ears.pushToTalk, userSpeaking: gate.userSpeaking, chefSpeaking: engine.speaking, muted: r.muted };
       setVoice(v => (sameVoice(v, next) ? v : next));
@@ -243,7 +265,8 @@ export function useChefSession(store: KitchenStore) {
     const r = rt.current;
     if (!r) return;
     r.ears.setPushToTalk(down, performance.now());
-    if (down && r.engine.speaking) {
+    if (down && (r.engine.speaking || r.gate.replyInProgress)) {
+      r.hushed = true;
       r.engine.flush();
       captions.chefEnd();
     }

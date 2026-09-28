@@ -211,6 +211,19 @@ Also, `SttSocket.sendPcm` casts `chunk as Int16Array<ArrayBuffer>` for `WebSocke
 
 ---
 
+### 2026-09-29 — Task 4 review: three runtime fixes in `useChefSession`
+
+**Decision:** Three changes to the plan's `useChefSession.ts`, each measured live or reproduced in the new `useChefSession.test.ts` (fake sockets, no key):
+1. **Callouts wait for Chef to speak tool results.** The plan cleared `pendingToolResults` at `reply.done`, so a queued call went out as `reply.create` right after `tool.result`. Live, that collides with the follow-up reply: it ends at once with no audio, the call is sent twice, and the answer is treated as a callout (not logged, no follow-up window). Now the gate stays closed until the follow-up's `reply.started`, or 3 s if none comes.
+2. **Interrupting really stops Chef.** `reply.audio` arrives at about real time (9.06 s of audio over 8.95 s), so `flush()` alone drops only ~150 ms and the next chunk plays on. Push-to-talk and a wake with the ears asleep now also drop the rest of that reply's audio and caption words until the next `reply.started`. A wake with the ears already open still only flushes, since the agent hears the cook and barges in itself.
+3. **Stop while connecting.** If `stop()` ran before `start()` finished, `start()` still went `live` (a leaked timer, open sockets and mic) or showed an error. Now it tears the stale runtime down quietly. `AudioEngine.close()` ignores a second close.
+
+**Reasoning:** The spec asks for callouts that never talk over a pending answer, and for "Hey Chef" to cut Chef off instantly.
+
+**Impact:** Runtime behaviour only. The live suite still passes 7/7.
+
+---
+
 ## Open Decisions (not yet made)
 
 - Hosting for the lablab "Application URL" field. It's optional; the build is static. Decide on Sep 30, weighing that the key would be visible in the deployed bundle.
