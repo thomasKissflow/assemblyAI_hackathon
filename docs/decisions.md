@@ -145,6 +145,32 @@ Each entry: date, decision, reasoning, alternatives considered, impact. Nothing 
 
 ---
 
+### 2026-09-28 — v2 scope: "Hey Chef", conversation, guardrails, wow UI, pitch
+
+**Decision:**
+- **The browser always listens.** A second AssemblyAI socket (Universal-Streaming STT) detects "Hey Chef" from word timestamps. Only audio from the "hey" onward is replayed into the Voice Agent session; before that, the agent receives silence.
+- **Chef is conversational:**
+  - a ~7 s follow-up window after it answers
+  - "Hey Chef" cuts Chef off mid-sentence
+  - hold Space for push-to-talk
+  - cooking Q&A mid-cook, with prompt guardrails for off-topic requests
+- **Eight required wow moments** (spec §8).
+- **Tests:** stronger UI tests (component tests plus Playwright flows plus a real-voice fake-mic test).
+- **`docs/pitch.md`** is a deliverable.
+
+**Reasoning:** Thomas asked for all of this before sleeping. The approach was probed first:
+- the STT accepted 24 kHz binary audio with keyterms
+- it caught "hey chef" about 1.2–1.8 s after it was spoken
+- it returned word starts in stream milliseconds, which is what makes an exact pre-roll replay possible
+
+**Alternatives Considered:**
+- Stream everything to the agent and have it ignore anything not addressed to it. Rejected: the agent replies to every turn, and kitchen chatter would trigger tools.
+- Client-side keyword spotting without STT. Rejected: no reliable in-browser wake-word model without extra dependencies.
+
+**Impact:** The spec and plan were rewritten as v2. The pre-verified modules (wake, ears, preroll, captions) passed their checks in a scratch run.
+
+---
+
 ## Open Decisions (not yet made)
 
 - Hosting for the lablab "Application URL" field. It's optional; the build is static. Decide on Sep 30, weighing that the key would be visible in the deployed bundle.

@@ -10,10 +10,11 @@ Deadline: **Sep 30, 8:30 PM IST.** Build plan: [plans/2026-09-28-heard-chef.md](
 | Plan T1: project skeleton, recipes, planner (TDD) | Claude Code | High | Backlog, starts on Thomas's go-ahead |
 | Plan T2: kitchen clock, ticket views, store (TDD) | Claude Code | High | Backlog |
 | Plan T3: voice core (PCM, callout queue, agent config, tools) | Claude Code | High | Backlog |
-| Plan T4: voice runtime + live agent test against the real API | Claude Code | High | Backlog |
-| Plan T5: kitchen-pass UI with Impeccable | Claude Code | High | Backlog |
-| Plan T6: browser verification + Impeccable polish | Claude Code | High | Backlog |
-| Plan T7: README, demo script, docs, handoff | Claude Code | High | Backlog |
+| Plan T4: voice runtime (Hey Chef ears, agent session, captions) + live agent tests incl. guardrails | Claude Code | High | Backlog |
+| Plan T5: show-stealer UI with Impeccable (8 wow moments) | Claude Code | High | Backlog |
+| Plan T6: component tests + Playwright flows + real-voice fake-mic test | Claude Code | High | Backlog |
+| Plan T7: browser polish (Impeccable critique + audit) | Claude Code | High | Backlog |
+| Plan T8: pitch.md, README, demo script, handoff | Claude Code | High | Backlog |
 | Morning Sep 29: real voice run with headphones, report what feels off | Thomas | High | Backlog |
 | Sep 29: prompt/voice tuning from Thomas's run | Thomas + Claude Code | High | Backlog |
 | Sep 29–30: record demo video (script in `docs/demo-script.md`) | Thomas | High | Backlog |
@@ -26,7 +27,7 @@ Deadline: **Sep 30, 8:30 PM IST.** Build plan: [plans/2026-09-28-heard-chef.md](
 
 ## In Progress
 
-*(none; waiting for Thomas to approve the plan)*
+| Overnight build of plan v2 (T1–T4 by build workflow, then T5–T8) | Claude Code | High | In progress (started 2026-09-28 night) |
 
 ## Blocked
 
