@@ -33,7 +33,7 @@ A static browser app with **no backend**. The browser talks straight to the Asse
 
 ## Current Status
 
-**Stage:** The MVP is built and tested (Sep 29). What's left: Thomas's real-voice run, tuning, the video, slides, and the submission. See [team-handoff.md](team-handoff.md).
+**Stage:** Feature-complete (Sep 29): the MVP, plus menus, the recipe studio and a pass fitted to 90% zoom. What's left: the video, slides, cover, repo and the submission. See [team-handoff.md](team-handoff.md).
 
 | Date | Milestone |
 |---|---|
@@ -41,6 +41,7 @@ A static browser app with **no backend**. The browser talks straight to the Asse
 | 2026-09-25 | Rescanned submissions (~150 now). Ideas 1, 4 and 6 collided; re-ideating in the BPM/workflow whitespace |
 | 2026-09-28 | No-backend connection verified. Multi-agent brainstorm against 216 entries. **Heard, Chef accepted.** Spec, plan and PRODUCT.md written |
 | 2026-09-29 | Overnight build done: planner, "Hey Chef" voice, kitchen-pass UI, 84 tests + 7 live + real-voice e2e, design review fixes, pitch, demo script, README |
+| 2026-09-29 | Thomas's real-voice run passed. Added menus, the recipe studio (dictation + AI scribe), mid-cook add/drop dish, and a calmer pass at 90% zoom. 309 tests + 16 live + 17 browser flows |
 
 See [tasks.md](tasks.md) for the live task board and [team-handoff.md](team-handoff.md) for the latest handoff note.
 

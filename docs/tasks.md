@@ -7,14 +7,13 @@ Deadline: **Sep 30, 8:30 PM IST.** Build plan: [plans/2026-09-28-heard-chef.md](
 
 | Task | Owner | Priority | Status |
 |---|---|---|---|
-| Real voice run with headphones: cook a pretend dinner, interrupt Chef, ask a cooking and an off-topic question. Note anything that feels off. | Thomas | High | Backlog (first thing Sep 29) |
-| Tune the prompt, voice or timings from that run (tell Claude Code what felt off) | Thomas + Claude Code | High | Backlog |
+| Try the recipe studio with your own voice (Talk it through) and one real family recipe | Thomas | High | Backlog |
 | Listen to the "michael" voice and confirm it (auditions are in the session scratchpad; the other 10 are listed in the docs) | Thomas | Medium | Backlog |
-| Record the demo video, following [demo-script.md](demo-script.md) | Thomas | High | Backlog |
+| Record the demo video at **90% zoom** in Chrome, following [demo-script.md](demo-script.md) (about 3 min, MP4, under 300 MB) | Thomas | High | Backlog |
 | Slide deck (8 slides, outline in [pitch.md](pitch.md)) and cover image (use `docs/screenshot.png` as a base) | Developer B / Thomas | High | Backlog |
 | Push the public GitHub repo; confirm `.env.local` is not in it (`git ls-files .env.local` prints nothing) | Thomas | High | Backlog |
 | Decide on hosting for the "Application URL" (a static build on Vercel or Netlify; the key would be visible in the bundle, so use a limited key) | Thomas | Medium | Backlog |
-| Submit on lablab.ai. Copy is ready in [pitch.md](pitch.md): title, short and long description, tags. | Thomas | High | Backlog |
+| Submit on lablab.ai as **"Heard Chef"** (the form allows letters and spaces only). Copy is ready in [pitch.md](pitch.md): short and long description, tags. | Thomas | High | Backlog |
 | After judging: rotate the AssemblyAI API key | Thomas | Medium | Backlog |
 | Confirm Developer B's name and role for the docs | Thomas | Low | Backlog |
 
@@ -43,10 +42,16 @@ Deadline: **Sep 30, 8:30 PM IST.** Build plan: [plans/2026-09-28-heard-chef.md](
 | Plan T6: component tests, Playwright flows at 3 viewports, and the real-voice fake-mic test | Claude Code | High | Done (2026-09-29) |
 | Plan T7: isolated Impeccable critique + audit, then fixes (see decisions.md) | Claude Code | High | Done (2026-09-29) |
 | Plan T8: pitch, lablab copy, slide outline, demo script, README and hero screenshot | Claude Code | High | Done (2026-09-29) |
+| Real voice run with headphones; Thomas: "this is perfect" | Thomas | High | Done (2026-09-29) |
+| Calmer pass, fitted to 90% zoom (1600×878) and 1440×790 with no scroll | Claude Code | High | Done (2026-09-29) |
+| Menus: 4 built-in plus saved menus; customise tonight's dishes | Claude Code | High | Done (2026-09-29) |
+| Recipe studio: type or dictate a recipe; the AI scribe formats it and suggests; saved in the browser | Claude Code | High | Done (2026-09-29) |
+| Mid-cook "add the dal" / "drop the naan" voice tools | Claude Code | Medium | Done (2026-09-29) |
+| Tests: 309 unit, 16 live, 17 browser flows, plus live studio and dictation flows | Claude Code | High | Done (2026-09-29) |
 
 ## Notes on Priority
 
-- **Sep 29:** your voice run and any tuning, then the video.
+- **Sep 29 (evening):** try the recipe studio with your voice, then record the video.
 - **Sep 30:** slides, repo, optional hosting, and the submission.
 
 The app is feature-complete for the demo. Resist adding features; spend the time on the video.

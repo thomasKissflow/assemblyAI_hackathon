@@ -9,6 +9,8 @@ Browser (Vite + React + TS, static, no backend)
  │                                               └→ Voice Agent API (real audio only while ears are open, pre-roll from "hey")
  │            tool.call → tools.ts mutates the plan (optimistic UI) → tool.result after reply.done
  │            clock tick → step-started → bell + on-screen call + CalloutQueue → reply.create (never while the cook talks)
+ │            recipe studio: dictation (Universal-Streaming, formatted turns) → scribe (a text-only Voice Agent session:
+ │            reply.create with the text → save_recipe / suggest tool calls) → editable card → library (localStorage)
  └─ ui/       dark "kitchen pass": tickets, rail, NEXT UP, Heard log (designed with Impeccable)
 ```
 

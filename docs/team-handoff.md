@@ -4,7 +4,50 @@
 
 ---
 
-## Latest Handoff — 2026-09-29 morning (Claude Code, overnight build done)
+## Latest Handoff — 2026-09-29 afternoon (Claude Code, menus, recipe studio, calmer pass)
+
+### What's new
+- **The kitchen pass is calmer** and fits Chrome at **90% zoom** (1600×878) with no scrolling:
+  - quieter tickets
+  - a step window for long recipes
+  - the full rail
+  - the Heard log stays pinned to the newest entry
+- **Menus.** Four built-in menus (Indian dinner, Western dinner, Weeknight pasta, Dal & roti night) plus your saved menus.
+  - Customise tonight: add, remove, or customise a dish as your own copy, then **Save as menu**.
+- **Recipe studio** (**New recipe** on the start screen):
+  - Type, paste, or **Talk it through** (Universal-Streaming dictation).
+  - **Chef's scribe** (the Voice Agent API as a text-in LLM) turns it into timed steps, calls and ingredients, and suggests improvements you can apply.
+  - Everything is editable by hand, and edits made while Chef is reading are kept.
+  - Saved in this browser (localStorage).
+- **Mid-cook:** "Hey Chef, add the dal tadka tonight" or "drop the naan" re-plans everything.
+- **Chef knows each dish's ingredients,** so it can answer "how much rice?".
+- **Specs and decisions:**
+  - [spec](superpowers/specs/2026-09-29-menus-and-recipe-studio.md)
+  - [decisions.md](decisions.md): "Menus, the cook's own recipes, and a calmer pass"
+  - Why not the LLM Gateway: [research.md §8](research.md#8-measured-voice-agent-api-behavior-probes-run-2026-09-28)
+
+### Test status (all green)
+- `npm test`: 309 unit and component tests.
+- `npm run test:e2e` (with the key): 16 live tests. That's 10 agent tests (including add/drop dish and a "how much rice" question from the recipe notes) and 6 scribe tests.
+- `npm run test:ui`: 17 Playwright flows (menus, own recipes, saved menus across a reload, fit at 1600×878 and 1440×790).
+- `npm run test:voice`, `npm run test:studio` and `npm run test:dictation` all pass against the real API.
+
+### Known issues
+- **The scribe's suggestions vary from run to run.**
+  - Sometimes they're only tips with no Apply button. Press Format with Chef again if you want an applicable one on camera.
+  - It sometimes folds "wash/rinse" into the next step.
+- **Customising a built-in you already customised** saves a second copy ("your version" appears twice in the picker). Delete one from the picker.
+- **After a mid-cook add or drop,** Chef's prompt line "Tonight: …" is stale. The tools use the live plan, so re-plans are still right.
+- **With 6 dishes** the start screen scrolls slightly at 1600×878 (3–4 dishes fit).
+
+### Next actions
+1. Try the recipe studio with your own voice once.
+2. Record the video at 90% zoom ([demo-script.md](demo-script.md)). Delete rehearsal recipes first.
+3. Slides and cover image, then the public repo, optional hosting and the lablab submission **as "Heard Chef"**.
+
+---
+
+## Handoff — 2026-09-29 morning (Claude Code, overnight build done)
 
 ### Morning checklist (about 15 minutes)
 
