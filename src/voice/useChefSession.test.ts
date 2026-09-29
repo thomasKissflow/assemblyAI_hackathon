@@ -190,6 +190,32 @@ it('"Hey Chef" with the ears asleep cuts off a callout in progress', async () =>
   await act(async () => { await hook.result.current.stop(); });
 });
 
+it('"Hey Chef" mid-answer, with the ears held open, cuts Chef off too', async () => {
+  const { hook, agent, engine } = await live();
+  act(() => {
+    h.stt!.turn({ words: [{ text: 'hey', start: 100, end: 300 }, { text: 'chef', start: 300, end: 500 }, { text: 'status', start: 600, end: 900 }], transcript: 'hey chef status', endOfTurn: true });
+  });
+  act(() => {
+    agent.emit({ type: 'reply.started' });
+    agent.emit({ type: 'reply.audio', data: 'AAAA' });
+  });
+  expect(engine.play).toHaveBeenCalledTimes(1);
+  act(() => {
+    h.stt!.turn({ words: [{ text: 'hey', start: 4000, end: 4200 }, { text: 'chef', start: 4200, end: 4400 }, { text: 'wait', start: 4500, end: 4800 }], transcript: 'hey chef wait', endOfTurn: false });
+  });
+  expect(hook.result.current.wakeCount).toBe(2);
+  expect(engine.flush).toHaveBeenCalled();
+  act(() => { agent.emit({ type: 'reply.audio', data: 'AAAA' }); });
+  expect(engine.play).toHaveBeenCalledTimes(1);
+  act(() => {
+    agent.emit({ type: 'reply.done', status: 'interrupted' });
+    agent.emit({ type: 'reply.started' });
+    agent.emit({ type: 'reply.audio', data: 'AAAA' });
+  });
+  expect(engine.play).toHaveBeenCalledTimes(2);
+  await act(async () => { await hook.result.current.stop(); });
+});
+
 it('stop while connecting leaves no live runtime and no error', async () => {
   let release!: () => void;
   h.agentConnect = () => new Promise<void>(r => { release = r; });

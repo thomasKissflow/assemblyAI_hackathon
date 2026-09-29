@@ -137,8 +137,10 @@ export function useChefSession(store: KitchenStore) {
         const wasOpen = ears.open;
         r.lastWakeAt = hit.at;
         ears.wake(now);
-        // With the ears asleep, whatever Chef is saying can't be the answer to this question: cut it off.
-        interruptChef(!wasOpen);
+        // A fresh "Hey Chef" while Chef is talking is the cook cutting in, whether Chef is on a callout (ears
+        // asleep) or mid-answer (ears held open): cut it off. The agent's own barge-in only notices speech once
+        // its reply has finished (measured: about 5 s late), so waiting for it would let Chef talk over the cook.
+        interruptChef(!wasOpen || engine.speaking);
         if (!wasOpen) for (const chunk of preroll.since(hit.at - WAKE_PAD_MS)) socket.sendAudio(chunk);
         setWakeCount(c => c + 1);
       }
