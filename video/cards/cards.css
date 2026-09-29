@@ -1,0 +1,583 @@
+/* Heard, Chef video cards: shared frame, brand lockup, pass ticket and split-flap clock.
+   Tokens come from the app (/src/styles/tokens.css); nothing here invents a colour.
+   Every animation is a CSS animation whose delay places it on one timeline starting at 0 ms,
+   so card.js can hold them until fonts and photos land, play them together, or seek them (?t=).
+   No animation may repeat forever: window.__cardDone waits for every one to finish. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 1600px;
+  height: 900px;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 20px;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  font-kerning: normal;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p,
+ol,
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  display: block;
+}
+
+/* Until card.js says go, every animation waits on its first frame. */
+html:not(.is-live) *,
+html:not(.is-live) *::before,
+html:not(.is-live) *::after {
+  animation-play-state: paused !important;
+}
+
+.card {
+  position: relative;
+  width: 1600px;
+  height: 900px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--bg);
+  /* The timeline's length: a no-op animation that finishes when the card does. */
+  animation: card-hold var(--total) linear both;
+}
+
+@keyframes card-hold {
+  from {
+    visibility: visible;
+  }
+  to {
+    visibility: visible;
+  }
+}
+
+/* Heat lamp over the pass: one faint warm pool of light and a floor that falls away to black. */
+.lamp {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(58% 60% at var(--lamp-x, 50%) var(--lamp-y, 0%), oklch(0.22 0.014 70 / 0.95), transparent 74%),
+    radial-gradient(130% 80% at 50% 118%, oklch(0.09 0 0), transparent 62%),
+    /* Opaque base (the card's own black), so the grain below always has a backdrop to blend with. */
+    var(--bg);
+  animation: fade-in 1800ms var(--ease-out-quart) var(--lamp-at, 0ms) both;
+}
+
+/* A dark radial falloff only has a dozen 8-bit steps to spend, so it bands into visible rings, and
+   H.264 makes them worse. A static, grey-centred grain blended as overlay dithers the steps (about one
+   level either way) without lifting the black. It lives on the lamp alone, never over type or photos. */
+.lamp::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  opacity: 0.3;
+}
+
+/* ---------- Brand lockup: the app's start-screen mark and wordmark, set for a title card ---------- */
+
+.lockup {
+  display: flex;
+  align-items: center;
+  gap: 0.19em;
+  line-height: 1;
+  /* The rise window: mark and wordmark come up from behind a line half a line-height below
+     their baseline, deep enough that the comma's tail clears it early and never reads as a full stop. */
+  clip-path: inset(-0.3em -0.3em -0.62em -0.3em);
+}
+
+.lockup > * {
+  animation: lockup-rise 1050ms var(--ease-out-expo) var(--at) both;
+}
+
+@keyframes lockup-rise {
+  from {
+    transform: translateY(1.78em);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 0.72em;
+  height: 0.72em;
+  border-radius: 0.17em;
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.mark svg {
+  width: 58%;
+  height: 58%;
+  overflow: visible;
+}
+
+/* The hat is drawn as the tile comes up: the app's ChefHat icon split into mirrored halves, so the pen
+   runs from the crown down both sides at once, then the band opens from the centre. */
+.mark path {
+  stroke-dasharray: 1 1;
+  animation: pen 640ms var(--ease-out-quart) var(--draw-at) both;
+}
+
+.mark .band {
+  animation-delay: calc(var(--draw-at) + 420ms);
+  animation-duration: 380ms;
+}
+
+@keyframes pen {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  4% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+.wordmark {
+  font-size: 1em;
+  font-stretch: var(--wdth-condensed);
+  font-weight: 860;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.tagline {
+  font-weight: 580;
+  line-height: 1.15;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* ---------- Pass ticket (DishTicket.css, sized for 1080p through --tw) ---------- */
+
+.ticket-hang {
+  position: relative;
+  transform-origin: 50% 0;
+}
+
+/* Shadow and fire glow sit behind the paper on unmasked layers, as in the app. */
+.ticket-hang::before,
+.t-glow {
+  content: '';
+  position: absolute;
+  inset: 12px 3px 0;
+  border-radius: var(--radius-md);
+  pointer-events: none;
+}
+
+.ticket-hang::before {
+  box-shadow: 0 22px 34px -18px oklch(0 0 0 / 0.85), 0 3px 8px oklch(0 0 0 / 0.4);
+}
+
+.t-glow {
+  box-shadow: 0 0 40px 8px var(--fire-glow);
+  opacity: 0;
+  animation: fire-glow 2000ms var(--ease-out-quart) var(--fire-at) both;
+}
+
+@keyframes fire-glow {
+  0% {
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.22;
+  }
+}
+
+.ticket {
+  --tw: 284px;
+  --inset: 20px;
+  --ring: 124px;
+  position: relative;
+  width: var(--tw);
+  background: var(--ticket);
+  color: var(--ticket-ink);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  padding-bottom: 16px;
+  /* Perforated top edge, like a torn order ticket. */
+  -webkit-mask: radial-gradient(circle at 7px 0, transparent 4.5px, #000 5px) -7px 0 / 14px 100% repeat-x;
+  mask: radial-gradient(circle at 7px 0, transparent 4.5px, #000 5px) -7px 0 / 14px 100% repeat-x;
+}
+
+.t-status {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 44px;
+  padding: 8px var(--inset) 0;
+  font-stretch: var(--wdth-condensed);
+  font-weight: 750;
+  font-size: 18px;
+  letter-spacing: 0.03em;
+  color: var(--ticket-muted);
+}
+
+.t-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.75px currentColor;
+}
+
+/* The fire band wipes across the status line when the ticket's first call is due. */
+.t-fire {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px var(--inset) 0;
+  background: var(--fire);
+  color: var(--fire-ink);
+  clip-path: inset(0 100% 0 0);
+  animation: wipe-in 560ms var(--ease-out-expo) var(--fire-at) both;
+}
+
+.t-fire svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.t-head {
+  display: grid;
+  justify-items: center;
+  padding: 18px var(--inset) 18px;
+  text-align: center;
+}
+
+.t-ring {
+  position: relative;
+  width: var(--ring);
+  height: var(--ring);
+  display: grid;
+  place-items: center;
+  margin-bottom: 14px;
+}
+
+.t-ring svg {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+}
+
+.t-ring .track {
+  fill: none;
+  stroke: var(--ticket-line);
+  stroke-width: 4;
+}
+
+.t-ring .fill {
+  fill: none;
+  stroke: var(--fire);
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-dasharray: 100 100;
+  stroke-dashoffset: 100;
+  animation: ring-sweep 1500ms var(--ease-out-quart) var(--fire-at) both;
+}
+
+.t-ring img {
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.t-name {
+  font-size: 32px;
+  font-stretch: var(--wdth-condensed);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+}
+
+.t-meta {
+  margin-top: 6px;
+  font-size: 17px;
+  font-weight: 560;
+  color: var(--ticket-muted);
+  white-space: nowrap;
+}
+
+.t-steps {
+  list-style: none;
+  margin: 0 var(--inset);
+  padding-top: 13px;
+  border-top: 1px dashed var(--ticket-line);
+}
+
+.t-row {
+  display: grid;
+  grid-template-columns: 11px 2.5em minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: 8px;
+  font-size: 18px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--ticket-ink);
+  white-space: nowrap;
+}
+
+.t-row::before {
+  content: '';
+  align-self: center;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.75px currentColor;
+}
+
+.t-time {
+  font-stretch: var(--wdth-condensed);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.t-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* A firing ticket's due step goes flame, dot and all. */
+.is-firing .t-row {
+  animation: row-fire 300ms var(--ease-out-quart) var(--fire-at) both;
+}
+
+@keyframes row-fire {
+  from {
+    color: var(--ticket-ink);
+  }
+  to {
+    color: var(--fire-deeper);
+  }
+}
+
+/* ---------- Split-flap clock (SplitFlap.css, with scripted flips) ---------- */
+
+.split-flap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.07em;
+  font-stretch: var(--wdth-condensed);
+  font-weight: 760;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  --flap-bg: var(--saffron);
+  --flap-bg-2: var(--saffron-deep);
+  --flap-ink: var(--saffron-ink);
+  --flap-colon: var(--saffron);
+}
+
+.flap {
+  position: relative;
+  display: inline-block;
+  /* Each tile gets its own vanishing point, so the outer tiles don't skew. */
+  perspective: 7em;
+  width: 0.64em;
+  height: 1.16em;
+  transform-style: preserve-3d;
+}
+
+.flap::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 1px);
+  height: 2px;
+  background: oklch(0 0 0 / 0.42);
+  z-index: 60;
+}
+
+.flap-half {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  overflow: hidden;
+  color: var(--flap-ink);
+  backface-visibility: hidden;
+}
+
+.flap-top {
+  top: 0;
+  border-radius: 0.09em 0.09em 0 0;
+  background: var(--flap-bg);
+}
+
+.flap-bottom {
+  bottom: 0;
+  border-radius: 0 0 0.09em 0.09em;
+  background: linear-gradient(var(--flap-bg), var(--flap-bg) 40%, var(--flap-bg-2));
+}
+
+.flap-glyph {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 200%;
+  display: grid;
+  place-items: center;
+}
+
+.flap-top .flap-glyph {
+  top: 0;
+}
+
+.flap-bottom .flap-glyph {
+  bottom: 0;
+}
+
+.flap-fold {
+  transform-origin: 50% 100%;
+  animation: flap-fold 150ms var(--ease-in-quad) var(--at) both;
+}
+
+.flap-unfold {
+  transform-origin: 50% 0;
+  animation: flap-unfold 200ms var(--ease-out-quart) calc(var(--at) + 150ms) both;
+}
+
+@keyframes flap-fold {
+  0% {
+    transform: rotateX(0deg);
+    filter: brightness(1);
+    opacity: 1;
+  }
+  99% {
+    transform: rotateX(-90deg);
+    filter: brightness(0.7);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(-90deg);
+    opacity: 0;
+  }
+}
+
+@keyframes flap-unfold {
+  0% {
+    transform: rotateX(90deg);
+    filter: brightness(1.25);
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(0deg);
+    filter: brightness(1);
+    opacity: 1;
+  }
+}
+
+.flap-colon {
+  color: var(--flap-colon);
+  padding: 0 0.02em;
+  transform: translateY(-0.04em);
+}
+
+.flap-suffix {
+  align-self: flex-end;
+  margin-left: 0.12em;
+  padding-bottom: 0.08em;
+  font-size: 0.3em;
+  font-weight: 780;
+  letter-spacing: 0.06em;
+  color: var(--flap-colon);
+}
+
+/* ---------- Shared motion vocabulary ---------- */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--rise, 18px));
+    filter: blur(var(--blur, 6px));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+@keyframes wipe-in {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes ring-sweep {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Reduced motion: tokens.css already collapses every animation to its end state, so each card
+   opens on its final frame. Nothing here needs to repeat that. */

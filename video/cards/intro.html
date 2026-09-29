@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1600, initial-scale=1" />
+    <style>
+      /* Dark from the very first paint, before any stylesheet arrives. */
+      html {
+        background: oklch(0.14 0 0);
+      }
+    </style>
+    <title>Heard, Chef intro</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/styles/tokens.css" />
+    <link rel="stylesheet" href="./cards.css" />
+    <style>
+      /* Intro, 7.0 s. Timed to N1 starting at 0.25 s (speech measured from N1.wav):
+         "Three dishes." 0.33–1.03 · "One cook." 1.49–2.03 · "Dinner at eight." 2.51–3.09 ·
+         "And both hands are covered in dough." 3.53–5.13
+         0.0   the lamp warms and the ticket rail draws across
+         0.18  three tickets print down from the rail: curry, rice, naan
+         1.45  each prints its first call, all inside five minutes: 7:25, 7:27, 7:22
+         1.85  one camera pan: the tickets slide left as the serving clock comes in with them, a
+               constant gap apart, so the two never overlap; the clock lands 8:00 PM at 3.04, on "eight"
+         3.5   the naan ticket fires: the dough is due now
+         4.35  the pass lifts with the clock; the mark and wordmark rise beneath, the hat is drawn,
+               the tagline follows
+         5.8   final frame, held to 7.0 */
+      :root {
+        --total: 7000ms;
+        /* A camera move: slow off the mark, slow into place. */
+        --camera: cubic-bezier(0.62, 0, 0.18, 1);
+        --rail-y: 244px;
+        --lift: 132px;
+        --pan-at: 1850ms;
+      }
+
+      .pass {
+        position: absolute;
+        inset: 0;
+        animation: pass-lift 1150ms var(--camera) 4350ms both;
+      }
+
+      @keyframes pass-lift {
+        from {
+          transform: none;
+        }
+        to {
+          transform: translateY(calc(var(--lift) * -1));
+        }
+      }
+
+      /* The ticket rail: a steel bar across the whole frame. */
+      .rail {
+        position: absolute;
+        top: var(--rail-y);
+        left: -20px;
+        right: -20px;
+        height: 12px;
+        border-radius: 2px;
+        background: linear-gradient(oklch(0.4 0 0), oklch(0.27 0 0) 45%, oklch(0.2 0 0));
+        box-shadow: 0 1px 0 oklch(1 0 0 / 0.12) inset, 0 8px 16px -6px oklch(0 0 0 / 0.9);
+        transform-origin: 0 50%;
+        animation: grow-x 1300ms var(--ease-out-expo) 40ms both;
+        z-index: 2;
+      }
+
+      .tickets {
+        position: absolute;
+        top: calc(var(--rail-y) + 12px);
+        left: 136px;
+        display: flex;
+        gap: 26px;
+        /* Tickets print out from under the rail: only the top edge clips. */
+        clip-path: inset(0 -160px -400px -160px);
+        /* They print centred, then the camera pans to bring in the serving clock. */
+        animation: make-room 1000ms var(--camera) var(--pan-at) both;
+      }
+
+      @keyframes make-room {
+        from {
+          transform: translateX(212px);
+        }
+        to {
+          transform: none;
+        }
+      }
+
+      .tickets .ticket-hang {
+        animation: ticket-print 1250ms var(--ease-out-expo) var(--in) both;
+      }
+
+      /* Starts high enough that the paper's drop shadow is hidden under the rail too. */
+      @keyframes ticket-print {
+        from {
+          transform: translateY(-114%) rotate(0deg);
+        }
+        to {
+          transform: translateY(0) rotate(var(--tilt, 0deg));
+        }
+      }
+
+      /* Each ticket's first call prints last, like the planner filling it in. */
+      .tickets .t-steps {
+        --rise: 10px;
+        --blur: 4px;
+        animation: rise-in 700ms var(--ease-out-expo) var(--row) both;
+      }
+
+      /* The serving clock rides with the pass, level with the tickets. It enters on the same pan as
+         the tickets (same offset, curve and start), so the gap between them never changes. */
+      .serve {
+        position: absolute;
+        top: 330px;
+        right: 138px;
+        display: grid;
+        justify-items: start;
+        gap: 14px;
+        animation:
+          make-room 1000ms var(--camera) var(--pan-at) both,
+          fade-in 520ms var(--ease-out-quart) calc(var(--pan-at) + 120ms) both;
+      }
+
+      .serve-label {
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: var(--saffron);
+      }
+
+      .serve .split-flap {
+        font-size: 112px;
+      }
+
+      .brand {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 552px;
+        display: grid;
+        justify-items: center;
+      }
+
+      .brand .lockup {
+        font-size: 156px;
+      }
+
+      .brand .tagline {
+        margin-top: 26px;
+        font-size: 46px;
+        --rise: 14px;
+        --blur: 6px;
+        animation: rise-in 800ms var(--ease-out-expo) 4950ms both;
+      }
+    </style>
+  </head>
+  <body>
+    <main
+      class="card intro"
+      data-narration="N1"
+      data-narration-at="250"
+      aria-label="Heard, Chef: the dinner timer you can talk back to."
+    >
+      <div class="lamp" style="--lamp-y: 12%"></div>
+
+      <div class="pass">
+        <div class="rail"></div>
+
+        <div class="tickets">
+          <div class="ticket-hang" style="--in: 180ms; --row: 1450ms; --tilt: -0.45deg">
+            <article class="ticket">
+              <header class="t-status"><span class="t-dot"></span>Waiting</header>
+              <div class="t-head">
+                <div class="t-ring">
+                  <svg viewBox="0 0 100 100" aria-hidden="true"><circle class="track" cx="50" cy="50" r="47" /></svg>
+                  <img src="/dishes/chicken_curry.jpg" alt="" />
+                </div>
+                <h2 class="t-name">Chicken curry</h2>
+                <p class="t-meta">35 min · 3 steps</p>
+              </div>
+              <ol class="t-steps">
+                <li class="t-row"><span class="t-time">7:25</span><span class="t-label">Fry onions &amp; garlic</span></li>
+              </ol>
+            </article>
+          </div>
+
+          <div class="ticket-hang" style="--in: 340ms; --row: 1560ms; --tilt: 0.3deg">
+            <article class="ticket">
+              <header class="t-status"><span class="t-dot"></span>Waiting</header>
+              <div class="t-head">
+                <div class="t-ring">
+                  <svg viewBox="0 0 100 100" aria-hidden="true"><circle class="track" cx="50" cy="50" r="47" /></svg>
+                  <img src="/dishes/jeera_rice.jpg" alt="" />
+                </div>
+                <h2 class="t-name">Jeera rice</h2>
+                <p class="t-meta">33 min · 4 steps</p>
+              </div>
+              <ol class="t-steps">
+                <li class="t-row"><span class="t-time">7:27</span><span class="t-label">Rinse &amp; soak rice</span></li>
+              </ol>
+            </article>
+          </div>
+
+          <div class="ticket-hang" style="--in: 500ms; --row: 1670ms; --tilt: -0.2deg; --fire-at: 3500ms">
+            <span class="t-glow"></span>
+            <article class="ticket is-firing">
+              <header class="t-status">
+                <span class="t-dot"></span>Waiting
+                <span class="t-fire">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" /></svg>
+                  Fire · start now
+                </span>
+              </header>
+              <div class="t-head">
+                <div class="t-ring">
+                  <svg viewBox="0 0 100 100" aria-hidden="true">
+                    <circle class="track" cx="50" cy="50" r="47" />
+                    <circle class="fill" cx="50" cy="50" r="47" pathLength="100" />
+                  </svg>
+                  <img src="/dishes/garlic_naan.jpg" alt="" />
+                </div>
+                <h2 class="t-name">Garlic naan</h2>
+                <p class="t-meta">38 min · 4 steps</p>
+              </div>
+              <ol class="t-steps">
+                <li class="t-row"><span class="t-time">7:22</span><span class="t-label">Mix &amp; knead dough</span></li>
+              </ol>
+            </article>
+          </div>
+        </div>
+        <div class="serve">
+          <span class="serve-label">Serving at</span>
+          <span
+            class="split-flap"
+            role="img"
+            aria-label="8:00 PM"
+            data-flap='[" 4678", ":", " 530", " 950", "PM"]'
+            data-start="2250"
+            data-step="140"
+            data-stagger="80"
+          ></span>
+        </div>
+      </div>
+
+      <div class="brand">
+        <div class="lockup">
+          <span class="mark" aria-hidden="true" style="--at: 4630ms; --draw-at: 4680ms">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
+              <path pathLength="1" d="M12 3A5 5 0 0 1 16.593 6.02A4 4 0 0 1 18.727 13.609C18.316 13.806 18 14.193 18 14.65V20A1 1 0 0 1 17 21H12" />
+              <path pathLength="1" d="M12 3A5 5 0 0 0 7.407 6.02A4 4 0 0 0 5.273 13.608C5.684 13.806 6 14.193 6 14.649V20A1 1 0 0 0 7 21H12" />
+              <path class="band" pathLength="1" d="M12 17H18" />
+              <path class="band" pathLength="1" d="M12 17H6" />
+            </svg>
+          </span>
+          <h1 class="wordmark" style="--at: 4690ms">Heard, Chef</h1>
+        </div>
+        <p class="tagline">The dinner timer you can talk back to.</p>
+      </div>
+    </main>
+    <script type="module" src="./card.js"></script>
+  </body>
+</html>

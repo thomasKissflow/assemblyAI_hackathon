@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1600, initial-scale=1" />
+    <style>
+      /* Dark from the very first paint, before any stylesheet arrives. */
+      html {
+        background: oklch(0.14 0 0);
+      }
+    </style>
+    <title>Heard, Chef outro</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/styles/tokens.css" />
+    <link rel="stylesheet" href="./cards.css" />
+    <style>
+      /* Outro, 11.9 s. Timed to N13 starting at 0.3 s (speech measured from N13.wav):
+         A "Built on AssemblyAI:" 0.38–1.84 · B "Universal-Streaming for the ears," 2.40–3.98 ·
+         C "and the Voice Agent API for the brain, the voice" 4.38–6.46 · D "and the scribe." 6.74–7.98 ·
+         E "No backend." 8.30–9.12 · F "Heard Chef." 9.44–9.94
+         The picture shows the whole chain first, then lights each part as the voice names it, so the
+         eye is always on what is being said.
+         A  0.1   the mic listens; a signal relays station to station and lays the wire; every station
+                  name arrives dim; AssemblyAI and In the browser claim their stretches; a curry ticket
+                  prints on the pass
+         B  2.15  a signal runs mic → Universal-Streaming; it lights; its roles rise
+         C  3.98  the signal runs on to the Voice Agent API; it lights; brain & voice, 7 kitchen tools
+            5.25  on to the planner: 8:00 − 35 min = 7:25 PM; on to the pass: the ticket fires at 6.26
+         D  6.7   Recipe scribe
+         E  7.3   "Two AssemblyAI products. One static page. No backend."; at 8.28 the first two phrases
+                  step back and "No backend." holds the light as it is spoken
+         F  8.95  the diagram steps back (95% gone by 9.38, so nothing overlaps); the end title rises and
+                  the wordmark lands on "Heard Chef";
+                  three plates' rings close together at 10.42; everything settled by 10.95, held to 11.9 */
+      :root {
+        --total: 11900ms;
+        --wire-y: 320px;
+        /* Station x positions: each station's dot, name and roles share one left edge. */
+        --x-mic: 133px;
+        --x-us: 265px;
+        --x-va: 665px;
+        --x-plan: 987px;
+        --x-pass: 1187px;
+      }
+
+      .diagram {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 50%;
+        animation: step-back 500ms cubic-bezier(0.45, 0, 0.55, 1) 8950ms both;
+      }
+
+      @keyframes step-back {
+        from {
+          opacity: 1;
+          transform: none;
+          filter: blur(0);
+        }
+        to {
+          opacity: 0;
+          transform: scale(0.97);
+          filter: blur(12px);
+        }
+      }
+
+      /* ---------- Groups: who runs each stretch of the wire ---------- */
+
+      .group {
+        position: absolute;
+        top: 180px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: 0.01em;
+        white-space: nowrap;
+      }
+
+      .group-name {
+        animation: fade-in 500ms var(--ease-out-quart) var(--at) both;
+      }
+
+      .group-line {
+        flex: 1;
+        height: 1.5px;
+        background: currentColor;
+        opacity: 0.55;
+        transform-origin: 0 50%;
+        animation: grow-x 900ms var(--ease-out-expo) calc(var(--at) + 120ms) both;
+      }
+
+      .group.aai {
+        left: var(--x-us);
+        width: calc(var(--x-plan) - var(--x-us) - 60px);
+        color: var(--saffron);
+      }
+
+      .group.web {
+        left: var(--x-plan);
+        right: 134px;
+        color: var(--muted);
+      }
+
+      /* ---------- Stations ---------- */
+
+      /* Names arrive dim with the wire and light up when the voice reaches them (--lit). */
+      .name {
+        position: absolute;
+        top: 230px;
+        font-size: 44px;
+        font-stretch: var(--wdth-condensed);
+        font-weight: 820;
+        line-height: 1;
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+        /* Unlit: faint (still about 5.5:1 on the background), so lighting up to ink is a clear step. */
+        color: var(--faint);
+        --rise: 14px;
+        animation:
+          rise-in 800ms var(--ease-out-expo) var(--at) both,
+          light-up 420ms var(--ease-out-quart) var(--lit, 0ms) both;
+      }
+
+      @keyframes light-up {
+        from {
+          color: var(--faint);
+        }
+        to {
+          color: var(--ink);
+        }
+      }
+
+      .roles {
+        position: absolute;
+        top: calc(var(--wire-y) + 28px);
+        list-style: none;
+        display: grid;
+        gap: 4px;
+        font-size: 23px;
+        font-weight: 600;
+        line-height: 1.35;
+        color: var(--ink);
+        white-space: nowrap;
+      }
+
+      .roles li {
+        --rise: 8px;
+        --blur: 3px;
+        animation: rise-in 650ms var(--ease-out-expo) var(--at) both;
+      }
+
+      .roles .quiet {
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* The planner's answer: the time it will call, in the clock's colour. */
+      .roles .answer {
+        margin-top: -2px;
+        font-size: 32px;
+        font-stretch: var(--wdth-condensed);
+        font-weight: 800;
+        line-height: 1.1;
+        color: var(--saffron);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ---------- The wire ---------- */
+
+      .wire {
+        position: absolute;
+        top: calc(var(--wire-y) - 1px);
+        height: 2px;
+        background: var(--line-strong);
+        transform-origin: 0 50%;
+        animation: grow-x var(--dur, 500ms) var(--ease-out-quart) var(--at) both;
+      }
+
+      /* The signal: a warm point riding the wire, first as it's laid, then each time the voice moves on. */
+      .pulse {
+        position: absolute;
+        top: calc(var(--wire-y) - 5px);
+        width: 10px;
+        height: 10px;
+        margin-left: -5px;
+        border-radius: 50%;
+        background: var(--saffron);
+        box-shadow: 0 0 14px 3px oklch(0.86 0.16 85 / 0.55);
+        opacity: 0;
+        animation: travel var(--dur, 500ms) var(--ease-out-quart) var(--at) both;
+      }
+
+      @keyframes travel {
+        0% {
+          opacity: 0;
+          transform: translateX(0);
+        }
+        12% {
+          opacity: 1;
+        }
+        82% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          transform: translateX(var(--len));
+        }
+      }
+
+      /* A station: a ring on the wire that fills, with one ripple, when it lights. */
+      .dot {
+        position: absolute;
+        top: calc(var(--wire-y) - 8px);
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--bg);
+        box-shadow: inset 0 0 0 3px var(--dot, var(--saffron));
+        animation: dot-in 520ms var(--ease-out-expo) var(--at) both;
+      }
+
+      .dot::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: var(--dot, var(--saffron));
+        animation: dot-fill 380ms var(--ease-out-expo) var(--lit) both;
+      }
+
+      .dot::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        box-shadow: 0 0 0 2px var(--dot, var(--saffron));
+        opacity: 0;
+        animation: ripple 900ms var(--ease-out-quart) var(--lit) both;
+      }
+
+      .dot.web {
+        --dot: var(--ink);
+      }
+
+      @keyframes dot-in {
+        from {
+          opacity: 0;
+          transform: scale(0.3);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      @keyframes dot-fill {
+        from {
+          opacity: 0;
+          transform: scale(0.2);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* Invisible until it starts (the first keyframe is also the backwards fill), then one ring out. */
+      @keyframes ripple {
+        0% {
+          opacity: 0;
+          transform: scale(1);
+        }
+        1% {
+          opacity: 0.85;
+          transform: scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(3.2);
+        }
+      }
+
+      /* ---------- The mic: the cook's voice, where the wire starts ---------- */
+
+      .mic {
+        position: absolute;
+        left: var(--x-mic);
+        top: calc(var(--wire-y) - 36px);
+        width: 72px;
+        height: 72px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--saffron);
+        color: var(--saffron-ink);
+        animation: dot-in 700ms var(--ease-out-expo) 100ms both;
+      }
+
+      .mic svg {
+        width: 32px;
+        height: 32px;
+      }
+
+      .mic-ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px solid var(--saffron);
+        opacity: 0;
+        animation: listen 1400ms var(--ease-out-quart) var(--at) both;
+      }
+
+      @keyframes listen {
+        0% {
+          opacity: 0;
+          transform: scale(1);
+        }
+        1% {
+          opacity: 0.8;
+          transform: scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(1.75);
+        }
+      }
+
+      .name.mic-name {
+        left: var(--x-mic);
+        width: 72px;
+        text-align: center;
+      }
+
+      /* ---------- The pass: the wire ends as the rail a real ticket hangs from ---------- */
+
+      .rail {
+        position: absolute;
+        top: calc(var(--wire-y) - 6px);
+        left: calc(var(--x-pass) - 26px);
+        right: -20px;
+        height: 12px;
+        border-radius: 2px;
+        background: linear-gradient(oklch(0.4 0 0), oklch(0.27 0 0) 45%, oklch(0.2 0 0));
+        box-shadow: 0 1px 0 oklch(1 0 0 / 0.12) inset, 0 8px 16px -6px oklch(0 0 0 / 0.9);
+        transform-origin: 0 50%;
+        animation: grow-x 700ms var(--ease-out-expo) 1720ms both;
+        z-index: 2;
+      }
+
+      .hang {
+        position: absolute;
+        left: var(--x-pass);
+        top: calc(var(--wire-y) + 6px);
+        clip-path: inset(0 -120px -300px -120px);
+      }
+
+      .hang .ticket-hang {
+        animation: ticket-print 1150ms var(--ease-out-expo) 1900ms both;
+      }
+
+      /* Starts high enough that the paper's drop shadow is hidden under the rail too. */
+      @keyframes ticket-print {
+        from {
+          transform: translateY(-114%);
+        }
+        to {
+          transform: rotate(-0.35deg);
+        }
+      }
+
+      .ticket.sm {
+        --tw: 236px;
+        --inset: 16px;
+        --ring: 94px;
+        padding-bottom: 14px;
+      }
+
+      .ticket.sm .t-status {
+        height: 40px;
+        font-size: 17px;
+      }
+
+      .ticket.sm .t-fire svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .ticket.sm .t-head {
+        padding: 16px var(--inset) 14px;
+      }
+
+      .ticket.sm .t-ring {
+        margin-bottom: 12px;
+      }
+
+      .ticket.sm .t-name {
+        font-size: 28px;
+      }
+
+      .ticket.sm .t-steps {
+        padding-top: 11px;
+      }
+
+      .ticket.sm .t-row {
+        font-size: 17px;
+      }
+
+      /* ---------- Caption ---------- */
+
+      .caption {
+        position: absolute;
+        top: 656px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        gap: 0.3em;
+        font-size: 56px;
+        font-stretch: var(--wdth-condensed);
+        font-weight: 820;
+        line-height: 1.1;
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+      }
+
+      .caption span {
+        --rise: 14px;
+        animation: rise-in 750ms var(--ease-out-expo) var(--at) both;
+      }
+
+      /* As "No backend." is spoken, the rest of the line steps back and leaves it the light. */
+      .caption .setup {
+        animation:
+          rise-in 750ms var(--ease-out-expo) var(--at) both,
+          step-down 500ms var(--ease-out-quart) 8280ms both;
+      }
+
+      @keyframes step-down {
+        from {
+          color: var(--ink);
+        }
+        to {
+          color: var(--muted);
+        }
+      }
+
+      .caption .punch {
+        color: var(--saffron);
+      }
+
+      /* ---------- End title ---------- */
+
+      .end {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        justify-items: center;
+        align-content: center;
+        padding-bottom: 40px;
+      }
+
+      /* Tonight's three dishes, each in the ticket's progress ring. The rings start apart and
+         close on the same frame, in herb green: everything ready at the same minute. */
+      .plates {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 42px;
+      }
+
+      .plate {
+        position: relative;
+        width: 104px;
+        height: 104px;
+        display: grid;
+        place-items: center;
+        --rise: 12px;
+        --blur: 4px;
+        animation: rise-in 800ms var(--ease-out-expo) var(--at) both;
+      }
+
+      .plate svg {
+        position: absolute;
+        inset: 0;
+        transform: rotate(-90deg);
+      }
+
+      .plate .track {
+        fill: none;
+        stroke: var(--surface-3);
+        stroke-width: 3.5;
+      }
+
+      .plate .fill {
+        fill: none;
+        stroke: var(--herb);
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-dasharray: 100 100;
+        stroke-dashoffset: 100;
+        animation: ring-sweep var(--sweep) cubic-bezier(0.5, 0, 0.25, 1) var(--at) both;
+      }
+
+      .plate img {
+        width: 82%;
+        height: 82%;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .end .lockup {
+        font-size: 156px;
+      }
+
+      .end .tagline {
+        margin-top: 30px;
+        font-size: 46px;
+        --rise: 14px;
+        animation: rise-in 800ms var(--ease-out-expo) 9950ms both;
+      }
+
+      /* Sign-off: the proof, then who it was built for. Quiet, but at 1080p still a 26px read. */
+      .foot {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 64px;
+        display: grid;
+        justify-items: center;
+        gap: 8px;
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 1.3;
+        letter-spacing: 0.01em;
+        color: var(--muted);
+        white-space: nowrap;
+        animation: fade-in 700ms var(--ease-out-quart) 10250ms both;
+      }
+
+      .foot b {
+        font-weight: 750;
+        color: var(--ink);
+      }
+
+      .proof {
+        display: flex;
+        gap: 14px;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .proof i {
+        font-style: normal;
+        color: var(--faint);
+      }
+    </style>
+  </head>
+  <body>
+    <main
+      class="card outro"
+      data-narration="N13"
+      data-narration-at="300"
+      aria-label="Built on AssemblyAI: Universal-Streaming and the Voice Agent API. No backend. Heard, Chef: the dinner timer you can talk back to."
+    >
+      <div class="lamp" style="--lamp-y: 30%"></div>
+
+      <div class="diagram">
+        <!-- Groups -->
+        <div class="group aai" style="--at: 650ms">
+          <span class="group-name">AssemblyAI</span><span class="group-line"></span>
+        </div>
+        <div class="group web" style="--at: 1300ms">
+          <span class="group-name">In the browser</span><span class="group-line"></span>
+        </div>
+
+        <!-- The wire, laid by the first signal as it relays station to station (A). -->
+        <span class="wire" style="left: 211px; width: 54px; --at: 420ms; --dur: 260ms"></span>
+        <span class="pulse" style="left: 211px; --len: 54px; --at: 420ms; --dur: 260ms"></span>
+        <span class="wire" style="left: 281px; width: 384px; --at: 640ms; --dur: 460ms"></span>
+        <span class="pulse" style="left: 281px; --len: 384px; --at: 640ms; --dur: 460ms"></span>
+        <span class="wire" style="left: 681px; width: 306px; --at: 1060ms; --dur: 420ms"></span>
+        <span class="pulse" style="left: 681px; --len: 306px; --at: 1060ms; --dur: 420ms"></span>
+        <span class="wire" style="left: 1003px; width: 160px; --at: 1480ms; --dur: 300ms"></span>
+        <span class="pulse" style="left: 1003px; --len: 160px; --at: 1480ms; --dur: 300ms"></span>
+
+        <!-- The signal again, each time the voice moves on (B, C). -->
+        <span class="pulse" style="left: 211px; --len: 54px; --at: 2150ms; --dur: 300ms"></span>
+        <span class="pulse" style="left: 281px; --len: 384px; --at: 3980ms; --dur: 460ms"></span>
+        <span class="pulse" style="left: 681px; --len: 306px; --at: 5250ms; --dur: 420ms"></span>
+        <span class="pulse" style="left: 1003px; --len: 160px; --at: 5950ms; --dur: 320ms"></span>
+
+        <!-- Mic -->
+        <h2 class="name mic-name" style="--at: 220ms; --lit: 0ms">Mic</h2>
+        <div class="mic">
+          <span class="mic-ring" style="--at: 300ms"></span>
+          <span class="mic-ring" style="--at: 2080ms"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 19v3" /><path d="M19 10v2a7 7 0 0 1-14 0v-2" /><rect x="9" y="2" width="6" height="13" rx="3" />
+          </svg>
+        </div>
+
+        <!-- Universal-Streaming (B) -->
+        <span class="dot" style="left: var(--x-us); --at: 600ms; --lit: 2400ms"></span>
+        <h2 class="name" style="left: var(--x-us); --at: 620ms; --lit: 2400ms">Universal-Streaming</h2>
+        <ul class="roles" style="left: var(--x-us)">
+          <li style="--at: 2480ms">“Hey Chef” ears</li>
+          <li style="--at: 2610ms">Recipe dictation</li>
+        </ul>
+
+        <!-- Voice Agent API (C, D) -->
+        <span class="dot" style="left: var(--x-va); --at: 1030ms; --lit: 4400ms"></span>
+        <h2 class="name" style="left: var(--x-va); --at: 1050ms; --lit: 4400ms">Voice Agent API</h2>
+        <ul class="roles" style="left: var(--x-va)">
+          <li style="--at: 4480ms">Chef’s brain &amp; voice</li>
+          <li style="--at: 4610ms">7 kitchen tools</li>
+          <li style="--at: 6700ms">Recipe scribe</li>
+        </ul>
+
+        <!-- Planner -->
+        <span class="dot web" style="left: var(--x-plan); --at: 1420ms; --lit: 5650ms"></span>
+        <h2 class="name" style="left: var(--x-plan); --at: 1440ms; --lit: 5650ms">Planner</h2>
+        <ul class="roles" style="left: var(--x-plan)">
+          <li class="quiet" style="--at: 5700ms">8:00 − 35 min</li>
+          <li class="answer" style="--at: 5850ms">= 7:25 PM</li>
+        </ul>
+
+        <!-- The kitchen pass -->
+        <span class="rail"></span>
+        <h2 class="name" style="left: var(--x-pass); --at: 1760ms; --lit: 6260ms">The kitchen pass</h2>
+        <div class="hang">
+          <div class="ticket-hang" style="--fire-at: 6260ms">
+            <span class="t-glow"></span>
+            <article class="ticket sm is-firing">
+              <header class="t-status">
+                <span class="t-dot"></span>Waiting
+                <span class="t-fire">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" /></svg>
+                  Fire · start now
+                </span>
+              </header>
+              <div class="t-head">
+                <div class="t-ring">
+                  <svg viewBox="0 0 100 100" aria-hidden="true">
+                    <circle class="track" cx="50" cy="50" r="47" />
+                    <circle class="fill" cx="50" cy="50" r="47" pathLength="100" />
+                  </svg>
+                  <img src="/dishes/chicken_curry.jpg" alt="" />
+                </div>
+                <h3 class="t-name">Chicken curry</h3>
+              </div>
+              <ol class="t-steps">
+                <li class="t-row"><span class="t-time">7:25</span><span class="t-label">Onions &amp; garlic</span></li>
+              </ol>
+            </article>
+          </div>
+        </div>
+
+        <p class="caption">
+          <span class="setup" style="--at: 7300ms">Two AssemblyAI products.</span>
+          <span class="setup" style="--at: 7500ms">One static page.</span>
+          <span class="punch" style="--at: 7750ms">No backend.</span>
+        </p>
+      </div>
+
+      <div class="end">
+        <div class="plates" aria-hidden="true">
+          <span class="plate" style="--at: 9380ms; --sweep: 1040ms">
+            <svg viewBox="0 0 100 100"><circle class="track" cx="50" cy="50" r="47" /><circle class="fill" cx="50" cy="50" r="47" pathLength="100" /></svg>
+            <img src="/dishes/chicken_curry.jpg" alt="" />
+          </span>
+          <span class="plate" style="--at: 9460ms; --sweep: 960ms">
+            <svg viewBox="0 0 100 100"><circle class="track" cx="50" cy="50" r="47" /><circle class="fill" cx="50" cy="50" r="47" pathLength="100" /></svg>
+            <img src="/dishes/jeera_rice.jpg" alt="" />
+          </span>
+          <span class="plate" style="--at: 9540ms; --sweep: 880ms">
+            <svg viewBox="0 0 100 100"><circle class="track" cx="50" cy="50" r="47" /><circle class="fill" cx="50" cy="50" r="47" pathLength="100" /></svg>
+            <img src="/dishes/garlic_naan.jpg" alt="" />
+          </span>
+        </div>
+        <div class="lockup">
+          <span class="mark" aria-hidden="true" style="--at: 9440ms; --draw-at: 9480ms">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
+              <path pathLength="1" d="M12 3A5 5 0 0 1 16.593 6.02A4 4 0 0 1 18.727 13.609C18.316 13.806 18 14.193 18 14.65V20A1 1 0 0 1 17 21H12" />
+              <path pathLength="1" d="M12 3A5 5 0 0 0 7.407 6.02A4 4 0 0 0 5.273 13.608C5.684 13.806 6 14.193 6 14.649V20A1 1 0 0 0 7 21H12" />
+              <path class="band" pathLength="1" d="M12 17H18" />
+              <path class="band" pathLength="1" d="M12 17H6" />
+            </svg>
+          </span>
+          <h1 class="wordmark" style="--at: 9500ms">Heard, Chef</h1>
+        </div>
+        <p class="tagline">The dinner timer you can talk back to.</p>
+        <div class="foot">
+          <p class="proof"><span><b>309</b> tests</span><i>·</i><span><b>16</b> live API tests</span><i>·</i><span><b>17</b> browser flows</span></p>
+          <p>Built for the <b>AssemblyAI Voice Agent Hackathon</b></p>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="./card.js"></script>
+  </body>
+</html>

@@ -7,3 +7,6 @@ dist/
 test-results/
 playwright-report/
 e2e/.tmp/
+
+# demo video build outputs
+video/out/
