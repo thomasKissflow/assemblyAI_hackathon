@@ -175,3 +175,15 @@ These come from real probes with our key: synthetic speech from macOS `say`, str
 - `transcript.user.delta` partials arrive about every 1.2 s and are unstable early, so they aren't word by word.
 - **Realtime STT v3** (`wss://streaming.assemblyai.com/v3/ws?...&token=<API_KEY>`) also accepts the raw key from the browser. Its partials grow word by word every 100–300 ms, but still run about 1.1 s behind the audio.
 - Whisper: synthetic whisper was mis-transcribed, though an enum tool argument still fired correctly. Quiet normal speech at −22 dB was transcribed perfectly. A real human whisper on a laptop mic is untested.
+
+**Added 2026-09-29: the Voice Agent API as a text-in LLM** (`spikes/scribe-probe.mjs`, `spikes/scribe-probe2.mjs`)
+- **The LLM Gateway is not an option for this account.**
+  - `POST https://llm-gateway.assemblyai.com/v1/chat/completions` returns "Your account does not have access to LLM Gateway".
+  - Its CORS preflight (`OPTIONS`) returns 401, so a browser couldn't call it anyway.
+- **Instead, `reply.create {instructions}` carrying the cook's text, plus a tool with a nested JSON schema** (arrays of step objects), returns a structured `tool.call`.
+  - A full recipe takes ~1.8 s; small requests take ~0.3–0.7 s.
+  - The reply's `reply_id` is on `reply.started` and `reply.done`, not on `tool.call`.
+- **No audio is needed.** A session idle for 25 s still answers, and back-to-back requests on one socket work.
+- **Don't send `tool.result`** for these calls. Without it, there's no spoken follow-up and the next request is faster.
+  - A second `reply.create` sent while a reply is still running cuts the first reply short, so requests must be serialized. The app's `Scribe` does this.
+- **Universal-Streaming with `format_turns=true`:** partials arrive already flagged `turn_is_formatted`, and each turn ends with one formatted end. `turn_order` identifies the turn.

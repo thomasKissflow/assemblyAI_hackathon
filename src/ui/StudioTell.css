@@ -1,0 +1,402 @@
+/* Chef's side of the studio: the box you tell it the recipe in, its status, and its suggestions. */
+.tell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 0;
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  overflow-y: auto;
+  border-right: 1px solid var(--line);
+}
+
+/* Only the text box gives up height; everything else keeps its size, and the pane scrolls as a last resort. */
+.tell > :not(.composer) {
+  flex: none;
+}
+
+.composer {
+  flex: 1 1 auto;
+  min-height: 156px;
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  container: composer / inline-size;
+  transition: border-color var(--dur-fast) var(--ease-out-quart);
+}
+
+.composer:hover {
+  border-color: var(--line-strong);
+}
+
+.composer:focus-within {
+  border-color: var(--muted);
+}
+
+/* The text box takes the same saffron ring as every other field on the start screen. */
+.composer:has(.composer-text:focus-visible) {
+  outline: 2px solid var(--saffron);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+.composer.is-listening {
+  border-color: var(--ink);
+}
+
+.composer-text {
+  flex: 1 1 auto;
+  min-height: 72px;
+  width: 100%;
+  resize: none;
+  padding: var(--space-4) var(--space-4) var(--space-5);
+  /* Text running past the box fades out above the buttons instead of being sliced mid-line. */
+  mask-image: linear-gradient(to bottom, #000 calc(100% - var(--space-5)), transparent);
+  border: 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-base);
+  line-height: 1.6;
+}
+
+.composer-text::placeholder {
+  color: var(--faint);
+}
+
+.composer-text:focus-visible {
+  outline: none;
+}
+
+/* The sentence being spoken, before it lands in the box. */
+.composer-partial {
+  display: flex;
+  gap: var(--space-2);
+  align-items: baseline;
+  padding: 0 var(--space-4) var(--space-2);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.composer-partial::before {
+  content: '';
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink);
+  transform: translateY(-1px);
+  animation: tell-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes tell-pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.composer-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2);
+}
+
+.composer-mic {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 var(--space-4) 0 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: var(--text-sm);
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out-quart), color var(--dur-fast), border-color var(--dur-fast);
+}
+
+.composer-mic svg {
+  flex: none;
+}
+
+.composer-mic:hover:not(:disabled) {
+  background: var(--surface-3);
+}
+
+.composer-mic:active:not(:disabled) {
+  transform: translateY(1px) scale(0.99);
+}
+
+/* Listening: the pill inverts and stretches, with the live level running inside it. */
+.composer-mic[aria-pressed='true'] {
+  flex: 1 1 auto;
+  padding-left: var(--space-4);
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}
+
+@media (hover: hover) {
+  .composer-mic[aria-pressed='true']:hover:not(:disabled) {
+    background: oklch(0.92 0 0);
+  }
+}
+
+.composer-mic[aria-pressed='true'] + .composer-spacer {
+  display: none;
+}
+
+.composer-mic:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.composer-wave {
+  flex: 1 1 auto;
+  min-width: 24px;
+  height: 22px;
+  color: currentColor;
+}
+
+/* A narrow box (tablets, phones) keeps the verb and drops the rest. */
+@container composer (max-width: 380px) {
+  .composer-mic-more {
+    display: none;
+  }
+}
+
+.composer-spacer {
+  flex: 1 1 auto;
+}
+
+.composer-format {
+  flex: none;
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border-color: var(--line-strong);
+  background: transparent;
+  color: var(--ink);
+}
+
+.composer-format:hover:not(:disabled) {
+  background: var(--surface-2);
+}
+
+/* Unread text in the box: Format is the thing to do next. */
+.composer-format.is-ready {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}
+
+.composer-format.is-ready:hover:not(:disabled) {
+  background: oklch(0.88 0 0);
+}
+
+.tell-status {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  min-height: 1.45em;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
+
+.tell-status svg {
+  flex: none;
+  margin-top: 1px;
+}
+
+.tell-status.is-busy {
+  color: var(--ink);
+}
+
+.tell-status.is-busy::before {
+  content: '';
+  flex: none;
+  width: 7px;
+  height: 7px;
+  margin: 6px 2px 0;
+  border-radius: 50%;
+  background: currentColor;
+  animation: tell-pulse 1.1s ease-in-out infinite;
+}
+
+.tell-status.is-done {
+  color: var(--herb);
+  font-weight: 600;
+}
+
+.tell-status.is-note {
+  color: var(--ink);
+}
+
+.tell-status.is-error {
+  color: var(--fire-text);
+  font-weight: 600;
+}
+
+/* Chef's suggestions. */
+.sg {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.sg-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.sg-title svg {
+  color: var(--muted);
+}
+
+.sg-thinking {
+  color: var(--faint);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  animation: tell-pulse 1.4s ease-in-out infinite;
+}
+
+.sg-empty {
+  color: var(--faint);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.sg-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+/* A suggestion: Chef's line, a quiet dismiss in the corner, and Apply under the text when Chef can do it for you. */
+.sg-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  grid-template-areas:
+    'icon text dismiss'
+    '. apply .';
+  align-items: start;
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-2) var(--space-1) var(--space-3) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  animation: sg-in var(--dur-slow) var(--ease-out-expo) both;
+}
+
+.sg-row.is-tip {
+  grid-template-areas: 'icon text dismiss';
+  padding-bottom: var(--space-2);
+}
+
+.sg-row:nth-child(2) {
+  animation-delay: 70ms;
+}
+
+.sg-row:nth-child(3) {
+  animation-delay: 140ms;
+}
+
+@keyframes sg-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.sg-icon {
+  grid-area: icon;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  color: var(--ink);
+}
+
+.sg-text {
+  grid-area: text;
+  align-self: center;
+  padding-block: 4px;
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+.sg-apply {
+  grid-area: apply;
+  justify-self: start;
+  min-height: 32px;
+  padding: 0 var(--space-3) 0 10px;
+  gap: 6px;
+  font-size: var(--text-sm);
+  border-color: var(--line-strong);
+}
+
+.sg-dismiss {
+  grid-area: dismiss;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin-top: -2px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--faint);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out-quart), color var(--dur-fast);
+}
+
+/* A 40px target around the small icon. */
+.sg-dismiss::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+}
+
+.sg-dismiss:hover {
+  background: var(--surface-3);
+  color: var(--ink);
+}
+
+/* Laptop heights (1440x790): the text box gives up a little more so three ideas fit without scrolling. */
+@media (min-width: 821px) and (max-height: 820px) {
+  .composer {
+    min-height: 132px;
+  }
+}
+
+@media (max-width: 820px) {
+  .tell {
+    overflow: visible;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: var(--space-4);
+  }
+  .composer {
+    min-height: 220px;
+  }
+}

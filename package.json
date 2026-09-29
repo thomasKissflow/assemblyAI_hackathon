@@ -11,7 +11,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "vitest run e2e.test",
-    "test:ui": "playwright test flow",
+    "test:ui": "playwright test flow menus",
+    "test:menus": "playwright test menus",
+    "test:studio": "SCRIBE_E2E=1 playwright test studio-live",
+    "test:dictation": "VOICE_E2E=1 playwright test dictation",
     "test:voice": "VOICE_E2E=1 playwright test voice",
     "shot:hero": "HERO_SHOT=1 playwright test hero"
   },

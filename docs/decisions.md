@@ -272,6 +272,29 @@ Also, `SttSocket.sendPcm` casts `chunk as Int16Array<ArrayBuffer>` for `WebSocke
 
 ---
 
+## 2026-09-29 — Menus, the cook's own recipes, and a calmer pass
+
+**Decision:**
+- Cooks pick from 4 built-in menus (Indian dinner, Western dinner, Weeknight pasta, Dal & roti night) or menus they've saved, and customise Tonight's dishes before cooking.
+- They add their own recipes in a **recipe studio**, by typing or by voice (Universal-Streaming dictation). The **Voice Agent API acts as a text-in "scribe"**: it formats the text into timed steps and suggests improvements.
+- Recipes and menus are kept in `localStorage`.
+- Mid-cook, "Hey Chef, add the dal" or "drop the naan" re-plans through new `add_dish`/`remove_dish` tools.
+- The kitchen pass is decluttered and fitted to 1600×878, which is Chrome at 90% zoom on Thomas's 1440×900 MacBook, where the demo video is recorded.
+
+**Reasoning:** Thomas asked for these on Sep 29. The **LLM Gateway isn't available** on our key (see [research.md §8](research.md#8-measured-voice-agent-api-behavior-probes-run-2026-09-28)), and its preflight fails CORS. Using the Voice Agent API for text keeps the app backend-free and uses only AssemblyAI. **localStorage over sessionStorage:** "cook it again next time" has to survive a reload, and it's still browser-only.
+
+**Alternatives:**
+- The LLM Gateway (no access).
+- A client-side rules parser (brittle, and no suggestions).
+- A conversational voice intake with Chef talking back (slower, harder to edit; dictation plus a live card reads better on video).
+- sessionStorage (lost when the tab closes).
+
+**Impact:**
+- A spec is in [superpowers/specs/2026-09-29-menus-and-recipe-studio.md](superpowers/specs/2026-09-29-menus-and-recipe-studio.md).
+- New modules: `library.ts`, `draft.ts`, `scribe.ts`, `dictation.ts`, and `RecipeStudio`.
+- Chef's prompt now has recipe notes (ingredients), so it can answer "how much rice?".
+- **The lablab title must be "Heard Chef"** (the form allows letters and spaces only).
+
 ## Open Decisions (not yet made)
 
 - Hosting for the lablab "Application URL" field. It's optional; the build is static. Decide on Sep 30, weighing that the key would be visible in the deployed bundle.

@@ -1,0 +1,148 @@
+/* One row of menus. Chef's four and a saved one fill it; more scroll sideways rather than push the page down. */
+.menu-strip {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+  /* Room for focus rings inside the scroller. */
+  padding: 6px;
+  margin: -6px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .menu-strip {
+    scroll-behavior: smooth;
+  }
+}
+
+.menu-strip[data-more-end] {
+  mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent);
+}
+
+.menu-strip[data-more-start] {
+  mask-image: linear-gradient(to right, transparent, #000 48px);
+}
+
+.menu-strip[data-more-start][data-more-end] {
+  mask-image: linear-gradient(to right, transparent, #000 48px, #000 calc(100% - 48px), transparent);
+}
+
+.menu-cell {
+  position: relative;
+  flex: 1 0 156px;
+  display: flex;
+  scroll-snap-align: start;
+}
+
+.menu-tile {
+  flex: 1;
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1.5px solid transparent;
+  background: var(--surface-2);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease-out-quart), background-color var(--dur-fast) var(--ease-out-quart);
+}
+
+.menu-tile:hover {
+  background: var(--surface-3);
+}
+
+.menu-tile[aria-pressed='true'] {
+  border-color: var(--ink);
+  background: var(--surface-3);
+}
+
+/* Tonight began here and has changed since: the tile keeps its place but lets go a little. */
+.menu-tile[data-changed] {
+  border-style: dashed;
+  border-color: var(--muted);
+  background: var(--surface-2);
+}
+
+.menu-tile[data-changed]:hover {
+  background: var(--surface-3);
+}
+
+.menu-changed {
+  color: var(--ink);
+}
+
+.menu-plates {
+  display: flex;
+  flex: none;
+}
+
+.menu-plates .dish-photo {
+  width: 34px;
+  height: 34px;
+  box-shadow: 0 0 0 2px var(--surface-2);
+  transition: box-shadow var(--dur-fast) var(--ease-out-quart);
+}
+
+.menu-tile:hover .menu-plates .dish-photo,
+.menu-tile[aria-pressed='true']:not([data-changed]) .menu-plates .dish-photo {
+  box-shadow: 0 0 0 2px var(--surface-3);
+}
+
+.menu-plates .dish-photo + .dish-photo {
+  margin-left: -12px;
+}
+
+.menu-text {
+  display: grid;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.menu-name {
+  font-size: var(--text-md);
+  font-stretch: var(--wdth-condensed);
+  font-weight: 780;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menu-count {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  line-height: 1.3;
+}
+
+.menu-delete {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--faint);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out-quart), color var(--dur-fast);
+}
+
+/* A 44px target around the small icon. */
+.menu-delete::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+}
+
+.menu-delete:hover {
+  background: var(--surface);
+  color: var(--fire-text);
+}

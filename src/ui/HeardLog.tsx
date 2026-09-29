@@ -25,9 +25,31 @@ function splitChange(text: string): { head: string | null; rest: string } {
 
 export function HeardLog({ log }: { log: LogEntry[] }) {
   const ref = useRef<HTMLOListElement>(null);
+  // Pinned to the newest entry unless the cook scrolled up to read. The list also shrinks while
+  // captions grow above it, so re-pin on every resize, not only when an entry arrives.
+  const pinned = useRef(true);
   useEffect(() => {
     const el = ref.current;
-    if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+    if (!el) return;
+    const onScroll = () => {
+      pinned.current = el.scrollHeight - el.scrollTop - el.clientHeight < 24;
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    if (typeof ResizeObserver === 'undefined') return () => el.removeEventListener('scroll', onScroll);
+    const ro = new ResizeObserver(() => {
+      if (pinned.current) el.scrollTop = el.scrollHeight;
+    });
+    ro.observe(el);
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      ro.disconnect();
+    };
+  }, []);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    pinned.current = true;
+    el.scrollTop = el.scrollHeight;
   }, [log.length]);
 
   return (

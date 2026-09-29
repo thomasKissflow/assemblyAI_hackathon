@@ -29,6 +29,9 @@ function clampInt(v: unknown, lo: number, hi: number, fallback: number): number 
   return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : fallback;
 }
 
+/** A recipe and the cook's own version of it count as one dish. */
+const origin = (library: Recipe[], id: string) => library.find(r => r.id === id)?.basedOn ?? id;
+
 /** A recipe in the book by id, or failing that by its name, or by what the cook calls it when only one dish goes by that. */
 function lookUp(library: Recipe[], dish: string | undefined): Recipe | undefined {
   if (!dish) return undefined;
@@ -61,7 +64,8 @@ export function executeTool(store: KitchenStore, name: string, rawArgs: unknown,
     case 'add_dish': {
       const recipe = lookUp(library, dish);
       if (!recipe) return { ok: false, error: "That dish is not in your recipe book. You can add it from the start screen." };
-      if (plan.dishes.some(d => d.id === recipe.id)) return { ok: false, error: `${recipe.name} is already on tonight's menu.` };
+      const twin = plan.dishes.find(d => d.id === recipe.id || origin(library, d.id) === (recipe.basedOn ?? recipe.id));
+      if (twin) return { ok: false, error: twin.id === recipe.id ? `${recipe.name} is already on tonight's menu.` : `${twin.name} is already on tonight's menu (${twin.custom ? 'your version' : "Chef's version"}).` };
       if (plan.dishes.length >= MAX_DISHES) return { ok: false, error: `The pass is full: ${MAX_DISHES} dishes is the most Chef can run. Drop one first.` };
       return { ok: true, summary: store.addDish(recipe) };
     }

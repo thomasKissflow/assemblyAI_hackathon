@@ -60,6 +60,15 @@ describe('add_dish and remove_dish', () => {
     expect(summary(executeTool(store, 'add_dish', { dish: 'my_roti' }, [...BUILTIN_RECIPES, mine]))).toMatch(/^Added Nani's roti: /);
   });
 
+  it("treats a recipe and the cook's version of it as one dish", () => {
+    const mine: Recipe = { ...RECIPES.jeera_rice, id: 'my_jeera_rice', custom: true, basedOn: 'jeera_rice' };
+    const book = [...BUILTIN_RECIPES, mine];
+    const withMine = createKitchenStore();
+    withMine.start([RECIPES.chicken_curry, mine], 45);
+    expect(error(executeTool(withMine, 'add_dish', { dish: 'jeera_rice' }, book))).toBe("Jeera rice is already on tonight's menu (your version).");
+    expect(error(executeTool(cooking(0), 'add_dish', { dish: 'my_jeera_rice' }, book))).toBe("Jeera rice is already on tonight's menu (Chef's version).");
+  });
+
   it('accepts the dish name when the model sends it instead of the id', () => {
     expect(summary(executeTool(cooking(0), 'add_dish', { dish: 'Aloo Gobi' }))).toMatch(/^Added Aloo gobi: /);
   });

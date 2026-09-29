@@ -109,7 +109,7 @@
 
 .side > .captions {
   flex: 0 1 auto;
-  max-height: 36%;
+  max-height: 40%;
 }
 
 .side > :not(.heard, .captions) {

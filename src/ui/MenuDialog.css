@@ -1,0 +1,84 @@
+/* Native modal dialogs on the start screen: the dish picker and delete confirmations. */
+.confirm-dialog,
+.picker {
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  color: var(--ink);
+  /* The scrim lifts it; the edge defines it. No shadow to fight the dark. */
+  opacity: 1;
+  transform: none;
+  transition: opacity var(--dur-med) var(--ease-out-quart), transform var(--dur-med) var(--ease-out-expo),
+    overlay var(--dur-med) allow-discrete, display var(--dur-med) allow-discrete;
+}
+
+.confirm-dialog:not([open]),
+.picker:not([open]) {
+  opacity: 0;
+  transform: translateY(8px) scale(0.985);
+}
+
+@starting-style {
+  .confirm-dialog[open],
+  .picker[open] {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+}
+
+.confirm-dialog::backdrop,
+.picker::backdrop {
+  background: var(--scrim);
+  opacity: 1;
+  transition: opacity var(--dur-med) var(--ease-out-quart), overlay var(--dur-med) allow-discrete, display var(--dur-med) allow-discrete;
+}
+
+.confirm-dialog:not([open])::backdrop,
+.picker:not([open])::backdrop {
+  opacity: 0;
+}
+
+@starting-style {
+  .confirm-dialog[open]::backdrop,
+  .picker[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+.confirm-dialog {
+  width: min(420px, calc(100vw - 32px));
+  padding: var(--space-5);
+}
+
+.confirm-title {
+  font-size: var(--text-lg);
+  font-stretch: var(--wdth-condensed);
+  font-weight: 800;
+}
+
+.confirm-body {
+  margin-top: var(--space-2);
+  color: var(--muted);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.btn-danger {
+  background: transparent;
+  border-color: var(--fire-deeper);
+  color: var(--fire-text);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: var(--fire-wash);
+  border-color: var(--fire-deep);
+}

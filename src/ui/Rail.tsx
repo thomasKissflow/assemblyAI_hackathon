@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { MIN, fmtTime, upcoming, type Plan, type UpcomingCall } from '../kitchen/planner';
 import { DishPhoto } from './DishPhoto';
 import './Rail.css';
@@ -41,7 +41,8 @@ function useMedia(query: string): boolean {
 function useWidth<T extends HTMLElement>() {
   const ref = useRef<T>(null);
   const [width, setWidth] = useState(0);
-  useEffect(() => {
+  // Measured before the first paint.
+  useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
     setWidth(el.clientWidth);
@@ -97,6 +98,8 @@ export function Rail({ plan, now }: { plan: Plan; now: number }) {
   const pillH = roomy ? 28 : 24;
   const end = Math.max(plan.serveAt, now + 10 * MIN);
   const usable = Math.max(0, width - SERVE_W);
+  // Markers wait for the track's width, so they don't slide in from its left edge.
+  const measured = width > 0;
   const x = (t: number) => Math.max(0, Math.min(1, (t - now) / (end - now))) * usable;
   const calls = upcoming(plan, now, 24);
   const lanes = plan.dishes.map(d => d.id);
@@ -105,7 +108,7 @@ export function Rail({ plan, now }: { plan: Plan; now: number }) {
   const byLane = new Map<string, UpcomingCall[]>();
   for (const c of calls) byLane.set(c.dishId, [...(byLane.get(c.dishId) ?? []), c]);
   const ticks: number[] = [];
-  for (let t = Math.ceil(now / TICK_MS) * TICK_MS; t < end; t += TICK_MS) ticks.push(t);
+  for (let t = Math.ceil(now / TICK_MS) * TICK_MS; measured && t < end; t += TICK_MS) ticks.push(t);
 
   return (
     <section className={`rail${gliding ? ' is-gliding' : ''}${roomy ? ' is-roomy' : ''}`} data-testid="rail" data-lanes={lanes.length} aria-label="Upcoming calls, from now to service">
@@ -126,7 +129,7 @@ export function Rail({ plan, now }: { plan: Plan; now: number }) {
         <span className="rail-now" aria-hidden="true">
           <span>Now</span>
         </span>
-        {lanes.map((id, lane) => {
+        {measured && lanes.map((id, lane) => {
           const laneCalls = byLane.get(id);
           if (!laneCalls) return null;
           const dish = plan.dishes[lane];
@@ -170,10 +173,12 @@ export function Rail({ plan, now }: { plan: Plan; now: number }) {
             );
           });
         })}
-        <div className="rail-serve" style={{ transform: `translateX(${usable}px)` }} data-testid="rail-serve">
-          <span className="rail-serve-label">Serve</span>
-          <span className="num">{clock(plan.serveAt)}</span>
-        </div>
+        {measured && (
+          <div className="rail-serve" style={{ transform: `translateX(${usable}px)` }} data-testid="rail-serve">
+            <span className="rail-serve-label">Serve</span>
+            <span className="num">{clock(plan.serveAt)}</span>
+          </div>
+        )}
       </div>
     </section>
   );

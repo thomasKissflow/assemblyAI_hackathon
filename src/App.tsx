@@ -4,7 +4,7 @@ import { callText, greetingText } from './kitchen/calls';
 import type { Recipe } from './kitchen/recipes';
 import { hasApiKey, useChefSession } from './voice/useChefSession';
 import { playBell, unlockSound } from './ui/sound';
-import { StartScreen } from './ui/StartScreen';
+import { StartScreen, type LastDinner } from './ui/StartScreen';
 import { KitchenScreen } from './ui/KitchenScreen';
 
 const store = createKitchenStore();
@@ -15,6 +15,8 @@ export default function App() {
   const state = useKitchen(store);
   const session = useChefSession(store);
   const [voiceOn, setVoiceOn] = useState(true);
+  // Coming back from the kitchen (or the sound check) keeps tonight's dishes and serve time.
+  const [lastDinner, setLastDinner] = useState<LastDinner>();
 
   useEffect(() => {
     const id = window.setInterval(() => store.tick(), 200);
@@ -37,6 +39,7 @@ export default function App() {
 
   const prepare = (dishes: Recipe[], menuLabel: string, serveIn: number, withVoice: boolean) => {
     unlockSound();
+    setLastDinner({ dishIds: dishes.map(d => d.id), serveIn });
     store.prepare(dishes, serveIn, menuLabel);
     const voice = withVoice && !DEBUG;
     setVoiceOn(voice);
@@ -71,6 +74,7 @@ export default function App() {
         onBegin={begin}
         onBack={cookAgain}
         onWithoutVoice={withoutVoice}
+        lastDinner={lastDinner}
       />
     );
   }

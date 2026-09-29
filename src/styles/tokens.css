@@ -85,6 +85,8 @@
 
   --shadow-ticket: 0 1px 0 oklch(1 0 0 / 0.6) inset, 0 14px 28px -18px oklch(0 0 0 / 0.9), 0 2px 6px oklch(0 0 0 / 0.35);
   --shadow-lift: 0 18px 40px -20px oklch(0 0 0 / 0.95);
+  /* A popover over the page (no scrim): a tight drop, so its hairline edge stays the main cue. */
+  --shadow-pop: 0 10px 14px -6px oklch(0 0 0 / 0.6), 0 2px 4px oklch(0 0 0 / 0.35);
 
   --z-base: 0;
   --z-sticky: 10;
