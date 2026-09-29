@@ -51,7 +51,8 @@ The card (FORMAT):
 
 Suggestions (both requests):
 - At most 3, each concrete and specific to this dish, about cooking: timing, technique or taste. One short sentence each.
-- Prefer suggestions the app can apply: add_step, set_minutes or add_ingredient, with every field filled in. Use tip only for advice that isn't a change to the card.
+- Prefer suggestions the app can apply: add_step, set_minutes or add_ingredient, with every field filled in. When you suggest two or more, at least two must be applicable, and at most one may be a tip. Use tip only for advice that isn't a change to the card.
+- A useful missing step (like soaking, resting or garnishing) is usually the best suggestion: suggest it as add_step with its minutes and call.
 - For set_minutes and after_label, use a step label exactly as it appears on the card.
 - after_label is the card step the new step FOLLOWS. A step that goes "before X" follows the step before X, or "START" when X is the first step. On the chicken curry card above: "Soak the saffron" before marinating (the first step) is after_label "START"; "Toast the spices" before frying the onions is after_label "Marinate the chicken"; "Rest the curry" at the end is after_label "Top with coriander".
 - Never suggest something the card already has: no step it already has, no ingredient already listed (not even with a quantity added), no minutes it already uses.

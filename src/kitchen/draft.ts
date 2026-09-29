@@ -240,6 +240,8 @@ export function freshSuggestions(d: RecipeDraft, suggestions: Suggestion[], dism
   return suggestions.filter(s => {
     if (gone.has(lower(s.text)) || echoes(s, ideas, skip)) return false;
     const p = s.patch;
+    // "Tell me the steps and I'll time them" is for an empty card; once there are steps it's stale.
+    if (!p && d.steps.length > 0 && /\b(tell|give|share)\b.*\bsteps?\b/i.test(s.text)) return false;
     if (!p) return true;
     if (p.type === 'add_step' && d.steps.some(st => lower(st.label) === lower(p.step.label))) return false;
     return applySuggestion(d, s) !== d;

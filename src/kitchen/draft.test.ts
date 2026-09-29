@@ -189,6 +189,12 @@ describe('applySuggestion', () => {
 });
 
 describe('freshSuggestions', () => {
+  it('drops the "tell me the steps" tip once the card has steps', () => {
+    const tip = normalizeSuggestions([{ text: "Tell me the steps and I'll time them.", action: 'tip' }]);
+    expect(freshSuggestions(dal(), tip)).toEqual([]);
+    expect(freshSuggestions({ ...dal(), steps: [] }, tip)).toHaveLength(1);
+  });
+
   it('drops dismissed texts and patches that would change nothing', () => {
     const s = normalizeSuggestions([
       { text: 'Add ghee.', action: 'add_ingredient', ingredient: 'ghee' },

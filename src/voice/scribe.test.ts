@@ -148,7 +148,8 @@ describe('Scribe', () => {
     const { draft, suggestions } = await p;
     expect(draft).toMatchObject({ name: "Mom's dal", short: 'dal', kind: 'curry', ingredients: ['toor dal'] });
     expect(draft.steps).toEqual(CARD.steps);
-    expect(suggestions).toHaveLength(1);
+    // The "tell me the steps" tip is stale: the card it merged into already has steps.
+    expect(suggestions).toEqual([]);
   });
 
   it('a merge keeps the name the cook gave the card', async () => {

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
-import { useScribe, type ScribeLike } from './useScribe';
+import { FOLLOW_UP_SUGGEST_MS, useScribe, type ScribeLike } from './useScribe';
 import { emptyDraft, type RecipeDraft, type Suggestion } from '../kitchen/draft';
 
 const DAL: RecipeDraft = {
@@ -96,6 +96,23 @@ describe('useScribe', () => {
     ]);
     expect(next.ingredients).toEqual(['toor dal', 'cumin', 'pinch of hing']);
     expect(hook.result.current.status?.text).toBe('Formatted: 4 steps, 30 min. Your changes are kept.');
+  });
+
+  it('asks for suggestions right after a format that left only tips on a full card', async () => {
+    vi.useFakeTimers();
+    try {
+      const { s, hook } = setup('Dal. Rinse it. Cook it.');
+      s.format.mockResolvedValueOnce({ draft: DAL, suggestions: [{ id: 't', text: "Tell me the steps and I'll time them." }] });
+      s.suggest.mockResolvedValueOnce([{ id: 'a', text: 'Soak the dal first.', patch: { type: 'add_step', after: null, step: { label: 'Soak the dal', minutes: 20, call: 'Dal. Soak it.' } } }]);
+      await act(async () => hook.result.current.format('said'));
+      hook.rerender({ text: 'Dal. Rinse it. Cook it.', draft: DAL });
+      expect(s.suggest).not.toHaveBeenCalled();
+      await act(async () => { vi.advanceTimersByTime(FOLLOW_UP_SUGGEST_MS + 50); });
+      expect(s.suggest).toHaveBeenCalledTimes(1);
+      expect(hook.result.current.suggestions.map(x => x.text)).toEqual(['Soak the dal first.']);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('takes Chef’s whole answer when nothing was edited meanwhile', async () => {

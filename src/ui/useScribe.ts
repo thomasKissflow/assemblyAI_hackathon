@@ -24,6 +24,8 @@ export const defaultScribeFactory: ScribeFactory | null = API_KEY ? () => new Sc
 
 /** Chef looks over the card this long after the cook's last edit. */
 export const SUGGEST_DELAY_MS = 2500;
+/** After a format that left nothing to apply, how soon to ask for suggestions. */
+export const FOLLOW_UP_SUGGEST_MS = 400;
 /** Dictation is formatted this long after the last finished sentence. */
 export const AUTO_FORMAT_DELAY_MS = 1200;
 
@@ -202,6 +204,12 @@ export function useScribe({ factory, text, draft, onDraft }: Options) {
       draftRef.current = next;
       onDraftRef.current(next, 'format');
       setSuggestions(got.suggestions.slice(0, MAX_SUGGESTIONS));
+      // A full card with nothing to apply (only tips, or a merge that answered just the new sentence): ask for real ideas.
+      const fresh = freshSuggestions(next, got.suggestions.slice(0, MAX_SUGGESTIONS), dismissedRef.current);
+      if (next.steps.length >= 2 && !fresh.some(x => x.patch)) {
+        clearTimeout(suggestTimer.current);
+        suggestTimer.current = setTimeout(() => void suggestNowRef.current?.(), FOLLOW_UP_SUGGEST_MS);
+      }
       const summary = `Formatted: ${plural(next.steps.length, 'step')}, ${totalMinutes(next)} min`;
       setStatus(
         next.steps.length
@@ -270,6 +278,9 @@ export function useScribe({ factory, text, draft, onDraft }: Options) {
       if (alive.current) setBusy(b => (b === 'suggest' ? null : b));
     }
   }, []);
+
+  const suggestNowRef = useRef(suggestNow);
+  suggestNowRef.current = suggestNow;
 
   /** The cook changed the card by hand. */
   const edited = useCallback(() => {

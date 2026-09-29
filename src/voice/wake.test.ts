@@ -15,6 +15,11 @@ describe('findWake', () => {
     expect(findWake(W('hey jeff what next'))?.question).toBe('what next');
     expect(findWake(W('jeff pass the salt'))).toBeNull();
   });
+  it('accepts "hey chef" run together into one word', () => {
+    expect(findWake(W('heyef drop the naan tonight'))).toEqual({ at: 1000, question: 'drop the naan tonight' });
+    expect(findWake(W('so heychef what next'))?.question).toBe('what next');
+    expect(stripWake('Heyef, drop the naan tonight.')).toBe('drop the naan tonight.');
+  });
   it('ignores punctuation and case', () => {
     expect(findWake([{ text: 'Hey,', start: 0, end: 100 }, { text: 'Chef.', start: 120, end: 300 }])).not.toBeNull();
   });
