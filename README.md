@@ -57,7 +57,7 @@ npm run dev                  # open http://localhost:5173
 ## Tests
 
 ```bash
-npm test                 # 309 unit + component tests
+npm test                 # 313 unit + component tests
 AAI_KEY=$(grep VITE_ASSEMBLYAI_API_KEY .env.local | cut -d= -f2) npm run test:e2e   # 16 live tests: tool routing, add/drop dish, cooking Q&A, guardrails, the scribe
 npm run test:ui          # 17 Playwright flows: full dinner, all menus, own recipes, saved menus, fit at 1600×878 / 1440×790
 npm run test:voice       # real voice: a fake mic says "Hey Chef, the curry needs ten more minutes"

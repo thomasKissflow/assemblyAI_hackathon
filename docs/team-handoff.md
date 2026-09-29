@@ -4,7 +4,52 @@
 
 ---
 
-## Latest Handoff — 2026-09-29 afternoon (Claude Code, menus, recipe studio, calmer pass)
+## Latest Handoff — 2026-09-30 morning (Claude Code, demo video, deck, cover)
+
+### Ready for you
+- **Demo video:** `video/out/heard-chef-demo.mp4`
+  - 3:17, 1080p, 26 MB, MP4. It's gitignored, so it only lives on this Mac.
+  - It's fully live. Chef's replies are the real Voice Agent API. The narrator (`mary`) and the cook (`anna`) are AssemblyAI voices.
+  - The cook's lines play into the app through a virtual mic, so every "Hey Chef" and every re-plan is the real app.
+  - Everything is in it: the recipe studio with dictation and one-click suggestions, the sound check, calls, the re-plan, and the interruption.
+  - The edge cases are in it: burnt garlic, off-topic, dropping a dish mid-cook, voice-free taps and glance mode.
+- **Pitch deck:** https://claude.ai/artifact/S8dpH3ZpDBguj2eg431Hpr
+  - 13 slides with speaker notes, exportable as PPTX or PDF.
+  - The text is also in [slides.md](slides.md).
+  - Fill in `[Team name]`, `[App URL]` and `[GitHub repo URL]` before exporting.
+  - The artifact is private until you share it.
+- **Cover image:** `docs/cover.png` (1920×1080, the intro card's final frame).
+- **How the video was made:** [video/SCRIPT.md](../video/SCRIPT.md). It can be re-made end to end in about 10 minutes.
+
+### App fixes found while recording (all committed and tested)
+- **"Hey Chef, wait" in the middle of Chef's answer now cuts Chef off at once.** Before, it only worked during unprompted calls. The agent's own barge-in only notices speech after its reply ends, which is about 5 s late.
+- **Re-plan replies are short.** Chef says the new serving time plus the soonest next step, not every dish.
+- **The sound-check "Hey Chef"** gets "Heard you. Ready when you are." and is never treated as off-topic.
+- **The wake matcher accepts "hey chef" run together** ("heychef"), which speech-to-text sometimes produces.
+- **Recipe studio:**
+  - The stale "tell me the steps" tip is dropped once the card has steps.
+  - A full card with only tips gets real suggestions straight away.
+  - The scribe favours applicable suggestions.
+- **Tests:** 313 unit tests pass. The live agent tests pass 10/10 and the scribe tests 6/6. The 17 browser flows pass.
+
+### Known issues
+- **Pressing Format with Chef again on text that hasn't changed** can say "Chef couldn't read that one." Edit the text or the card first.
+- **The Google key** you gave is saved in `.env.local` but unused: its API restrictions block both Google speech APIs.
+- **Replies take 7–12 s.** The video trims that wait, to 0.9 s of natural pause before each reply. Three things cause it:
+  - about 3 s for wake detection plus replaying the question
+  - about 3 s for the agent to decide on a tool
+  - about 1–2 s for the spoken follow-up
+  - Worth knowing if a judge tries the live app.
+
+### Next actions (Sep 30, before 8:30 PM IST)
+1. Deploy the static build (Vercel or Netlify), using a limited key.
+2. Push the public repo (`git ls-files .env.local` must print nothing).
+3. Fill the deck's placeholders and export it as PDF.
+4. Submit on lablab as **Heard Chef**: the video, the deck PDF, the cover and the copy from [pitch.md](pitch.md).
+
+---
+
+## Handoff — 2026-09-29 afternoon (Claude Code, menus, recipe studio, calmer pass)
 
 ### What's new
 - **The kitchen pass is calmer** and fits Chrome at **90% zoom** (1600×878) with no scrolling:
@@ -27,7 +72,7 @@
   - Why not the LLM Gateway: [research.md §8](research.md#8-measured-voice-agent-api-behavior-probes-run-2026-09-28)
 
 ### Test status (all green)
-- `npm test`: 309 unit and component tests.
+- `npm test`: 309 unit and component tests (313 after the Sep 30 fixes).
 - `npm run test:e2e` (with the key): 16 live tests. That's 10 agent tests (including add/drop dish and a "how much rice" question from the recipe notes) and 6 scribe tests.
 - `npm run test:ui`: 17 Playwright flows (menus, own recipes, saved menus across a reload, fit at 1600×878 and 1440×790).
 - `npm run test:voice`, `npm run test:studio` and `npm run test:dictation` all pass against the real API.

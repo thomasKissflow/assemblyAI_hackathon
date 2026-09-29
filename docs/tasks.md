@@ -7,12 +7,11 @@ Deadline: **Sep 30, 8:30 PM IST.** Build plan: [plans/2026-09-28-heard-chef.md](
 
 | Task | Owner | Priority | Status |
 |---|---|---|---|
-| Try the recipe studio with your own voice (Talk it through) and one real family recipe | Thomas | High | Backlog |
-| Listen to the "michael" voice and confirm it (auditions are in the session scratchpad; the other 10 are listed in the docs) | Thomas | Medium | Backlog |
-| Record the demo video at **90% zoom** in Chrome, following [demo-script.md](demo-script.md) (about 3 min, MP4, under 300 MB) | Thomas | High | Backlog |
-| Slide deck (8 slides, outline in [pitch.md](pitch.md)) and cover image (use `docs/screenshot.png` as a base) | Developer B / Thomas | High | Backlog |
+| Watch the demo video (`video/out/heard-chef-demo.mp4`, 3:17) and upload it to lablab (MP4, 26 MB) | Thomas | High | Backlog |
+| Fill the deck's placeholders ([Team name], [App URL], [GitHub repo URL]), then export it as PDF from the deck's Share menu ([slides.md](slides.md)) | Thomas | High | Backlog |
+| Deploy the app (Vercel or Netlify, static `dist/`) | Thomas | High | Backlog (Sep 30) |
 | Push the public GitHub repo; confirm `.env.local` is not in it (`git ls-files .env.local` prints nothing) | Thomas | High | Backlog |
-| Decide on hosting for the "Application URL" (a static build on Vercel or Netlify; the key would be visible in the bundle, so use a limited key) | Thomas | Medium | Backlog |
+| Hosting note: the key is visible in the built bundle, so use a separate, limited key and rotate it after judging | Thomas | Medium | Backlog |
 | Submit on lablab.ai as **"Heard Chef"** (the form allows letters and spaces only). Copy is ready in [pitch.md](pitch.md): short and long description, tags. | Thomas | High | Backlog |
 | After judging: rotate the AssemblyAI API key | Thomas | Medium | Backlog |
 | Confirm Developer B's name and role for the docs | Thomas | Low | Backlog |
@@ -48,10 +47,12 @@ Deadline: **Sep 30, 8:30 PM IST.** Build plan: [plans/2026-09-28-heard-chef.md](
 | Recipe studio: type or dictate a recipe; the AI scribe formats it and suggests; saved in the browser | Claude Code | High | Done (2026-09-29) |
 | Mid-cook "add the dal" / "drop the naan" voice tools | Claude Code | Medium | Done (2026-09-29) |
 | Tests: 309 unit, 16 live, 17 browser flows, plus live studio and dictation flows | Claude Code | High | Done (2026-09-29) |
+| Fully live, automated demo video (3:17, 1080p): narrator and cook voiced with AssemblyAI voices, Chef live | Claude Code | High | Done (2026-09-30) |
+| Pitch deck (13 slides + notes, claude.ai artifact) and cover image (`docs/cover.png`) | Claude Code | High | Done (2026-09-30) |
+| Fixes found while recording: "Hey Chef" mid-answer now cuts Chef off; fused "heychef" wake; shorter re-plan replies; studio suggestions | Claude Code | High | Done (2026-09-30) |
 
 ## Notes on Priority
 
-- **Sep 29 (evening):** try the recipe studio with your voice, then record the video.
-- **Sep 30:** slides, repo, optional hosting, and the submission.
+- **Sep 30:** deploy, push the public repo, fill the deck placeholders, submit (before 8:30 PM IST).
 
 The app is feature-complete for the demo. Resist adding features; spend the time on the video.

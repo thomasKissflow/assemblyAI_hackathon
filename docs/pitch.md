@@ -71,7 +71,7 @@ It uses **two AssemblyAI products working together, from a single static web pag
   - Agent audio streams in at real time, so interrupting means ignoring the rest of that reply, not just flushing a buffer.
   - The browser can't mint tokens (the endpoint has no CORS headers), but the socket accepts the key directly, so there is **no backend at all**.
 - **Tested, not just demoed:**
-  - **309 unit and component tests.**
+  - **313 unit and component tests.**
   - **16 live tests against the real Voice Agent API:** re-plan routing, adding and dropping dishes mid-cook, cooking questions from recipe notes, two off-topic guardrails, and the scribe (formatting, suggestions, merging, refusing non-recipes).
   - **17 Playwright flows:** a full dinner, all four menus, your own recipes, saved menus that survive a reload, and a no-scroll fit at recording size.
   - **Real-voice browser tests:** a fake mic says "Hey Chef, the curry needs ten more minutes" and serving flips from 8:00 to 8:10. Another fake mic dictates a tomato soup recipe, and the card fills in through the live scribe.
@@ -119,7 +119,7 @@ The lablab form only allows letters and spaces in the title (2–32 characters),
 > - **Universal-Streaming** is the always-on ears. It detects "Hey Chef" using keyterms and word timestamps, then replays exactly the cook's question into the agent. It also dictates recipes in the studio.
 > - **The Voice Agent API** is the brain and voice. It uses client-side JSON-schema tool calls, proactive `reply.create` calls and word-timed captions. A second, text-only session is the recipe scribe: it returns structured, timed recipes through nested-schema tool calls.
 >
-> A deterministic planner does all the maths, so every time you hear is real. The project ships with 309 tests, 16 live API tests (including guardrails and the scribe), 17 browser flows and real-voice browser tests.
+> A deterministic planner does all the maths, so every time you hear is real. The project ships with 313 tests, 16 live API tests (including guardrails and the scribe), 17 browser flows and real-voice browser tests.
 
 **Tags:** AssemblyAI, Voice Agent API, Universal-Streaming, Speech-to-Text, Voice AI, Tool Calling, Dictation, React, TypeScript, Food Tech, Cooking
 
@@ -134,4 +134,4 @@ The lablab form only allows letters and spaces in the title (2–32 characters),
 5. **What's unique.** Re-plans; speaks first; always listening, answers only when called; stays on its station; code does the maths; your own recipes, said out loud and timed by Chef. *Notes: contrast with Alexa timers and screen planners.*
 6. **How it uses AssemblyAI.** Two products, one page, no backend (diagram: mic → Universal-Streaming ears → wake + pre-roll → Voice Agent API → tools → planner → UI; plus dictation → scribe → recipe card). *Notes: mention the measured-behavior engineering: the callout queue and the interrupt handling.*
 7. **Business value.** Meal kits, recipe apps, smart appliances; license the voice-expediter engine. *Notes: festive-season peaks.*
-8. **Proof and what's next.** The test numbers (309 unit + 16 live + 17 browser flows + real-voice tests) and the roadmap (recipes from links and photos, oven clashes, phone PWA). *Notes: end on the tagline.*
+8. **Proof and what's next.** The test numbers (313 unit + 16 live + 17 browser flows + real-voice tests) and the roadmap (recipes from links and photos, oven clashes, phone PWA). *Notes: end on the tagline.*

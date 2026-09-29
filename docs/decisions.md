@@ -295,6 +295,25 @@ Also, `SttSocket.sendPcm` casts `chunk as Int16Array<ArrayBuffer>` for `WebSocke
 - Chef's prompt now has recipe notes (ingredients), so it can answer "how much rice?".
 - **The lablab title must be "Heard Chef"** (the form allows letters and spaces only).
 
+## 2026-09-30 — The demo video is automated, fully live, and voiced with AssemblyAI
+
+**Decision:**
+- The demo video is recorded by a script (`video/`) rather than by hand.
+- It records one continuous take of the production build through the real APIs.
+- The cook's lines are pre-rendered with an AssemblyAI voice (`anna`) and played into the app through a virtual microphone.
+- The narration is AssemblyAI's `mary`, rendered through the Voice Agent API and checked word for word against the agent's transcript.
+- The editor trims only dead air (the 7–12 s before each reply, down to 0.9 s) and the call barrage when skipping to service.
+
+**Reasoning:**
+- Thomas asked for a Google TTS voice-over, but the key's API restrictions block both Google speech APIs. He chose AssemblyAI voices instead, which keeps the whole demo AssemblyAI.
+- A scripted live take is repeatable (18 takes overnight) and honest: every reply is real.
+
+**Alternatives:** Screen-recording a human session (not possible overnight); macOS voices (less natural); a mocked session (not honest).
+
+**Impact:**
+- Recording found and fixed real app bugs: mid-answer barge-in, verbose re-plans, a stale studio tip and fused wake words.
+- The recording deliberately doesn't show the reply latency. It's documented in the handoff.
+
 ## Open Decisions (not yet made)
 
 - Hosting for the lablab "Application URL" field. It's optional; the build is static. Decide on Sep 30, weighing that the key would be visible in the deployed bundle.
