@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react';
-import { MENUS, type DishId, type MenuId } from './recipes';
+import type { DishId, Recipe } from './recipes';
 import {
   MIN, advance, createPlan, describeChange, markDone, reportDelay, restartStep, shiftServe, upcoming,
   type KitchenEvent, type Plan, type UpcomingCall,
@@ -15,7 +15,7 @@ export interface LogEntry {
 }
 export interface KitchenState {
   phase: 'setup' | 'ready' | 'cooking' | 'served';
-  menu: MenuId;
+  menuLabel: string;
   plan: Plan | null;
   clock: ClockState;
   now: number;
@@ -36,7 +36,7 @@ export function demoStart(): number {
 export function createKitchenStore(realNow: () => number = () => performance.now()) {
   const start0 = demoStart();
   let state: KitchenState = {
-    phase: 'setup', menu: 'indian', plan: null, clock: createClock(start0, realNow(), DEFAULT_SPEED),
+    phase: 'setup', menuLabel: '', plan: null, clock: createClock(start0, realNow(), DEFAULT_SPEED),
     now: start0, log: [], replans: 0, lastServeShift: null,
   };
   const subs = new Set<() => void>();
@@ -81,11 +81,11 @@ export function createKitchenStore(realNow: () => number = () => performance.now
     return state.plan ? upcoming(state.plan, currentNow(), limit) : [];
   }
 
-  function prepare(menu: MenuId, serveInMinutes: number) {
+  function prepare(dishes: Recipe[], serveInMinutes: number, menuLabel = 'Tonight') {
     const start = demoStart();
     set({
-      phase: 'ready', menu,
-      plan: createPlan(MENUS[menu].dishes, start + serveInMinutes * MIN, start),
+      phase: 'ready', menuLabel,
+      plan: createPlan(dishes, start + serveInMinutes * MIN, start),
       clock: withPaused(createClock(start, realNow(), state.clock.speed), true, realNow()),
       now: start, log: [], replans: 0, lastServeShift: null,
     });
@@ -108,8 +108,8 @@ export function createKitchenStore(realNow: () => number = () => performance.now
     },
     prepare,
     begin,
-    start(menu: MenuId, serveInMinutes: number) {
-      prepare(menu, serveInMinutes);
+    start(dishes: Recipe[], serveInMinutes: number, menuLabel?: string) {
+      prepare(dishes, serveInMinutes, menuLabel);
       begin();
     },
     tick,

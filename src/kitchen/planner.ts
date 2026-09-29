@@ -1,4 +1,4 @@
-import { RECIPES, type DishId, type RecipeStep } from './recipes';
+import type { DishId, DishKind, Recipe, RecipeStep } from './recipes';
 
 export const MIN = 60_000;
 
@@ -13,6 +13,9 @@ export interface PlannedDish {
   name: string;
   short: string;
   photo: string;
+  kind: DishKind;
+  ingredients?: string[];
+  custom?: boolean;
   steps: PlannedStep[];
 }
 export interface Plan {
@@ -55,15 +58,17 @@ export function align(plan: Plan, now: number): Plan {
   return { ...plan, serveAt, dishes };
 }
 
-export function createPlan(ids: DishId[], serveAt: number, now: number): Plan {
-  const dishes: PlannedDish[] = ids.map(id => {
-    const r = RECIPES[id];
-    return {
-      id, name: r.name, short: r.short, photo: r.photo,
-      steps: r.steps.map(st => ({ ...st, start: 0, end: 0, status: 'pending' as const })),
-    };
-  });
-  return align({ serveAt, served: false, dishes }, now);
+export function planDish(r: Recipe): PlannedDish {
+  return {
+    id: r.id, name: r.name, short: r.short, photo: r.photo, kind: r.kind,
+    ...(r.ingredients?.length ? { ingredients: r.ingredients } : {}),
+    ...(r.custom ? { custom: true } : {}),
+    steps: r.steps.map(st => ({ ...st, start: 0, end: 0, status: 'pending' as const })),
+  };
+}
+
+export function createPlan(recipes: Recipe[], serveAt: number, now: number): Plan {
+  return align({ serveAt, served: false, dishes: recipes.map(planDish) }, now);
 }
 
 export function advance(plan: Plan, now: number): { plan: Plan; events: KitchenEvent[] } {

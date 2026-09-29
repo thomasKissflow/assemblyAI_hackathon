@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { MENUS } from '../kitchen/recipes';
+import { menuRecipes } from '../kitchen/recipes';
 import { MIN, createPlan } from '../kitchen/planner';
 import { buildSession, sttKeyterms } from './agentConfig';
 
 const T0 = new Date(2026, 8, 28, 19, 15).getTime();
-const plan = createPlan(MENUS.indian.dishes, T0 + 45 * MIN, T0);
+const plan = createPlan(menuRecipes('indian'), T0 + 45 * MIN, T0);
 
 describe('buildSession', () => {
   const s = buildSession(plan);

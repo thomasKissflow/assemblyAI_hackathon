@@ -1,3 +1,4 @@
+import { menuRecipes } from './recipes';
 import { describe, it, expect } from 'vitest';
 import { createKitchenStore, DEFAULT_SPEED } from './store';
 import { MIN } from './planner';
@@ -14,7 +15,7 @@ describe('kitchen store', () => {
     const { store, passReal } = setup();
     const seen: string[] = [];
     store.onKitchenEvents(evs => seen.push(...evs.map(e => e.type)));
-    store.prepare('indian', 45);
+    store.prepare(menuRecipes('indian'), 45);
     expect(store.getState().phase).toBe('ready');
     passReal(kitchenMinutes(30));
     store.tick();
@@ -28,7 +29,7 @@ describe('kitchen store', () => {
 
   it('start = prepare + begin, with a demo-speed clock', () => {
     const { store } = setup();
-    store.start('indian', 45);
+    store.start(menuRecipes('indian'), 45);
     const s = store.getState();
     expect(s.phase).toBe('cooking');
     expect(s.plan!.serveAt - s.now).toBe(45 * MIN);
@@ -37,7 +38,7 @@ describe('kitchen store', () => {
 
   it('reportDelay returns the spoken summary and logs the change', () => {
     const { store, passReal } = setup();
-    store.start('indian', 45);
+    store.start(menuRecipes('indian'), 45);
     passReal(kitchenMinutes(10));
     store.tick();
     const summary = store.reportDelay('chicken_curry', 10);
@@ -51,7 +52,7 @@ describe('kitchen store', () => {
     const { store } = setup();
     const seen: string[] = [];
     store.onKitchenEvents(evs => seen.push(...evs.map(e => e.type)));
-    store.start('indian', 45);
+    store.start(menuRecipes('indian'), 45);
     store.skipToNextCall();
     expect(seen).toEqual(['step-started']);
     expect(store.getState().plan!.serveAt - store.getState().now).toBe(38 * MIN);
@@ -62,7 +63,7 @@ describe('kitchen store', () => {
 
   it('togglePause freezes kitchen time', () => {
     const { store, passReal } = setup();
-    store.start('indian', 45);
+    store.start(menuRecipes('indian'), 45);
     const before = store.getState().now;
     store.togglePause();
     passReal(60_000);
@@ -72,7 +73,7 @@ describe('kitchen store', () => {
 
   it('kitchenNow reads the live clock', () => {
     const { store, passReal } = setup();
-    store.start('indian', 45);
+    store.start(menuRecipes('indian'), 45);
     passReal(1000);
     expect(store.kitchenNow() - store.getState().plan!.serveAt).toBe(-45 * MIN + 1000 * DEFAULT_SPEED);
   });

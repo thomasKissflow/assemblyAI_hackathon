@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { MENUS } from './recipes';
+import { menuRecipes } from './recipes';
 import { MIN, createPlan } from './planner';
 import { callText, greetingText, SERVICE_CALL } from './calls';
 
 const T0 = new Date(2026, 8, 28, 19, 15).getTime();
 
 describe('calls', () => {
-  const plan = createPlan(MENUS.indian.dishes, T0 + 45 * MIN, T0);
+  const plan = createPlan(menuRecipes('indian'), T0 + 45 * MIN, T0);
   it('greets with the menu, serve time and first call, without saying the wake phrase', () => {
     const g = greetingText(plan, T0);
     expect(g).toBe('Evening. Chicken curry, jeera rice and garlic naan, serving at 8:00 PM. First up, the garlic naan at 7:22 PM.');

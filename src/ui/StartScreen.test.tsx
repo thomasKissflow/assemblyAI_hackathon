@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { menuRecipes } from '../kitchen/recipes';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -33,9 +34,9 @@ describe('StartScreen', () => {
     render(<StartScreen state={setup} session={fakeSession()} hasKey onPrepare={onPrepare} onBegin={vi.fn()} onBack={vi.fn()} />);
     await userEvent.click(screen.getByTestId('serve-in-60'));
     await userEvent.click(screen.getByTestId('start-continue'));
-    expect(onPrepare).toHaveBeenLastCalledWith('indian', 60, true);
+    expect(onPrepare).toHaveBeenLastCalledWith(menuRecipes('indian'), 'Indian dinner', 60, true);
     await userEvent.click(screen.getByTestId('start-cook-without-voice'));
-    expect(onPrepare).toHaveBeenLastCalledWith('indian', 60, false);
+    expect(onPrepare).toHaveBeenLastCalledWith(menuRecipes('indian'), 'Indian dinner', 60, false);
   });
 
   it('explains a missing key and blocks voice start', () => {
@@ -45,7 +46,7 @@ describe('StartScreen', () => {
   });
 
   describe('sound check', () => {
-    store.prepare('indian', 45);
+    store.prepare(menuRecipes('indian'), 45);
     const ready = store.getState();
 
     it('waits for the connection, then lets the cook start', () => {

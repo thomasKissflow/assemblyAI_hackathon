@@ -1,3 +1,4 @@
+import { menuRecipes } from '../kitchen/recipes';
 import { describe, it, expect } from 'vitest';
 import { createKitchenStore, DEFAULT_SPEED } from '../kitchen/store';
 import { MIN } from '../kitchen/planner';
@@ -6,7 +7,7 @@ import { executeTool } from './tools';
 function cooking(minutesIn: number) {
   let real = 0;
   const store = createKitchenStore(() => real);
-  store.start('indian', 45);
+  store.start(menuRecipes('indian'), 45);
   real += (minutesIn * MIN) / DEFAULT_SPEED;
   store.tick();
   return store;

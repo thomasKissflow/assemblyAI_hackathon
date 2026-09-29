@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { MENUS } from '../kitchen/recipes';
+import { menuRecipes } from '../kitchen/recipes';
 import { MIN, createPlan } from '../kitchen/planner';
 import { AGENT_WS_URL, buildSession } from './agentConfig';
 
@@ -29,7 +29,7 @@ function speech(line: string): Buffer {
 
 async function converse(line: string): Promise<{ calls: { name: string; arguments: Record<string, unknown> }[]; said: string }> {
   const t0 = new Date(2026, 8, 28, 19, 15).getTime();
-  const session = buildSession(createPlan(MENUS.indian.dishes, t0 + 45 * MIN, t0));
+  const session = buildSession(createPlan(menuRecipes('indian'), t0 + 45 * MIN, t0));
   const ws = new WebSocket(`${AGENT_WS_URL}?token=${KEY}`);
   const calls: { name: string; arguments: Record<string, unknown> }[] = [];
   const pending: string[] = [];

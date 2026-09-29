@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, BellRing, Check, ChefHat, Headphones, Mic, RefreshCw, Timer } from 'lucide-react';
-import { MENUS, RECIPES, type MenuId } from '../kitchen/recipes';
+import { MENUS, RECIPES, menuRecipes, type Recipe } from '../kitchen/recipes';
 import { MIN, createPlan, fmtTime, upcoming } from '../kitchen/planner';
 import { demoStart, type KitchenState } from '../kitchen/store';
 import type { ChefSession } from '../voice/useChefSession';
@@ -12,14 +12,14 @@ export interface StartScreenProps {
   state: KitchenState;
   session: ChefSession;
   hasKey: boolean;
-  onPrepare: (menu: MenuId, serveIn: number, withVoice: boolean) => void;
+  onPrepare: (dishes: Recipe[], menuLabel: string, serveIn: number, withVoice: boolean) => void;
   onBegin: () => void;
   onBack: () => void;
   onWithoutVoice?: () => void;
 }
 
 const SERVE_OPTIONS = [30, 45, 60];
-const MENU_IDS: MenuId[] = ['indian', 'western'];
+const MENU_IDS = ['indian', 'western'];
 
 function Teaser() {
   const [serve, setServe] = useState('8:00 PM');
@@ -98,12 +98,12 @@ function SoundCheck({ session, onBegin, onBack, onWithoutVoice }: Pick<StartScre
 }
 
 export function StartScreen({ state, session, hasKey, onPrepare, onBegin, onBack, onWithoutVoice }: StartScreenProps) {
-  const [menu, setMenu] = useState<MenuId>('indian');
+  const [menu, setMenu] = useState('indian');
   const [serveIn, setServeIn] = useState(45);
 
   const preview = useMemo(() => {
     const start = demoStart();
-    const plan = createPlan(MENUS[menu].dishes, start + serveIn * MIN, start);
+    const plan = createPlan(menuRecipes(menu), start + serveIn * MIN, start);
     return { plan, calls: upcoming(plan, start, 4) };
   }, [menu, serveIn]);
 
@@ -210,12 +210,12 @@ export function StartScreen({ state, session, hasKey, onPrepare, onBegin, onBack
             type="button"
             className="btn btn-fire start-go"
             disabled={!hasKey}
-            onClick={() => onPrepare(menu, serveIn, true)}
+            onClick={() => onPrepare(menuRecipes(menu), MENUS[menu].label, serveIn, true)}
             data-testid="start-continue"
           >
             <Mic size={18} aria-hidden="true" /> Continue with voice
           </button>
-          <button type="button" className="btn btn-ghost" onClick={() => onPrepare(menu, serveIn, false)} data-testid="start-cook-without-voice">
+          <button type="button" className="btn btn-ghost" onClick={() => onPrepare(menuRecipes(menu), MENUS[menu].label, serveIn, false)} data-testid="start-cook-without-voice">
             Cook without voice
           </button>
         </div>

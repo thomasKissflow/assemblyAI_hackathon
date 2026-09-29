@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { createKitchenStore, useKitchen, type KitchenStore } from './kitchen/store';
 import { callText, greetingText } from './kitchen/calls';
-import type { MenuId } from './kitchen/recipes';
+import type { Recipe } from './kitchen/recipes';
 import { hasApiKey, useChefSession } from './voice/useChefSession';
 import { playBell, unlockSound } from './ui/sound';
 import { StartScreen } from './ui/StartScreen';
@@ -35,9 +35,9 @@ export default function App() {
     }
   }), []);
 
-  const prepare = (menu: MenuId, serveIn: number, withVoice: boolean) => {
+  const prepare = (dishes: Recipe[], menuLabel: string, serveIn: number, withVoice: boolean) => {
     unlockSound();
-    store.prepare(menu, serveIn);
+    store.prepare(dishes, serveIn, menuLabel);
     const voice = withVoice && !DEBUG;
     setVoiceOn(voice);
     if (voice) void session.start();

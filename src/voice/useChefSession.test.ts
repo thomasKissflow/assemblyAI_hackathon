@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { menuRecipes } from '../kitchen/recipes';
 // Drives useChefSession with fake sockets and audio, so no key or network is needed.
 import { it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
@@ -74,7 +75,7 @@ afterEach(() => {
 
 async function live() {
   const store = createKitchenStore(() => now);
-  store.start('indian', 45);
+  store.start(menuRecipes('indian'), 45);
   const hook = renderHook(() => useChefSession(store));
   await act(async () => { await hook.result.current.start(); });
   expect(hook.result.current.phase).toBe('live');
@@ -168,7 +169,7 @@ it('stop while connecting leaves no live runtime and no error', async () => {
   let release!: () => void;
   h.agentConnect = () => new Promise<void>(r => { release = r; });
   const store = createKitchenStore(() => now);
-  store.start('indian', 45);
+  store.start(menuRecipes('indian'), 45);
   const hook = renderHook(() => useChefSession(store));
   let starting!: Promise<void>;
   act(() => { starting = hook.result.current.start(); });

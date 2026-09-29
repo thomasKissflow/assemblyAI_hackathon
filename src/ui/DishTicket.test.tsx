@@ -2,11 +2,11 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { DishTicket } from './DishTicket';
-import { MENUS } from '../kitchen/recipes';
+import { menuRecipes } from '../kitchen/recipes';
 import { MIN, advance, createPlan, reportDelay } from '../kitchen/planner';
 
 const T0 = new Date(2026, 8, 28, 19, 15).getTime();
-const plan = createPlan(MENUS.indian.dishes, T0 + 45 * MIN, T0);
+const plan = createPlan(menuRecipes('indian'), T0 + 45 * MIN, T0);
 const naan = (p: typeof plan) => p.dishes.find(d => d.id === 'garlic_naan')!;
 
 describe('DishTicket', () => {
