@@ -33,12 +33,9 @@
   min-width: 0;
 }
 
-.next-up-head img {
+.next-up-head .dish-photo {
   width: 36px;
   height: 36px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex: none;
 }
 
 .next-up-kicker,
@@ -85,6 +82,7 @@
 .next-up-meta {
   display: flex;
   flex-wrap: wrap;
+  text-wrap: pretty;
   align-items: baseline;
   gap: var(--space-1) var(--space-4);
   color: var(--muted);
@@ -148,7 +146,7 @@
   max-width: 16ch;
 }
 
-.next-up--glance .next-up-head img {
+.next-up--glance .next-up-head .dish-photo {
   width: 56px;
   height: 56px;
 }

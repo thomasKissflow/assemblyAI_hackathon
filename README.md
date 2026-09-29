@@ -91,6 +91,12 @@ This repo was built docs-first. See [docs/team-handoff.md](docs/team-handoff.md)
   - roast potatoes by [Markus Winkler](https://unsplash.com/@markuswinkler)
   - salmon by [Karyna Panchenko](https://unsplash.com/@karyna_panchenko)
   - green beans by [Bob Bowie](https://unsplash.com/@connave)
+  - spaghetti pomodoro by [Paish Zaini](https://unsplash.com/@paishzaini)
+  - garlic bread by [Louis Hansel](https://unsplash.com/@louishansel)
+  - green salad by [Mads Eneqvist](https://unsplash.com/@madseneqvist)
+  - dal tadka by [Anil Sharma](https://unsplash.com/@anil_sharma_india)
+  - aloo gobi by [Markus Winkler](https://unsplash.com/@markuswinkler)
+  - roti by [Anshu A](https://unsplash.com/@anshu18)
 - Icons: [Lucide](https://lucide.dev) (ISC).
 - Font: [Archivo](https://fonts.google.com/specimen/Archivo) (OFL).
 - Speech, reasoning and voice: [AssemblyAI](https://www.assemblyai.com).

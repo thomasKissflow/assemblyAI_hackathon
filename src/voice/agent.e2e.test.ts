@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { menuRecipes } from '../kitchen/recipes';
+import { BUILTIN_RECIPES, menuRecipes } from '../kitchen/recipes';
 import { MIN, createPlan } from '../kitchen/planner';
 import { AGENT_WS_URL, buildSession } from './agentConfig';
 
@@ -11,6 +11,8 @@ const KEY = process.env.AAI_KEY;
 const RATE = 24000;
 const CHUNK_BYTES = (RATE * 2 * 50) / 1000;
 const dir = mkdtempSync(join(tmpdir(), 'chef-e2e-'));
+// Each case speaks in real time and waits 7 s for Chef; a busy machine or network can double that.
+const TIMEOUT = 90_000;
 const STEER_BACK = /station|dinner|kitchen|cook|curry|rice|naan|food|pan|stove|menu/i;
 
 function speech(line: string): Buffer {
@@ -29,7 +31,8 @@ function speech(line: string): Buffer {
 
 async function converse(line: string): Promise<{ calls: { name: string; arguments: Record<string, unknown> }[]; said: string }> {
   const t0 = new Date(2026, 8, 28, 19, 15).getTime();
-  const session = buildSession(createPlan(menuRecipes('indian'), t0 + 45 * MIN, t0));
+  // The recipe book the app passes: every built-in.
+  const session = buildSession(createPlan(menuRecipes('indian'), t0 + 45 * MIN, t0), BUILTIN_RECIPES);
   const ws = new WebSocket(`${AGENT_WS_URL}?token=${KEY}`);
   const calls: { name: string; arguments: Record<string, unknown> }[] = [];
   const pending: string[] = [];
@@ -70,16 +73,24 @@ describe.runIf(!!KEY && process.platform === 'darwin')('Chef agent (live Assembl
     ['Hey Chef, our guests are running twenty minutes late.', 'shift_serve_time', { minutes: 20 }],
     ['Hey Chef, I burnt the garlic for the curry.', 'restart_step', { dish: 'chicken_curry' }],
     ['Hey Chef, how long until the rice is ready?', 'kitchen_status', {}],
+    ['Hey Chef, add the dal tadka tonight.', 'add_dish', { dish: 'dal_tadka' }],
+    ["Hey Chef, drop the naan from tonight's dinner.", 'remove_dish', { dish: 'garlic_naan' }],
   ])('routes "%s" to %s', async (line, tool, args) => {
     const { calls } = await converse(line);
     expect(calls[0]).toMatchObject({ name: tool, arguments: args });
-  }, 60_000);
+  }, TIMEOUT);
 
   it('answers a cooking question without touching the plan', async () => {
     const { calls, said } = await converse('Hey Chef, can I use butter instead of ghee for the rice?');
     expect(calls).toHaveLength(0);
     expect(said).toMatch(/butter/i);
-  }, 60_000);
+  }, TIMEOUT);
+
+  it('answers "how much" from the recipe notes', async () => {
+    const { calls, said } = await converse('Hey Chef, how much rice do I need?');
+    expect(calls).toHaveLength(0);
+    expect(said).toMatch(/300|three hundred/i);
+  }, TIMEOUT);
 
   it.each([
     'Hey Chef, who won the last cricket world cup?',
@@ -89,5 +100,5 @@ describe.runIf(!!KEY && process.platform === 'darwin')('Chef agent (live Assembl
     expect(calls).toHaveLength(0);
     expect(said).toMatch(STEER_BACK);
     expect(said.length).toBeLessThan(280);
-  }, 60_000);
+  }, TIMEOUT);
 });

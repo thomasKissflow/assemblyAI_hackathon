@@ -1,12 +1,16 @@
-/* Captions roll (see windowed() in Captions.tsx); overflow is a last-resort clip for tiny screens. */
+/* Captions roll (see windowed() in Captions.tsx). If a short screen still overflows, the oldest
+   words clip off the top (bottom-aligned, faded) so the newest words always stay in view. */
 .captions {
   position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   gap: var(--space-3);
   min-height: 118px;
   overflow: hidden;
   padding: var(--space-3) var(--space-1);
+  -webkit-mask: linear-gradient(to bottom, transparent, #000 var(--space-3));
+  mask: linear-gradient(to bottom, transparent, #000 var(--space-3));
   border-bottom: 1px solid var(--line);
 }
 
@@ -80,4 +84,17 @@
   line-height: 1.3;
   color: var(--ink);
   animation: cap-in var(--dur-slow) var(--ease-out-quart) both;
+}
+
+@media (max-height: 840px) and (min-width: 901px) {
+  .captions {
+    min-height: 104px;
+  }
+  .cap-text {
+    font-size: var(--text-lg);
+  }
+  .cap-you .cap-text,
+  .cap-hint-example {
+    font-size: var(--text-md);
+  }
 }

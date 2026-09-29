@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { menuRecipes } from './recipes';
 import { MIN, advance, createPlan, markDone } from './planner';
-import { ticketView, kitchenStatus, FIRE_WINDOW_MS } from './views';
+import { ticketView, ticketSteps, kitchenStatus, FIRE_WINDOW_MS, TICKET_ROWS } from './views';
 
 const T0 = new Date(2026, 8, 28, 19, 15).getTime();
 const SERVE = T0 + 45 * MIN;
@@ -30,6 +30,40 @@ describe('ticketView', () => {
   it('is ready when every step is done', () => {
     const p = advance(createPlan(menuRecipes('indian'), SERVE, T0), SERVE).plan;
     expect(ticketView(naan(p), SERVE).state).toBe('ready');
+  });
+});
+
+describe('ticketSteps', () => {
+  const long = (n: number) =>
+    Array.from({ length: n }, (_, i) => ({ id: `s${i + 1}`, label: `Step ${i + 1}`, call: '', minutes: 5, start: i, end: i + 1, status: 'pending' as const }));
+  const ids = (w: ReturnType<typeof ticketSteps>) => w.steps.map(s => s.id);
+
+  it('lists every step of a short recipe', () => {
+    const w = ticketSteps(long(4), 's2');
+    expect(ids(w)).toEqual(['s1', 's2', 's3', 's4']);
+    expect(w).toMatchObject({ doneBefore: 0, moreAfter: 0 });
+  });
+  it('starts a long recipe at the top and summarises the rest', () => {
+    const w = ticketSteps(long(12), 's1');
+    expect(ids(w)).toEqual(['s1', 's2', 's3', 's4']);
+    expect(w).toMatchObject({ doneBefore: 0, moreAfter: 8 });
+  });
+  it('keeps the step just finished, the current one and the next in view mid-recipe', () => {
+    const w = ticketSteps(long(12), 's6');
+    expect(ids(w)).toEqual(['s5', 's6', 's7']);
+    expect(w).toMatchObject({ doneBefore: 4, moreAfter: 5 });
+  });
+  it('ends on the last steps, and never lists more than five rows', () => {
+    for (const focus of ['s10', 's12', null]) {
+      const w = ticketSteps(long(12), focus);
+      expect(ids(w)).toEqual(['s9', 's10', 's11', 's12']);
+      expect(w.doneBefore).toBe(8);
+    }
+    for (let i = 1; i <= 12; i++) {
+      const w = ticketSteps(long(12), `s${i}`);
+      expect(w.steps.length + (w.doneBefore ? 1 : 0) + (w.moreAfter ? 1 : 0)).toBeLessThanOrEqual(TICKET_ROWS);
+      expect(ids(w)).toContain(`s${i}`);
+    }
   });
 });
 

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="480" height="480">
+<!-- Heard, Chef plate art (veg). Icon: Lucide "carrot", ISC licence. -->
+<style>@media (max-width: 44px) { .ico { stroke-width: 2.6px; filter: none; } .fine { display: none; } }</style>
+<defs>
+<radialGradient id="veg-rim" cx="0.34" cy="0.28" r="0.85"><stop offset="0" stop-color="#83905b"/><stop offset="0.55" stop-color="#748246"/><stop offset="1" stop-color="#606d32"/></radialGradient>
+<radialGradient id="veg-well" cx="0.62" cy="0.7" r="0.8"><stop offset="0" stop-color="#6e7c40"/><stop offset="0.6" stop-color="#657338"/><stop offset="1" stop-color="#505c24"/></radialGradient>
+<radialGradient id="veg-sheen" cx="0.3" cy="0.22" r="0.42"><stop offset="0" stop-color="#ffffff" stop-opacity="0.07"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+<filter id="veg-lift" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="0.45" stdDeviation="0.5" flood-color="#1e2500" flood-opacity="0.45"/></filter>
+</defs>
+<circle cx="240" cy="240" r="236" fill="url(#veg-rim)"/>
+<circle cx="240" cy="240" r="234.5" fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="3"/>
+<circle cx="240" cy="236" r="188" fill="#313a0c" opacity="0.6"/>
+<circle cx="240" cy="240" r="186" fill="url(#veg-well)"/>
+<circle class="fine" cx="240" cy="240" r="212" fill="none" stroke="#ffffff" stroke-opacity="0.07" stroke-width="2"/>
+<circle cx="240" cy="240" r="236" fill="url(#veg-sheen)"/>
+<g class="ico" transform="translate(105 105) scale(11.25)" fill="none" stroke="#fceedc" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" filter="url(#veg-lift)"><path d="M15 16a1 1 0 0 0-7-7q-4 4-5.987 12.385a.5.5 0 0 0 .602.602Q11 20 15 16l-3-3"/><path d="M15 9q4 4 7 0-3-4-7 0 4-4 0-7-4 3 0 7"/><path d="m8 15-2.58-2.58"/></g>
+</svg>

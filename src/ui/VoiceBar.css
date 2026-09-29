@@ -1,14 +1,9 @@
+/* Two rows: what Chef's ears are doing, then the live waveform beside mute and hold-to-talk. */
 .voice-bar {
   position: relative;
   overflow: hidden;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-areas:
-    'state'
-    'wave'
-    'actions';
-  gap: var(--space-3);
-  padding: var(--space-4) var(--space-5);
+  container-type: inline-size;
+  padding: var(--space-4) var(--space-4) var(--space-4) var(--space-5);
   border-radius: var(--radius-lg);
   background: var(--surface);
   border: 1px solid var(--line);
@@ -16,6 +11,16 @@
 }
 
 /* Ears open: the whole bar inverts so "Chef is listening" reads from across the room. */
+.voice-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'state state'
+    'wave actions';
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+
 .voice-bar.is-listening,
 .voice-bar.is-followup {
   background: var(--ink);
@@ -80,7 +85,8 @@
 .voice-wave {
   grid-area: wave;
   width: 100%;
-  height: 40px;
+  min-width: 0;
+  height: 36px;
   color: var(--faint);
   transition: color var(--dur-med);
 }
@@ -111,7 +117,6 @@
 }
 
 .voice-ptt {
-  flex: 1;
   padding-inline: var(--space-4);
   touch-action: none;
   user-select: none;
@@ -124,7 +129,24 @@
 }
 
 .voice-ptt kbd {
-  margin-left: auto;
+  margin-left: var(--space-1);
+}
+
+/* A narrow column: the waveform gets its own row and hold-to-talk stretches. */
+@container (max-width: 340px) {
+  .voice-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'state'
+      'wave'
+      'actions';
+  }
+  .voice-ptt {
+    flex: 1;
+  }
+  .voice-ptt kbd {
+    margin-left: auto;
+  }
 }
 
 /* The follow-up window drains across the bottom of the bar. */

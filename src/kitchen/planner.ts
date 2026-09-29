@@ -1,6 +1,8 @@
 import type { DishId, DishKind, Recipe, RecipeStep } from './recipes';
 
 export const MIN = 60_000;
+/** The most dishes the pass can run at once. */
+export const MAX_DISHES = 6;
 
 export type StepStatus = 'pending' | 'active' | 'done';
 export interface PlannedStep extends RecipeStep {
@@ -61,7 +63,7 @@ export function align(plan: Plan, now: number): Plan {
 export function planDish(r: Recipe): PlannedDish {
   return {
     id: r.id, name: r.name, short: r.short, photo: r.photo, kind: r.kind,
-    ...(r.ingredients?.length ? { ingredients: r.ingredients } : {}),
+    ...(r.ingredients?.length ? { ingredients: [...r.ingredients] } : {}),
     ...(r.custom ? { custom: true } : {}),
     steps: r.steps.map(st => ({ ...st, start: 0, end: 0, status: 'pending' as const })),
   };
@@ -141,6 +143,21 @@ export function shiftServe(plan: Plan, minutes: number, now: number): Plan {
   return align({ ...plan, serveAt: plan.serveAt + minutes * MIN }, now);
 }
 
+/**
+ * Adds a dish to the plan, timed to finish with the rest. A long dish can push serving later.
+ * No-op if it's on already or has no steps.
+ */
+export function addDish(plan: Plan, recipe: Recipe, now: number): Plan {
+  if (recipe.steps.length === 0 || plan.dishes.some(d => d.id === recipe.id)) return plan;
+  return align({ ...plan, dishes: [...plan.dishes, planDish(recipe)] }, now);
+}
+
+/** Drops a dish from the plan. Serving never moves earlier on its own. The last dish can't be dropped. */
+export function removeDish(plan: Plan, id: DishId, now: number): Plan {
+  if (plan.dishes.length <= 1 || !plan.dishes.some(d => d.id === id)) return plan;
+  return align({ ...plan, dishes: plan.dishes.filter(d => d.id !== id) }, now);
+}
+
 export interface UpcomingCall {
   dishId: DishId;
   dish: string;
@@ -163,6 +180,12 @@ export const fmtTime = (t: number) =>
 
 export function describeChange(before: Plan, after: Plan): string {
   const parts: string[] = [];
+  for (const d of after.dishes) {
+    if (before.dishes.some(x => x.id === d.id)) continue;
+    const first = d.steps.find(st => st.status === 'pending');
+    parts.push(first ? `Added ${d.name}: ${first.label.toLowerCase()} at ${fmtTime(first.start)}.` : `Added ${d.name}.`);
+  }
+  for (const d of before.dishes) if (!after.dishes.some(x => x.id === d.id)) parts.push(`Dropped ${d.name}.`);
   if (after.serveAt !== before.serveAt) parts.push(`Serving now ${fmtTime(after.serveAt)} (was ${fmtTime(before.serveAt)}).`);
   for (const d of after.dishes) {
     const prev = before.dishes.find(x => x.id === d.id);

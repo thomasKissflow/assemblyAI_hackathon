@@ -1,5 +1,6 @@
-/* Desktop: a fixed app shell. The pass scrolls inside itself if it ever outgrows the screen;
-   the right column always fills the height, with the Heard log taking what's left. */
+/* Desktop: a fixed app shell that fits the screen. The tickets hang from the top of the pass and
+   reach down to the rail on the bottom edge, level with the voice bar; the pass scrolls only as a last resort.
+   The right column always fills the height, with the Heard log taking what's left. */
 .kitchen,
 .kitchen-shell {
   height: 100dvh;
@@ -14,9 +15,9 @@
 .kitchen-main {
   min-height: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(360px, 31vw, 480px);
+  grid-template-columns: minmax(0, 1fr) clamp(340px, 28vw, 460px);
   grid-template-rows: auto minmax(0, 1fr);
-  column-gap: var(--space-5);
+  column-gap: var(--space-6);
   padding: var(--space-5);
 }
 
@@ -26,41 +27,36 @@
   margin-bottom: var(--space-4);
 }
 
+/* The negative margin gives a firing ticket's glow room inside the scroll box. */
 .pass {
   grid-column: 1;
   grid-row: 2;
   min-height: 0;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: calc(-1 * var(--space-4));
+  padding: var(--space-4);
   overflow-y: auto;
-  display: grid;
-  align-content: start;
-  gap: var(--space-5);
-  padding: 6px 6px var(--space-2) 0;
   scrollbar-width: thin;
   scrollbar-color: var(--surface-3) transparent;
 }
 
-.pass-tickets {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(186px, 1fr));
-  gap: var(--space-5);
-  align-items: start;
-  transition: opacity var(--dur-med) var(--ease-out-quart);
-}
-
-.pass-tickets.is-paused {
-  opacity: 0.55;
+.pass > .rail {
+  flex: none;
 }
 
 .paused-band {
+  flex: none;
   display: flex;
   align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-5);
-  border-radius: var(--radius-lg);
+  gap: var(--space-3);
+  min-height: 48px;
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-4);
+  border-radius: var(--radius-pill);
   background: var(--saffron);
   color: var(--saffron-ink);
-  font-size: var(--text-md);
   animation: paused-in var(--dur-med) var(--ease-out-quart) both;
 }
 
@@ -73,6 +69,12 @@
 
 .paused-band p {
   flex: 1 1 220px;
+  min-width: 0;
+}
+
+.paused-band .btn {
+  min-height: 40px;
+  padding-inline: var(--space-4);
 }
 
 .btn-dark {
@@ -88,12 +90,6 @@
   background: transparent;
   border-color: oklch(0.86 0.16 85 / 0.4);
   color: var(--saffron);
-}
-
-@media (max-width: 1180px) {
-  .pass-tickets {
-    gap: var(--space-4);
-  }
 }
 
 .side {
@@ -120,29 +116,57 @@
   flex: none;
 }
 
+/* Voice off: one quiet note where the voice bar would be. */
 .keys-hint {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
+  display: grid;
+  gap: var(--space-2);
   padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-lg);
-  border: 1px dashed var(--line-strong);
+  background: var(--surface);
   color: var(--muted);
   font-size: var(--text-sm);
-  line-height: 2;
+  line-height: 1.45;
+}
+
+.keys-hint-lead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.keys-hint-lead svg {
+  flex: none;
+  align-self: center;
 }
 
 .keys-hint strong {
   color: var(--ink);
 }
 
-/* Short laptop screens: tighten so the rail stays in view. */
-@media (max-height: 820px) and (min-width: 901px) {
+.keys-hint-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+}
+
+.keys-hint-keys kbd {
+  margin-right: 5px;
+}
+
+/* Laptop screens at 100% zoom (about 1440×790): tighten the frame so nothing scrolls. */
+@media (max-height: 840px) and (min-width: 901px) {
   .kitchen-main {
     padding-block: var(--space-4);
   }
-  .pass {
-    gap: var(--space-4);
+  .pass,
+  .side {
+    gap: var(--space-3);
+  }
+  .paused-band {
+    min-height: 44px;
+  }
+  .paused-band .btn {
+    min-height: 36px;
   }
 }
 
@@ -165,6 +189,7 @@
   }
   .pass {
     overflow: visible;
+    margin: 0;
     padding: 0;
   }
   .side {
@@ -185,6 +210,8 @@
   }
   .paused-band {
     flex-wrap: wrap;
+    border-radius: var(--radius-lg);
+    padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
   }
 }
 

@@ -39,6 +39,32 @@ export function ticketView(d: PlannedDish, now: number): TicketView {
   };
 }
 
+/** A ticket lists at most this many rows, so a long recipe of the cook's own never pushes the rail off screen. */
+export const TICKET_ROWS = 5;
+
+export interface TicketSteps {
+  steps: PlannedStep[];
+  /** Finished steps above the window, shown as one "N done" row. */
+  doneBefore: number;
+  /** Steps below the window, shown as one "N more" row. */
+  moreAfter: number;
+}
+
+/**
+ * The steps a ticket lists: all of them when they fit, otherwise a window that runs from the step
+ * just finished through what comes next, with the rest summarised. `focus` is the current step's id
+ * (null once every step is done).
+ */
+export function ticketSteps(steps: PlannedStep[], focus: string | null, max = TICKET_ROWS): TicketSteps {
+  const n = steps.length;
+  if (n <= max) return { steps, doneBefore: 0, moreAfter: 0 };
+  const at = steps.findIndex(s => s.id === focus);
+  const lead = Math.max(0, (at >= 0 ? at : n - 1) - 1);
+  if (lead + max - 1 >= n) return { steps: steps.slice(n - max + 1), doneBefore: n - max + 1, moreAfter: 0 };
+  if (lead <= 1) return { steps: steps.slice(0, max - 1), doneBefore: 0, moreAfter: n - max + 1 };
+  return { steps: steps.slice(lead, lead + max - 2), doneBefore: lead, moreAfter: n - lead - max + 2 };
+}
+
 export function kitchenStatus(plan: Plan, now: number): string {
   const lines = plan.dishes.map(d => {
     const v = ticketView(d, now);

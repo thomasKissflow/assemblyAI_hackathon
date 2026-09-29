@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="480" height="480">
+<!-- Heard, Chef plate art (curry). Icon: Lucide "cooking-pot", ISC licence. -->
+<style>@media (max-width: 44px) { .ico { stroke-width: 2.6px; filter: none; } .fine { display: none; } }</style>
+<defs>
+<radialGradient id="curry-rim" cx="0.34" cy="0.28" r="0.85"><stop offset="0" stop-color="#c47f54"/><stop offset="0.55" stop-color="#b96e3d"/><stop offset="1" stop-color="#a25927"/></radialGradient>
+<radialGradient id="curry-well" cx="0.62" cy="0.7" r="0.8"><stop offset="0" stop-color="#b26836"/><stop offset="0.6" stop-color="#a85f2d"/><stop offset="1" stop-color="#8c4918"/></radialGradient>
+<radialGradient id="curry-sheen" cx="0.3" cy="0.22" r="0.42"><stop offset="0" stop-color="#ffffff" stop-opacity="0.07"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+<filter id="curry-lift" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="0.45" stdDeviation="0.5" flood-color="#461a00" flood-opacity="0.45"/></filter>
+</defs>
+<circle cx="240" cy="240" r="236" fill="url(#curry-rim)"/>
+<circle cx="240" cy="240" r="234.5" fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="3"/>
+<circle cx="240" cy="236" r="188" fill="#612c01" opacity="0.6"/>
+<circle cx="240" cy="240" r="186" fill="url(#curry-well)"/>
+<circle class="fine" cx="240" cy="240" r="212" fill="none" stroke="#ffffff" stroke-opacity="0.07" stroke-width="2"/>
+<circle cx="240" cy="240" r="236" fill="url(#curry-sheen)"/>
+<g class="ico" transform="translate(105 105) scale(11.25)" fill="none" stroke="#fceedc" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" filter="url(#curry-lift)"><path d="M2 12h20"/><path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"/><path d="m4 8 16-4"/><path d="m8.86 6.78-.45-1.81a2 2 0 0 1 1.45-2.43l1.94-.48a2 2 0 0 1 2.43 1.46l.45 1.8"/></g>
+</svg>

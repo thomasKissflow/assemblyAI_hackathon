@@ -3,11 +3,11 @@ import { Keyboard, Pause, Play } from 'lucide-react';
 import { SPEEDS, type KitchenState, type KitchenStore } from '../kitchen/store';
 import type { ChefSession } from '../voice/useChefSession';
 import { Captions } from './Captions';
-import { DishTicket } from './DishTicket';
 import { ErrorBanner } from './ErrorBanner';
 import { GlanceMode } from './GlanceMode';
 import { HeardLog } from './HeardLog';
 import { NextUp, callAnnouncement } from './NextUp';
+import { PassTickets } from './PassTickets';
 import { Rail } from './Rail';
 import { ServiceReport } from './ServiceReport';
 import { TopBar } from './TopBar';
@@ -88,20 +88,22 @@ export function KitchenScreen({ store, state, session, onCookAgain }: KitchenScr
             </h2>
             {paused && !served && (
               <div className="paused-band" role="status">
-                <Pause size={20} aria-hidden="true" />
+                <Pause size={18} aria-hidden="true" />
                 <p>
                   <strong>Paused.</strong> Calls are on hold until you resume.
                 </p>
                 <button type="button" className="btn btn-dark" onClick={() => store.togglePause()}>
-                  <Play size={16} aria-hidden="true" /> Resume <kbd>P</kbd>
+                  <Play size={15} aria-hidden="true" /> Resume <kbd>P</kbd>
                 </button>
               </div>
             )}
-            <div className={paused ? 'pass-tickets is-paused' : 'pass-tickets'}>
-              {plan.dishes.map(d => (
-                <DishTicket key={d.id} dish={d} now={state.now} onDelay={(id, m) => store.reportDelay(id, m)} onDone={id => store.markDone(id)} />
-              ))}
-            </div>
+            <PassTickets
+              dishes={plan.dishes}
+              now={state.now}
+              paused={paused}
+              onDelay={(id, m) => store.reportDelay(id, m)}
+              onDone={id => store.markDone(id)}
+            />
             <Rail plan={plan} now={state.now} />
           </section>
           <aside className="side" aria-label="Chef">
@@ -118,13 +120,19 @@ export function KitchenScreen({ store, state, session, onCookAgain }: KitchenScr
                 active={!overlay}
               />
             ) : (
-              <p className="keys-hint">
-                <Keyboard size={18} aria-hidden="true" />
-                <span>
-                  Voice off. Use <strong>+5 min</strong> and <strong>Done</strong> on a ticket to re-plan. <kbd>N</kbd> next call · <kbd>P</kbd> pause ·{' '}
-                  <kbd>G</kbd> glance
-                </span>
-              </p>
+              <div className="keys-hint">
+                <p className="keys-hint-lead">
+                  <Keyboard size={16} aria-hidden="true" />
+                  <span>
+                    Voice off. Re-plan with <strong>+5 min</strong> and <strong>Done</strong> on each ticket.
+                  </span>
+                </p>
+                <p className="keys-hint-keys">
+                  <span><kbd>N</kbd> next call</span>
+                  <span><kbd>P</kbd> pause</span>
+                  <span><kbd>G</kbd> glance</span>
+                </p>
+              </div>
             )}
           </aside>
         </main>

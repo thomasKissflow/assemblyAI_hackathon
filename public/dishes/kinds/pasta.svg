@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="480" height="480">
+<!-- Heard, Chef plate art (pasta). Icon: Lucide "utensils", ISC licence. -->
+<style>@media (max-width: 44px) { .ico { stroke-width: 2.6px; filter: none; } .fine { display: none; } }</style>
+<defs>
+<radialGradient id="pasta-rim" cx="0.34" cy="0.28" r="0.85"><stop offset="0" stop-color="#c06e6f"/><stop offset="0.55" stop-color="#b45c5e"/><stop offset="1" stop-color="#9d474a"/></radialGradient>
+<radialGradient id="pasta-well" cx="0.62" cy="0.7" r="0.8"><stop offset="0" stop-color="#ae5658"/><stop offset="0.6" stop-color="#a44d50"/><stop offset="1" stop-color="#87383b"/></radialGradient>
+<radialGradient id="pasta-sheen" cx="0.3" cy="0.22" r="0.42"><stop offset="0" stop-color="#ffffff" stop-opacity="0.07"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+<filter id="pasta-lift" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="0.45" stdDeviation="0.5" flood-color="#400b11" flood-opacity="0.45"/></filter>
+</defs>
+<circle cx="240" cy="240" r="236" fill="url(#pasta-rim)"/>
+<circle cx="240" cy="240" r="234.5" fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="3"/>
+<circle cx="240" cy="236" r="188" fill="#5c1d21" opacity="0.6"/>
+<circle cx="240" cy="240" r="186" fill="url(#pasta-well)"/>
+<circle class="fine" cx="240" cy="240" r="212" fill="none" stroke="#ffffff" stroke-opacity="0.07" stroke-width="2"/>
+<circle cx="240" cy="240" r="236" fill="url(#pasta-sheen)"/>
+<g class="ico" transform="translate(105 105) scale(11.25)" fill="none" stroke="#fceedc" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" filter="url(#pasta-lift)"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></g>
+</svg>

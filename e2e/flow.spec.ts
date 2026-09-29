@@ -73,3 +73,62 @@ for (const vp of [{ w: 1024, h: 768 }, { w: 390, h: 844 }]) {
     expect(overflow).toBeLessThanOrEqual(0);
   });
 }
+
+// The demo is recorded at 90% zoom (1600×878); 1440×790 is the same laptop at 100%.
+for (const vp of [{ w: 1600, h: 878 }, { w: 1440, h: 790 }]) {
+  test(`the kitchen fits ${vp.w}×${vp.h} with no scrolling`, async ({ page }) => {
+    await page.setViewportSize({ width: vp.w, height: vp.h });
+    await startVoiceOff(page);
+    await page.keyboard.press('n');
+    await reportCurryDelay(page);
+    const fit = () =>
+      page.evaluate(() => {
+        const d = document.documentElement;
+        const pass = document.querySelector('.pass')!;
+        const rail = document.querySelector('[data-testid="rail"]')!.getBoundingClientRect();
+        return {
+          scroll: d.scrollHeight - innerHeight,
+          overflow: d.scrollWidth - d.clientWidth,
+          pass: pass.scrollHeight - pass.clientHeight,
+          railBelow: Math.round(rail.bottom - innerHeight),
+        };
+      });
+    expect(await fit()).toEqual({ scroll: 0, overflow: 0, pass: 0, railBelow: expect.any(Number) });
+    expect((await fit()).railBelow).toBeLessThanOrEqual(0);
+    await page.screenshot({ path: `test-results/screens/${vp.w}x${vp.h}-kitchen.png` });
+
+    // A fourth dish joins mid-cook and everything still fits.
+    await page.evaluate(async () => {
+      const { BUILTIN_RECIPES } = await import('/src/kitchen/recipes.ts');
+      const salmon = BUILTIN_RECIPES.find(r => r.id === 'salmon')!;
+      (window as unknown as { __kitchen: { addDish(r: unknown): string } }).__kitchen.addDish(salmon);
+    });
+    await expect(page.getByTestId('ticket-salmon')).toBeVisible();
+    await expect(page.getByTestId('rail')).toHaveAttribute('data-lanes', '4');
+    await page.waitForTimeout(500);
+    const four = await fit();
+    expect(four.scroll).toBeLessThanOrEqual(0);
+    expect(four.overflow).toBeLessThanOrEqual(0);
+    expect(four.pass).toBeLessThanOrEqual(0);
+    expect(four.railBelow).toBeLessThanOrEqual(0);
+    await page.screenshot({ path: `test-results/screens/${vp.w}x${vp.h}-kitchen-4.png` });
+
+    // A cook's own twelve-step recipe lists a window of its steps, so the rail stays on screen.
+    await page.evaluate(async () => {
+      const { kindPhoto } = await import('/src/kitchen/recipes.ts');
+      const kitchen = (window as unknown as { __kitchen: { addDish(r: unknown): string; removeDish(id: string): string } }).__kitchen;
+      kitchen.removeDish('salmon');
+      kitchen.addDish({
+        id: 'my_biryani', name: 'Hyderabadi chicken biryani', short: 'biryani', photo: kindPhoto('rice'), kind: 'rice', custom: true,
+        steps: Array.from({ length: 12 }, (_, i) => ({ id: `s${i + 1}`, label: `Biryani step number ${i + 1}`, call: 'Biryani.', minutes: 4 })),
+      });
+    });
+    await expect(page.getByTestId('ticket-my_biryani')).toBeVisible();
+    await expect(page.getByTestId('ticket-my_biryani').getByRole('listitem')).toHaveCount(5);
+    await page.waitForTimeout(500);
+    const long = await fit();
+    expect(long.scroll).toBeLessThanOrEqual(0);
+    expect(long.pass).toBeLessThanOrEqual(0);
+    expect(long.railBelow).toBeLessThanOrEqual(0);
+  });
+}

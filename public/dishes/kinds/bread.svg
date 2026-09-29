@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="480" height="480">
+<!-- Heard, Chef plate art (bread). Icon: Lucide "croissant", ISC licence. -->
+<style>@media (max-width: 44px) { .ico { stroke-width: 2.6px; filter: none; } .fine { display: none; } }</style>
+<defs>
+<radialGradient id="bread-rim" cx="0.34" cy="0.28" r="0.85"><stop offset="0" stop-color="#947757"/><stop offset="0.55" stop-color="#876844"/><stop offset="1" stop-color="#725430"/></radialGradient>
+<radialGradient id="bread-well" cx="0.62" cy="0.7" r="0.8"><stop offset="0" stop-color="#81623e"/><stop offset="0.6" stop-color="#785a36"/><stop offset="1" stop-color="#604423"/></radialGradient>
+<radialGradient id="bread-sheen" cx="0.3" cy="0.22" r="0.42"><stop offset="0" stop-color="#ffffff" stop-opacity="0.07"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+<filter id="bread-lift" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="0.45" stdDeviation="0.5" flood-color="#251400" flood-opacity="0.45"/></filter>
+</defs>
+<circle cx="240" cy="240" r="236" fill="url(#bread-rim)"/>
+<circle cx="240" cy="240" r="234.5" fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="3"/>
+<circle cx="240" cy="236" r="188" fill="#3c260a" opacity="0.6"/>
+<circle cx="240" cy="240" r="186" fill="url(#bread-well)"/>
+<circle class="fine" cx="240" cy="240" r="212" fill="none" stroke="#ffffff" stroke-opacity="0.07" stroke-width="2"/>
+<circle cx="240" cy="240" r="236" fill="url(#bread-sheen)"/>
+<g class="ico" transform="translate(102.11 102.11) scale(11.25)" fill="none" stroke="#fceedc" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" filter="url(#bread-lift)"><path d="M10.2 18H4.774a1.5 1.5 0 0 1-1.352-.97 11 11 0 0 1 .132-6.487"/><path d="M18 10.2V4.774a1.5 1.5 0 0 0-.97-1.352 11 11 0 0 0-6.486.132"/><path d="M18 5a4 3 0 0 1 4 3 2 2 0 0 1-2 2 10 10 0 0 0-5.139 1.42"/><path d="M5 18a3 4 0 0 0 3 4 2 2 0 0 0 2-2 10 10 0 0 1 1.42-5.14"/><path d="M8.709 2.554a10 10 0 0 0-6.155 6.155 1.5 1.5 0 0 0 .676 1.626l9.807 5.42a2 2 0 0 0 2.718-2.718l-5.42-9.807a1.5 1.5 0 0 0-1.626-.676"/></g>
+</svg>

@@ -1,6 +1,7 @@
 import { Flame, UtensilsCrossed } from 'lucide-react';
 import { fmtTime, upcoming, type Plan, type PlannedDish, type PlannedStep } from '../kitchen/planner';
 import { FIRE_WINDOW_MS } from '../kitchen/views';
+import { DishPhoto } from './DishPhoto';
 import { shortDuration } from './format';
 import './NextUp.css';
 
@@ -48,7 +49,7 @@ export function NextUp({ plan, now, size = 'panel' }: { plan: Plan; now: number;
             <span className="next-up-pill">
               <Flame size={16} strokeWidth={2.5} aria-hidden="true" /> Now
             </span>
-            <img src={fire.dish.photo} alt="" width={36} height={36} />
+            <DishPhoto src={fire.dish.photo} size={36} />
             <span className="next-up-dish">{fire.dish.name}</span>
           </div>
           <Heading className="next-up-call">{fire.step.label}</Heading>
@@ -63,7 +64,7 @@ export function NextUp({ plan, now, size = 'panel' }: { plan: Plan; now: number;
         <>
           <div className="next-up-head">
             <span className="next-up-kicker">Next up</span>
-            <img src={nextDish.photo} alt="" width={36} height={36} />
+            <DishPhoto src={nextDish.photo} size={36} />
             <span className="next-up-dish">{next.dish}</span>
           </div>
           <Heading className="next-up-call">{next.label}</Heading>

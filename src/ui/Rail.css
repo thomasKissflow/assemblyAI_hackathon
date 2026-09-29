@@ -1,32 +1,42 @@
+/* The rail: every call from now to service, one lane per dish. Compact enough for six lanes. */
 .rail {
   container-type: inline-size;
-  padding: var(--space-4) var(--space-5) var(--space-3);
+  padding: var(--space-3) var(--space-5) var(--space-2);
   border-radius: var(--radius-lg);
   background: var(--surface);
-  border: 1px solid var(--line);
 }
 
 .rail-track {
   position: relative;
-  margin-left: 30px;
+  margin-left: var(--space-3);
 }
 
 .rail-lane {
   position: absolute;
   left: 0;
   right: 0;
+  top: 0;
   height: 1px;
   background: linear-gradient(to right, var(--line) 0 4px, transparent 4px 10px) repeat-x;
   background-size: 10px 1px;
+  transition: transform 450ms var(--ease-out-quart);
+  animation: rail-in 300ms var(--ease-out-quart) both;
+}
+
+/* A lane or marker that appears (a dish added mid-cook) fades in where it belongs. */
+@keyframes rail-in {
+  from {
+    opacity: 0;
+  }
 }
 
 .rail-tick {
   position: absolute;
   left: 0;
   top: 0;
-  bottom: 22px;
+  bottom: 20px;
   width: 1px;
-  background: oklch(0.3 0 0 / 0.55);
+  background: oklch(0.3 0 0 / 0.5);
   transition: transform 260ms linear;
 }
 
@@ -36,7 +46,7 @@
 
 .rail-tick-label {
   position: absolute;
-  bottom: -22px;
+  bottom: -19px;
   left: 0;
   transform: translateX(-50%);
   font-size: var(--text-xs);
@@ -48,7 +58,7 @@
 .rail-now {
   position: absolute;
   left: 0;
-  top: -6px;
+  top: -4px;
   bottom: 18px;
   width: 2px;
   border-radius: 2px;
@@ -58,7 +68,7 @@
 
 .rail-now span {
   position: absolute;
-  bottom: -20px;
+  bottom: -19px;
   left: 50%;
   transform: translateX(-50%);
   font-size: var(--text-xs);
@@ -81,58 +91,63 @@
 .rail-marker {
   position: absolute;
   left: 0;
-  top: 4px;
-  height: 30px;
+  top: 0;
+  height: 24px;
   display: flex;
   align-items: center;
+  animation: rail-in 300ms var(--ease-out-quart) both;
 }
 
 .rail-marker.is-pip {
-  translate: -6px 0;
-  width: 12px;
+  translate: -5px 0;
+  width: 10px;
   z-index: 1;
 }
 
 .rail-pip {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: var(--surface-3);
   box-shadow: 0 0 0 2px var(--surface), inset 0 0 0 1.5px var(--muted);
 }
 
 .rail-marker.is-lead {
-  translate: -15px 0;
+  translate: -12px 0;
   gap: 6px;
-  padding: 2px 12px 2px 2px;
+  padding: 2px 10px 2px 2px;
   border-radius: var(--radius-pill);
   background: var(--surface-3);
-  border: 1px solid var(--line-strong);
   white-space: nowrap;
   font-size: var(--text-xs);
   color: var(--ink);
   z-index: 2;
-  box-shadow: 0 4px 12px oklch(0 0 0 / 0.45);
 }
 
 .rail-marker.is-flipped {
   flex-direction: row-reverse;
-  translate: calc(-100% + 15px) 0;
-  padding: 2px 2px 2px 12px;
+  translate: calc(-100% + 12px) 0;
+  padding: 2px 2px 2px 10px;
 }
 
-.rail-marker img {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex: none;
+.rail-marker.is-tight {
+  padding: 2px;
+}
+
+.rail-marker.is-tight .rail-marker-text {
+  display: none;
+}
+
+.rail-marker .dish-photo {
+  width: 20px;
+  height: 20px;
 }
 
 .rail-marker-text {
   display: flex;
   align-items: baseline;
   gap: 6px;
+  min-width: 0;
 }
 
 .rail-marker-time {
@@ -143,7 +158,6 @@
 }
 
 .rail-marker-label {
-  max-width: 22ch;
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 600;
@@ -152,9 +166,9 @@
 .rail-serve {
   position: absolute;
   left: 0;
-  top: -6px;
+  top: -4px;
   bottom: 18px;
-  width: 80px;
+  width: 70px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -171,8 +185,29 @@
 .rail-serve-label {
   font-size: var(--text-xs);
   font-weight: 750;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
+}
+
+.rail.is-roomy .rail-marker {
+  height: 28px;
+}
+
+.rail.is-roomy .rail-marker.is-lead {
+  translate: -14px 0;
+  font-size: var(--text-sm);
+}
+
+.rail.is-roomy .rail-marker.is-flipped {
+  translate: calc(-100% + 14px) 0;
+}
+
+.rail.is-roomy .rail-marker .dish-photo {
+  width: 24px;
+  height: 24px;
+}
+
+.rail.is-roomy .rail-marker-time {
+  font-size: var(--text-base);
 }
 
 @container (max-width: 560px) {
@@ -181,11 +216,5 @@
   }
   .rail-marker-label {
     display: none;
-  }
-  .rail-marker.is-lead {
-    padding-right: 8px;
-  }
-  .rail-marker.is-flipped {
-    padding: 2px 2px 2px 8px;
   }
 }

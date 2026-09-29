@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { KitchenStore } from '../kitchen/store';
+import { libraryStore } from '../kitchen/library';
 import { callText } from '../kitchen/calls';
 import { AgentError, AgentSocket, type ServerEvent } from './agentSocket';
 import { SttSocket, type SttTurn } from './sttSocket';
@@ -184,7 +185,7 @@ export function useChefSession(store: KitchenStore) {
           if (e.interrupted) interruptChef();
           break;
         case 'tool.call':
-          r.results.push({ callId: String(e.call_id), result: executeTool(store, String(e.name), e.arguments) });
+          r.results.push({ callId: String(e.call_id), result: executeTool(store, String(e.name), e.arguments, libraryStore.getState().recipes) });
           gate.pendingToolResults = r.results.length;
           break;
         case 'reply.done': {
@@ -228,7 +229,8 @@ export function useChefSession(store: KitchenStore) {
         }
         socket.sendAudio(ears.open && !r.muted ? b64 : SILENCE);
       });
-      await Promise.all([stt.connect(API_KEY, sttKeyterms(plan)), socket.connect(API_KEY, buildSession(plan))]);
+      const library = libraryStore.getState().recipes;
+      await Promise.all([stt.connect(API_KEY, sttKeyterms(plan, library)), socket.connect(API_KEY, buildSession(plan, library))]);
     } catch (err) {
       const current = rt.current === r;
       if (current) rt.current = null;

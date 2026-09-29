@@ -12,6 +12,7 @@ const h = vi.hoisted(() => {
     engine: null as null | { play: ReturnType<typeof vi.fn>; flush: ReturnType<typeof vi.fn>; close: ReturnType<typeof vi.fn> },
     agentConnect: null as null | (() => Promise<void>),
     usedTestKey: false,
+    session: null as null | { tools: { name: string; parameters: { properties: { dish?: { enum: string[] } } } }[] },
   };
 });
 
@@ -37,8 +38,9 @@ vi.mock('./agentSocket', async orig => ({
     sendAudio = vi.fn();
     close = vi.fn();
     onEvent(fn: (e: Record<string, unknown>) => void) { this.fns.push(fn); return () => {}; }
-    connect(key: string) {
+    connect(key: string, session: NonNullable<typeof h.session>) {
       h.usedTestKey = key === 'test-key';
+      h.session = session;
       return h.agentConnect ? h.agentConnect() : Promise.resolve();
     }
     emit(e: Record<string, unknown>) { this.fns.forEach(f => f(e)); }
@@ -61,6 +63,7 @@ vi.mock('./sttSocket', () => ({
 
 import { useChefSession } from './useChefSession';
 import { createKitchenStore } from '../kitchen/store';
+import { libraryStore } from '../kitchen/library';
 
 let now = 0;
 beforeEach(() => {
@@ -104,6 +107,28 @@ it('holds a callout until Chef has spoken the tool result', async () => {
   expect(agent.replyCreate).toHaveBeenCalledTimes(1);
   expect(agent.replyCreate.mock.calls[0][0]).toContain('Rice on.');
   await act(async () => { await hook.result.current.stop(); });
+});
+
+it("adds dishes from the cook's recipe book, including their own", async () => {
+  const mine = libraryStore.saveRecipe({
+    id: 'my_rasam', name: 'Rasam', short: 'rasam', photo: '', kind: 'soup',
+    steps: [{ id: 's1', label: 'Boil the rasam', call: 'Rasam on.', minutes: 12 }],
+  });
+  try {
+    const { store, hook, agent } = await live();
+    const add = h.session!.tools.find(t => t.name === 'add_dish')!;
+    expect(add.parameters.properties.dish!.enum).toEqual(expect.arrayContaining(['dal_tadka', mine.id]));
+    act(() => {
+      agent.emit({ type: 'reply.started' });
+      agent.emit({ type: 'tool.call', call_id: 'c1', name: 'add_dish', arguments: { dish: mine.id } });
+      agent.emit({ type: 'reply.done', status: 'completed' });
+    });
+    expect(store.getState().plan!.dishes.map(d => d.id)).toContain(mine.id);
+    expect(agent.sendToolResult).toHaveBeenCalledWith('c1', { ok: true, summary: expect.stringMatching(/^Added Rasam: boil the rasam at /) });
+    await act(async () => { await hook.result.current.stop(); });
+  } finally {
+    libraryStore.clear();
+  }
 });
 
 it('lets the callout go if no follow-up reply starts', async () => {

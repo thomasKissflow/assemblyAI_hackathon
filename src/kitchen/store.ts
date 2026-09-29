@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react';
 import type { DishId, Recipe } from './recipes';
 import {
-  MIN, advance, createPlan, describeChange, markDone, reportDelay, restartStep, shiftServe, upcoming,
+  MIN, addDish, advance, createPlan, describeChange, markDone, removeDish, reportDelay, restartStep, shiftServe, upcoming,
   type KitchenEvent, type Plan, type UpcomingCall,
 } from './planner';
 import { createClock, jumpTo, kitchenNow, withPaused, withSpeed, type ClockState } from './clock';
@@ -118,6 +118,8 @@ export function createKitchenStore(realNow: () => number = () => performance.now
     shiftServe: (minutes: number) => change((p, now) => shiftServe(p, minutes, now)),
     restartStep: (dish: DishId) => change((p, now) => restartStep(p, dish, now)),
     markDone: (dish: DishId) => change((p, now) => markDone(p, dish, now)),
+    addDish: (recipe: Recipe) => change((p, now) => addDish(p, recipe, now)),
+    removeDish: (dish: DishId) => change((p, now) => removeDish(p, dish, now)),
     upcoming: nextCalls,
     log(kind: LogKind, text: string) {
       set({ log: [...state.log, entry(kind, text, currentNow())] });

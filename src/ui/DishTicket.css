@@ -1,8 +1,62 @@
+/* A ticket is paper on the pass. One accent per state: flame only when a step fires,
+   ink while cooking, amber when holding, herb when ready. Everything else stays on the paper. */
 .ticket-wrap {
+  --ring: 60px;
+  --name: var(--text-lg);
+  --big: var(--text-2xl);
+  --row: var(--text-sm);
+  --row-pad: 3px;
+  --inset: clamp(var(--space-3), 6%, var(--space-4));
   position: relative;
   isolation: isolate;
-  container-type: inline-size;
   min-width: 0;
+  /* On the pass, a ticket's four sections share rows with its neighbours (see PassTickets.css).
+     A subgrid can't be a size container, so the head and the step list are the containers. */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: subgrid;
+  grid-row: 1 / -1;
+  row-gap: 0;
+}
+
+.ticket-wrap.is-compact {
+  --ring: 48px;
+  --name: var(--text-md);
+  --big: var(--text-xl);
+}
+
+/* Laptop screens (1440×790 at 100% zoom) and up have room: tickets grow to read from further away.
+   The ring steps up again at 90% zoom (1600×878) and in full screen (1600×1000). */
+@media (min-height: 760px) and (min-width: 1200px) {
+  .ticket-wrap:not(.is-compact) {
+    --ring: 72px;
+    --name: var(--text-xl);
+    --big: var(--text-3xl);
+    --row: var(--text-base);
+  }
+}
+
+@media (min-height: 850px) and (min-width: 1200px) {
+  .ticket-wrap:not(.is-compact) {
+    --ring: 88px;
+    --row-pad: 4px;
+  }
+  .ticket-wrap.is-compact {
+    --ring: 56px;
+    --big: var(--text-2xl);
+  }
+}
+
+@media (min-height: 960px) and (min-width: 1200px) {
+  .ticket-wrap:not(.is-compact) {
+    --ring: 112px;
+    --name: var(--text-2xl);
+    --row-pad: 6px;
+  }
+  .ticket-wrap.is-compact {
+    --ring: 68px;
+    --name: var(--text-lg);
+  }
 }
 
 /* Shadow and fire glow live on unmasked pseudo-elements: cheaper than filter: drop-shadow. */
@@ -17,11 +71,11 @@
 }
 
 .ticket-wrap::before {
-  box-shadow: 0 18px 30px -12px oklch(0 0 0 / 0.75), 0 2px 6px oklch(0 0 0 / 0.4);
+  box-shadow: 0 16px 28px -14px oklch(0 0 0 / 0.7), 0 2px 6px oklch(0 0 0 / 0.35);
 }
 
 .ticket-wrap::after {
-  box-shadow: 0 0 30px 6px var(--fire-glow);
+  box-shadow: 0 0 24px 4px var(--fire-glow);
   opacity: 0;
 }
 
@@ -37,54 +91,74 @@
 
 .ticket {
   position: relative;
+  grid-row: 1 / -1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: subgrid;
+  row-gap: 0;
   background: var(--ticket);
   color: var(--ticket-ink);
   border-radius: 0 0 var(--radius-md) var(--radius-md);
-  padding-bottom: var(--space-3);
+  padding-bottom: var(--space-1);
   /* Perforated top edge, like a torn order ticket. */
   -webkit-mask: radial-gradient(circle at 7px 0, transparent 4.5px, #000 5px) -7px 0 / 14px 100% repeat-x;
   mask: radial-gradient(circle at 7px 0, transparent 4.5px, #000 5px) -7px 0 / 14px 100% repeat-x;
 }
 
-.ticket-band {
+/* Status line: plain text on the paper; only a firing ticket gets a filled band. */
+.ticket-status {
+  grid-row: 1;
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  min-height: 44px;
-  padding: var(--space-3) var(--space-4) var(--space-2);
+  gap: 7px;
+  height: 38px;
+  padding: 8px var(--inset) 2px;
+  overflow: hidden;
   font-stretch: var(--wdth-condensed);
   font-weight: 750;
-  font-size: var(--text-base);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  overflow: hidden;
-  background: var(--ticket-2);
+  font-size: var(--text-sm);
+  letter-spacing: 0.03em;
   color: var(--ticket-muted);
   transition: background-color var(--dur-med) var(--ease-out-quart), color var(--dur-med);
 }
 
-.is-fire .ticket-band {
+.is-cooking .ticket-status {
+  color: var(--ticket-ink);
+}
+
+.is-holding .ticket-status {
+  color: var(--ticket-hold);
+}
+
+.is-ready .ticket-status {
+  color: var(--ticket-ready);
+}
+
+.is-fire .ticket-status {
   background: var(--fire);
   color: var(--fire-ink);
 }
 
-.is-cooking .ticket-band {
-  background: var(--ticket-ink);
-  color: var(--ticket);
+.ticket-mark {
+  flex: none;
 }
 
-.is-holding .ticket-band {
-  background: var(--saffron);
-  color: var(--saffron-ink);
+.ticket-dot {
+  width: 8px;
+  height: 8px;
+  margin-inline: 3px;
+  border-radius: 50%;
+  background: currentColor;
 }
 
-.is-ready .ticket-band {
-  background: var(--herb);
-  color: var(--herb-ink);
+.is-waiting .ticket-dot {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px currentColor;
 }
 
-.ticket-band-text {
+.ticket-status-text {
   flex: 1;
   min-width: 0;
   white-space: nowrap;
@@ -92,25 +166,27 @@
   text-overflow: ellipsis;
 }
 
+/* Re-plan delta: quiet text that says how far this dish moved, then gets out of the way. */
 .ticket-delta {
   flex: none;
-  padding: 0.1em 0.55em;
-  border-radius: var(--radius-pill);
-  background: var(--saffron);
-  color: var(--saffron-ink);
-  letter-spacing: 0.02em;
-  box-shadow: 0 0 0 2px var(--ticket);
-  animation: delta-pop 2.8s var(--ease-out-expo) both;
+  color: var(--ticket-change);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  animation: delta-fade 2.8s var(--ease-out-expo) both;
 }
 
-@keyframes delta-pop {
+.is-fire .ticket-delta {
+  color: var(--fire-ink);
+}
+
+@keyframes delta-fade {
   0% {
-    transform: translateY(-6px) scale(0.85);
     opacity: 0;
+    transform: translateY(-4px);
   }
   10% {
-    transform: none;
     opacity: 1;
+    transform: none;
   }
   85% {
     opacity: 1;
@@ -141,46 +217,60 @@
   }
 }
 
-.ticket-hero {
+/* Head: photo ring beside the name and the one number that matters. Spare height on the pass
+   collects around it, so the dish and its time sit in the middle of the paper. */
+.ticket-head {
+  grid-row: 2;
+  container: ticket-head / inline-size;
   display: grid;
-  justify-items: center;
-  gap: var(--space-2);
-  padding: var(--space-4) var(--space-4) var(--space-2);
-  text-align: center;
+  align-content: center;
+}
+
+.ticket-dish {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: var(--space-3);
+  padding: var(--space-3) var(--inset);
 }
 
 .ticket-ring {
+  grid-row: 1 / 3;
   position: relative;
-  width: 112px;
-  height: 112px;
+  width: var(--ring);
+  height: var(--ring);
   display: grid;
   place-items: center;
 }
 
-.ticket-ring svg {
+.ticket-ring > svg {
   position: absolute;
   inset: 0;
   transform: rotate(-90deg);
 }
 
-.ticket-ring img {
-  width: 86px;
-  height: 86px;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 0 0 3px var(--ticket), 0 6px 14px oklch(0 0 0 / 0.25);
+.ticket-ring .dish-photo {
+  width: 78%;
+  height: 78%;
+  box-shadow: 0 0 0 2px var(--ticket);
+}
+
+.ticket-ring .dish-photo.is-missing {
+  background: var(--ticket-2);
+  color: var(--ticket-muted);
 }
 
 .ring-track {
   fill: none;
   stroke: var(--ticket-line);
-  stroke-width: 6;
+  stroke-width: 4;
 }
 
 .ring-fill {
   fill: none;
   stroke: var(--ticket-ink);
-  stroke-width: 6;
+  stroke-width: 4;
   stroke-linecap: round;
   transition: stroke-dashoffset 200ms linear, stroke var(--dur-med);
 }
@@ -190,27 +280,31 @@
 }
 
 .is-ready .ring-fill {
-  stroke: var(--herb-deep);
-}
-
-.ticket-head {
-  display: grid;
-  gap: 2px;
-  min-width: 0;
+  stroke: var(--ticket-ready);
 }
 
 .ticket-name {
-  font-size: var(--text-xl);
+  align-self: end;
+  font-size: var(--name);
   font-stretch: var(--wdth-condensed);
   font-weight: 800;
+  line-height: 1.05;
   letter-spacing: -0.005em;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .ticket-big {
-  font-size: var(--text-2xl);
+  align-self: start;
+  margin-top: 2px;
+  font-size: var(--big);
   font-stretch: var(--wdth-condensed);
   font-weight: 820;
-  line-height: 1.05;
+  line-height: 1.02;
   color: var(--ticket-ink);
 }
 
@@ -224,47 +318,90 @@
 }
 
 .is-ready .ticket-big {
-  color: var(--herb-deep);
+  color: var(--ticket-ready);
 }
 
+/* Steps: time and label only. The current step is ink and bold, done steps fade, the rest wait in grey. */
 .ticket-steps {
+  grid-row: 3;
+  container: ticket-steps / inline-size;
+  align-content: start;
   list-style: none;
-  margin: var(--space-2) var(--space-3) 0;
+  margin: 0 var(--inset);
   padding: var(--space-2) 0 0;
   border-top: 1px dashed var(--ticket-line);
   display: grid;
-  gap: 2px;
+  gap: 1px;
 }
 
 .ticket-row {
   display: grid;
-  grid-template-columns: 16px 3.2em 1fr;
+  grid-template-columns: 14px 2.9em minmax(0, 1fr);
   align-items: baseline;
-  gap: var(--space-2);
-  padding: 5px var(--space-2);
-  border-radius: var(--radius-sm);
-  font-size: var(--text-sm);
-  line-height: 1.35;
+  column-gap: var(--space-2);
+  padding: var(--row-pad) 0;
+  font-size: var(--row);
+  line-height: 1.3;
   color: var(--ticket-muted);
-  transition: background-color var(--dur-med) var(--ease-out-quart), color var(--dur-med);
+  transition: color var(--dur-med) var(--ease-out-quart);
+}
+
+.ticket-row.is-done {
+  color: var(--ticket-faint);
 }
 
 .ticket-row.is-current {
-  background: var(--ticket-2);
   color: var(--ticket-ink);
+  font-weight: 700;
+}
+
+/* The mark sits on the first line of a label that wraps. */
+.row-mark {
+  display: grid;
+  place-items: center;
+  align-self: start;
+  height: 1.3em;
+}
+
+.is-active .row-mark {
+  color: var(--fire);
+}
+
+.ticket-row.is-current .row-mark:empty::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.ticket-row.is-pending.is-current .row-mark:empty::before {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px currentColor;
+}
+
+.row-time {
   font-weight: 650;
+  font-stretch: var(--wdth-condensed);
+  border-radius: 4px;
 }
 
-.is-fire .ticket-row.is-current {
-  background: var(--fire-wash);
+.row-label {
+  min-width: 0;
 }
 
-.ticket-row.is-done .row-label {
-  text-decoration: line-through;
-  text-decoration-color: oklch(0.45 0 0 / 0.6);
+/* A long recipe lists a window of steps; the rest are one quiet line each. */
+.ticket-row.is-summary {
+  color: var(--ticket-faint);
+  font-size: var(--text-sm);
 }
 
-.ticket-row.is-moved {
+.is-summary .row-label {
+  grid-column: 2 / -1;
+}
+
+/* A re-plan moved this step: its time flashes amber, then settles. */
+.ticket-row.is-moved .row-time {
   animation: row-moved 2.8s var(--ease-out-quart) both;
 }
 
@@ -273,116 +410,148 @@
   45% {
     background: var(--saffron);
     color: var(--saffron-ink);
+    box-shadow: 0 0 0 3px var(--saffron);
   }
   100% {
     background: transparent;
+    box-shadow: 0 0 0 3px transparent;
   }
 }
 
-.row-mark {
-  display: grid;
-  place-items: center;
-  align-self: center;
-}
-
-.is-active .row-mark {
-  color: var(--fire);
-}
-
-.row-mark:empty::before {
-  content: '';
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  border: 1.5px solid var(--ticket-line);
-}
-
-.row-time {
-  font-weight: 650;
-  font-stretch: var(--wdth-condensed);
-}
-
-.row-label {
-  min-width: 0;
-}
-
-/* Manual re-plan: a mouse-and-keyboard way to do what the cook would say. */
+/* Manual re-plan: quiet text buttons, the mouse-and-keyboard way to say what the cook would say. */
 .ticket-actions {
+  grid-row: 4;
+  align-self: end;
   display: flex;
+  justify-content: space-between;
   gap: var(--space-2);
-  padding: var(--space-3) var(--space-3) 0;
+  padding: var(--space-2) var(--space-2) 0;
 }
 
 .ticket-btn {
-  flex: 1;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-  min-height: 40px;
+  gap: 5px;
+  min-height: 36px;
+  padding: 0 var(--space-3);
+  border: 0;
   border-radius: var(--radius-pill);
-  border: 1.5px solid var(--ticket-line);
   background: transparent;
   color: var(--ticket-muted);
   font-weight: 700;
   font-size: var(--text-sm);
   cursor: pointer;
-  transition: background-color var(--dur-fast) var(--ease-out-quart), border-color var(--dur-fast), opacity var(--dur-fast);
+  transition: background-color var(--dur-fast) var(--ease-out-quart), color var(--dur-fast);
 }
 
 .ticket-btn:hover {
   background: var(--ticket-2);
-  border-color: var(--ticket-muted);
   color: var(--ticket-ink);
+}
+
+.ticket-btn:active {
+  background: var(--ticket-line);
 }
 
 .ticket-btn:focus-visible {
   outline-color: var(--ticket-ink);
+  outline-offset: 0;
+}
+
+/* Five or more dishes: a smaller head and only the step that matters. */
+.is-compact .ticket-dish {
+  padding-block: var(--space-2);
+}
+
+.is-compact .ticket-name {
+  -webkit-line-clamp: 1;
+}
+
+.is-compact .row-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Narrow tickets: the big time gets the full width under the name. */
+@container ticket-head (max-width: 250px) {
+  .ticket-dish {
+    grid-template-rows: auto;
+    row-gap: var(--space-1);
+  }
+  .ticket-ring {
+    grid-row: 1;
+  }
+  .ticket-name {
+    align-self: center;
+    font-size: min(var(--name), var(--text-lg));
+  }
+  .ticket-big {
+    grid-column: 1 / -1;
+    margin-top: 0;
+  }
+}
+
+/* Four tickets to a row: smaller step text, so labels wrap less and the list stays short. */
+@container ticket-steps (max-width: 226px) {
+  .ticket-row {
+    grid-template-columns: 12px 2.7em minmax(0, 1fr);
+    column-gap: 6px;
+    font-size: var(--text-sm);
+  }
+}
+
+/* With room to spare (90% zoom and up), a wide ticket leads with a big photo: the dish is
+   recognisable from across the kitchen before its name is readable. Narrower ones stack the time. */
+@media (min-height: 760px) and (min-width: 1200px) {
+  @container ticket-head (min-width: 300px) {
+    .ticket-wrap:not(.is-compact) .ticket-dish {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto;
+      justify-items: center;
+      row-gap: var(--space-1);
+      text-align: center;
+    }
+    .ticket-wrap:not(.is-compact) .ticket-ring {
+      grid-row: auto;
+      width: calc(var(--ring) + 28px);
+      height: calc(var(--ring) + 28px);
+      margin-bottom: var(--space-2);
+    }
+    .ticket-wrap:not(.is-compact) .ticket-big {
+      margin-top: 0;
+    }
+  }
+  @container ticket-head (max-width: 300px) {
+    .ticket-wrap:not(.is-compact) .ticket-dish {
+      grid-template-rows: auto;
+      row-gap: var(--space-1);
+    }
+    .ticket-wrap:not(.is-compact) .ticket-ring {
+      grid-row: 1;
+    }
+    .ticket-wrap:not(.is-compact) .ticket-name {
+      align-self: center;
+    }
+    .ticket-wrap:not(.is-compact) .ticket-big {
+      grid-column: 1 / -1;
+      margin-top: 0;
+    }
+  }
 }
 
 /* Reduced motion: re-plan cues appear and disappear without animating (React removes them). */
 @media (prefers-reduced-motion: reduce) {
   .ticket-delta,
-  .ticket-row.is-moved {
+  .ticket-row.is-moved .row-time {
     animation: none !important;
   }
-  .ticket-row.is-moved {
+  .ticket-row.is-moved .row-time {
     background: var(--saffron);
     color: var(--saffron-ink);
+    box-shadow: 0 0 0 3px var(--saffron);
   }
   .ticket-heat {
     display: none;
-  }
-}
-
-@container (max-width: 250px) {
-  .ticket-ring {
-    width: 96px;
-    height: 96px;
-  }
-  .ticket-ring img {
-    width: 74px;
-    height: 74px;
-  }
-  .ticket-name {
-    font-size: var(--text-lg);
-  }
-  .ticket-big {
-    font-size: var(--text-xl);
-  }
-  .ticket-row {
-    grid-template-columns: 14px 2.9em 1fr;
-    gap: 6px;
-    padding-inline: 6px;
-  }
-}
-
-@container (min-width: 420px) {
-  .ticket-hero {
-    grid-template-columns: auto 1fr;
-    justify-items: start;
-    text-align: left;
-    align-items: center;
-    gap: var(--space-5);
   }
 }

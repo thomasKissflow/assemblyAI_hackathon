@@ -46,40 +46,42 @@ export function VoiceBar({ voice, phase, levels, onToggleMute, onPushToTalk, act
       <h2 id="voice-title" className="visually-hidden">
         Chef’s ears
       </h2>
-      <div className="voice-state">
-        <span className="voice-dot" aria-hidden="true">
-          {voice.muted ? <MicOff size={18} /> : <Mic size={18} />}
-        </span>
-        <span className="voice-label" aria-live="polite">
-          {label}
-        </span>
-      </div>
-      <Waveform level={level} className="voice-wave" active={active && mode !== 'muted' && mode !== 'error'} />
-      <div className="voice-actions">
-        <button
-          type="button"
-          className="icon-btn"
-          aria-pressed={voice.muted}
-          aria-label={voice.muted ? 'Unmute mic (M)' : 'Mute mic (M)'}
-          title={voice.muted ? 'Unmute mic (M)' : 'Mute mic (M)'}
-          onClick={onToggleMute}
-        >
-          {voice.muted ? <MicOff size={18} /> : <Mic size={18} />}
-        </button>
-        <button
-          type="button"
-          className="btn btn-ghost voice-ptt"
-          aria-pressed={voice.pushToTalk}
-          onPointerDown={() => onPushToTalk(true)}
-          onPointerUp={release}
-          onPointerLeave={() => voice.pushToTalk && release()}
-          onPointerCancel={release}
-          onKeyDown={onKey(true)}
-          onKeyUp={onKey(false)}
-          title="Hold to talk to Chef (hold Space)"
-        >
-          <Hand size={16} aria-hidden="true" /> Hold to talk <kbd>Space</kbd>
-        </button>
+      <div className="voice-grid">
+        <div className="voice-state">
+          <span className="voice-dot" aria-hidden="true">
+            {voice.muted ? <MicOff size={18} /> : <Mic size={18} />}
+          </span>
+          <span className="voice-label" aria-live="polite">
+            {label}
+          </span>
+        </div>
+        <Waveform level={level} className="voice-wave" active={active && mode !== 'muted' && mode !== 'error'} />
+        <div className="voice-actions">
+          <button
+            type="button"
+            className="icon-btn"
+            aria-pressed={voice.muted}
+            aria-label={voice.muted ? 'Unmute mic (M)' : 'Mute mic (M)'}
+            title={voice.muted ? 'Unmute mic (M)' : 'Mute mic (M)'}
+            onClick={onToggleMute}
+          >
+            {voice.muted ? <MicOff size={18} /> : <Mic size={18} />}
+          </button>
+          <button
+            type="button"
+            className="btn btn-ghost voice-ptt"
+            aria-pressed={voice.pushToTalk}
+            onPointerDown={() => onPushToTalk(true)}
+            onPointerUp={release}
+            onPointerLeave={() => voice.pushToTalk && release()}
+            onPointerCancel={release}
+            onKeyDown={onKey(true)}
+            onKeyUp={onKey(false)}
+            title="Hold to talk to Chef (hold Space)"
+          >
+            <Hand size={16} aria-hidden="true" /> Hold to talk <kbd>Space</kbd>
+          </button>
+        </div>
       </div>
       {voice.ears === 'followup' && !voice.chefSpeaking && <span className="voice-window" aria-hidden="true" />}
     </section>
