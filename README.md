@@ -67,6 +67,10 @@ npm run test:dictation   # a fake mic dictates a recipe; the card fills in
 
 The live, voice, studio and dictation tests call the real AssemblyAI API and use macOS `say` to synthesize speech.
 
+## Deploy
+
+It's a static Vite build, so it hosts anywhere with HTTPS. [docs/deploy.md](docs/deploy.md) walks through Vercel step by step (`vercel.json` pins the settings).
+
 ## Architecture
 
 ```

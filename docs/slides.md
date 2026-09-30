@@ -2,7 +2,7 @@
 
 The designed deck is a private claude.ai artifact: https://claude.ai/artifact/S8dpH3ZpDBguj2eg431Hpr. It exports to PPTX or PDF from its Share menu. This file is the same content as plain text, for editing elsewhere.
 
-Before exporting, fill in the placeholders: `[Team name]`, `[App URL]` and `[GitHub repo URL]`.
+Before exporting, fill in the placeholders `[Team name]` and `[App URL]`. The repo link is already on the closing slide.
 
 ## 1. Cover
 
@@ -187,7 +187,7 @@ Before exporting, fill in the placeholders: `[Team name]`, `[App URL]` and `[Git
 - Heard, Chef.
 - The dinner timer you can talk back to.
 - Try it: [App URL]
-- Code: [GitHub repo URL]
+- Code: github.com/thomasKissflow/assemblyAI_hackathon
 - Built on AssemblyAI Universal-Streaming and the Voice Agent API
 - *Image: The service report: served at 8:25 PM, with the number of re-plans, calls made and questions answered*
 
