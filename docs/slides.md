@@ -2,15 +2,15 @@
 
 The designed deck is a private claude.ai artifact: https://claude.ai/artifact/S8dpH3ZpDBguj2eg431Hpr. It exports to PPTX or PDF from its Share menu. This file is the same content as plain text, for editing elsewhere.
 
-Before exporting, fill in `[Team name]` on the cover. The app and repo links are already on the closing slide.
+Team: Voice Agent. The app and repo links are on the closing slide; no placeholders are left.
 
 ## 1. Cover
 
-- AssemblyAI Voice Agent Hackathon · [Team name]
+- AssemblyAI Voice Agent Hackathon · Team Voice Agent
 
 - *Image: Heard, Chef: three order tickets on the pass, a split-flap clock showing serving at 8:00 PM, and the tagline The dinner timer you can talk back to*
 
-**Notes:** Hi, we're [Team name]. This is Heard Chef, the dinner timer you can talk back to. It's a voice head chef that runs the timing of a whole multi-dish dinner, and you talk to it with your hands in the dough.
+**Notes:** Hi, we're team Voice Agent. This is Heard Chef, the dinner timer you can talk back to. It's a voice head chef that runs the timing of a whole multi-dish dinner, and you talk to it with your hands in the dough.
 
 ## 2. The moment
 

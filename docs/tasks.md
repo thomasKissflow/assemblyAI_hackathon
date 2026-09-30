@@ -1,6 +1,6 @@
 # Task Board
 
-Owners: **Thomas** (thomas@kissflow.com), **Developer B** (name not yet provided), **Claude Code**.
+Team: **Voice Agent**. Owners: **Thomas** (thomas@kissflow.com), **Developer B** (name not yet provided), **Claude Code**.
 Deadline: **Sep 30, 8:30 PM IST.** Build plan: [plans/2026-09-28-heard-chef.md](superpowers/plans/2026-09-28-heard-chef.md).
 
 ## Backlog
@@ -8,7 +8,7 @@ Deadline: **Sep 30, 8:30 PM IST.** Build plan: [plans/2026-09-28-heard-chef.md](
 | Task | Owner | Priority | Status |
 |---|---|---|---|
 | Watch the demo video (`video/out/heard-chef-demo.mp4`, 3:17) and upload it to lablab (MP4, 26 MB) | Thomas | High | Backlog |
-| Fill the deck's [Team name] on the cover, then export it as PDF from the deck's Share menu ([slides.md](slides.md)) | Thomas | High | Backlog |
+| Export the deck as PDF from its Share menu ([slides.md](slides.md)); team name and links are filled in | Thomas | High | Backlog |
 | Hosting note: the key is visible in the built bundle, so use a separate, limited key and rotate it after judging | Thomas | Medium | Backlog |
 | Submit on lablab.ai as **"Heard Chef"** (the form allows letters and spaces only). Copy is ready in [pitch.md](pitch.md): short and long description, tags. | Thomas | High | Backlog |
 | After judging: rotate the AssemblyAI API key | Thomas | Medium | Backlog |
