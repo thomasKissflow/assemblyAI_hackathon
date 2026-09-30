@@ -108,22 +108,10 @@ The form allows letters and spaces only (2–32 characters), so there's no comma
 **Short description** (175 characters):
 > The dinner timer you can talk back to. Say “Hey Chef” with messy hands: it re-plans every dish and calls each step. Say your own recipes; Chef times them. Built on AssemblyAI.
 
-**Long description:**
-> Cooking one dish is easy. Getting three onto the table hot at the same minute is hard, and it all happens while your hands are in raw chicken and your eyes are on the pan. Heard Chef is a calm voice head chef that runs the timing of your whole dinner.
+**Long description** (984 characters; the form allows at most 2000):
+> Heard Chef is a voice head chef that runs the timing of a whole multi-dish dinner, for cooks whose hands are busy and eyes are on the pan. Pick a menu and a serving time: Chef plans every dish backwards and calls each step out loud when it's due. When something slips, just say "Hey Chef, the curry needs ten more minutes" and the whole dinner re-plans: serving flips from 8:00 to 8:10 and every step slides. You can interrupt Chef mid-sentence, ask cooking questions, and add or drop dishes mid-cook. Off-topic questions get steered back to dinner. Talk your own family recipe through, and Chef turns it into a timed recipe with suggestions.
 >
-> Pick tonight's menu and a serving time. Chef plans every dish backwards and calls each step out loud the moment it's due, so you never set a timer. When things slip, just say so: "Hey Chef, the curry needs ten more minutes." The whole dinner re-plans: the serving time flips from 8:00 to 8:10 on a split-flap display, every later step slides, and Chef tells you what changed.
->
-> It's built for a real kitchen. You can cut Chef off mid-sentence ("Hey Chef, wait, the guests are late"). It knows "I burnt the garlic for the curry" means restarting the curry step. You can drop or add a dish mid-cook, and ask cooking questions like "can I use butter instead of ghee?". Off-topic questions get "Not my station. Let's get back to dinner." With no voice at all, every ticket has +5 min and Done, and glance mode reads from across the room.
->
-> Bring your own recipes too. Open the recipe studio and just talk your family recipe through. Chef's scribe turns it into a timed recipe card, suggests what's missing, and saves it in the browser for next time.
->
-> Two AssemblyAI products work together in one static web page, with no backend:
-> - **Universal-Streaming** is Chef's always-on ears. Keyterms catch "Hey Chef", and word timestamps replay the cook's question into the agent from the exact word "hey". It also powers the live captions and recipe dictation.
-> - **The Voice Agent API** is Chef's brain and voice. It uses seven JSON-schema tools that run in the browser, reply.create for unprompted kitchen calls, word-timed captions and barge-in. A second, text-only session is the recipe scribe, which returns timed recipes through a nested-schema tool call.
->
-> A deterministic planner does all the maths, so every time Chef says is real. It's tested: 313 unit tests, 16 live tests against the real API (including the off-topic guardrails), 17 browser flows and real-voice browser tests. The demo video is fully live; every reply in it is the real API.
->
-> Live app: https://heard-chef-alpha.vercel.app (desktop Chrome, headphones recommended)
+> Built on two AssemblyAI products in one static web page, with no backend. Universal-Streaming is the always-on "Hey Chef" ears and recipe dictation. The Voice Agent API is Chef's brain and voice, with seven in-browser tool calls and a text-in recipe scribe. A deterministic planner does the maths, backed by 313 tests and 16 live API tests.
 
 **Technologies used:**
 - AssemblyAI Voice Agent API: speech-to-text, LLM, text-to-speech and turn detection over one WebSocket, plus JSON-schema tool calling, reply.create, barge-in and word-timed transcripts
