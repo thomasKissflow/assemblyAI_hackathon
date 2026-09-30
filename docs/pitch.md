@@ -99,29 +99,51 @@ The cook picks tonight's menu, swaps in their own dal (dictated in the recipe st
 
 ---
 
-## lablab.ai submission copy
+## lablab.ai submission copy (final)
 
 **Title:** Heard Chef
 
-The lablab form only allows letters and spaces in the title (2–32 characters), so no comma. Use the tagline, "The dinner timer you can talk back to", in the short description and on the cover.
+The form allows letters and spaces only (2–32 characters), so there's no comma.
 
 **Short description** (175 characters):
 > The dinner timer you can talk back to. Say “Hey Chef” with messy hands: it re-plans every dish and calls each step. Say your own recipes; Chef times them. Built on AssemblyAI.
 
 **Long description:**
-> Cooking one dish is easy. Getting three onto the table hot, at the same minute, is hard, and it all happens while your hands are in raw chicken and your eyes are on the pan. Heard, Chef is a calm voice head chef that runs the timing of your whole dinner.
+> Cooking one dish is easy. Getting three onto the table hot at the same minute is hard, and it all happens while your hands are in raw chicken and your eyes are on the pan. Heard Chef is a calm voice head chef that runs the timing of your whole dinner.
 >
-> Pick tonight's menu and a serving time. Chef plans every dish backwards and calls each step out loud the moment it's due, so you never set a timer. When things slip, just say so: "Hey Chef, the curry needs ten more minutes." The whole dinner re-plans. The serving time flips from 8:00 to 8:10 on a split-flap display, every later step slides, and Chef tells you what changed. You can interrupt Chef mid-sentence, ask follow-ups, or ask cooking questions like "can I use butter instead of ghee?". Anything off-topic gets politely turned back to dinner.
+> Pick tonight's menu and a serving time. Chef plans every dish backwards and calls each step out loud the moment it's due, so you never set a timer. When things slip, just say so: "Hey Chef, the curry needs ten more minutes." The whole dinner re-plans: the serving time flips from 8:00 to 8:10 on a split-flap display, every later step slides, and Chef tells you what changed.
 >
-> Bring your own recipes too. Pick from four menus or your saved ones, then customise tonight. Open the recipe studio and just talk your family recipe through. Chef's scribe turns it into a timed recipe card, suggests what's missing ("soak the dal 20 minutes first") and saves it for next time. Mid-cook, "Hey Chef, add my dal tonight" re-plans the whole dinner around it.
+> It's built for a real kitchen. You can cut Chef off mid-sentence ("Hey Chef, wait, the guests are late"). It knows "I burnt the garlic for the curry" means restarting the curry step. You can drop or add a dish mid-cook, and ask cooking questions like "can I use butter instead of ghee?". Off-topic questions get "Not my station. Let's get back to dinner." With no voice at all, every ticket has +5 min and Done, and glance mode reads from across the room.
 >
-> Under the hood, two AssemblyAI products work together in a single static web page with no backend:
-> - **Universal-Streaming** is the always-on ears. It detects "Hey Chef" using keyterms and word timestamps, then replays exactly the cook's question into the agent. It also dictates recipes in the studio.
-> - **The Voice Agent API** is the brain and voice. It uses client-side JSON-schema tool calls, proactive `reply.create` calls and word-timed captions. A second, text-only session is the recipe scribe: it returns structured, timed recipes through nested-schema tool calls.
+> Bring your own recipes too. Open the recipe studio and just talk your family recipe through. Chef's scribe turns it into a timed recipe card, suggests what's missing, and saves it in the browser for next time.
 >
-> A deterministic planner does all the maths, so every time you hear is real. The project ships with 313 tests, 16 live API tests (including guardrails and the scribe), 17 browser flows and real-voice browser tests.
+> Two AssemblyAI products work together in one static web page, with no backend:
+> - **Universal-Streaming** is Chef's always-on ears. Keyterms catch "Hey Chef", and word timestamps replay the cook's question into the agent from the exact word "hey". It also powers the live captions and recipe dictation.
+> - **The Voice Agent API** is Chef's brain and voice. It uses seven JSON-schema tools that run in the browser, reply.create for unprompted kitchen calls, word-timed captions and barge-in. A second, text-only session is the recipe scribe, which returns timed recipes through a nested-schema tool call.
+>
+> A deterministic planner does all the maths, so every time Chef says is real. It's tested: 313 unit tests, 16 live tests against the real API (including the off-topic guardrails), 17 browser flows and real-voice browser tests. The demo video is fully live; every reply in it is the real API.
+>
+> Live app: https://heard-chef-alpha.vercel.app (desktop Chrome, headphones recommended)
 
-**Tags:** AssemblyAI, Voice Agent API, Universal-Streaming, Speech-to-Text, Voice AI, Tool Calling, Dictation, React, TypeScript, Food Tech, Cooking
+**Technologies used:**
+- AssemblyAI Voice Agent API: speech-to-text, LLM, text-to-speech and turn detection over one WebSocket, plus JSON-schema tool calling, reply.create, barge-in and word-timed transcripts
+- AssemblyAI Universal-Streaming (realtime speech-to-text v3): wake-word detection with keyterms prompting and word timestamps, captions, dictation with formatted turns
+- React 19, TypeScript, Vite
+- Web Audio API (AudioWorklet mic capture, PCM16 at 24 kHz), WebSockets, localStorage
+- Vitest, Testing Library, Playwright
+- Hosted on Vercel (static, no backend)
+
+**Tags:**
+- Technology: AssemblyAI, Voice Agent API, Universal-Streaming, Speech-to-Text, React, TypeScript, Vite, Vercel
+- Category: Voice AI, Conversational AI, Tool Calling, Food Tech, Cooking, Productivity
+
+**Other fields:**
+- Demo application platform: Vercel (web app, desktop Chrome)
+- Application URL: https://heard-chef-alpha.vercel.app
+- Public GitHub repository: https://github.com/thomasKissflow/assemblyAI_hackathon
+- Video: `video/out/heard-chef-demo.mp4`
+- Slides: the deck exported as PDF
+- Cover image: `docs/cover.png`
 
 ---
 

@@ -2,7 +2,7 @@
 
 The designed deck is a private claude.ai artifact: https://claude.ai/artifact/S8dpH3ZpDBguj2eg431Hpr. It exports to PPTX or PDF from its Share menu. This file is the same content as plain text, for editing elsewhere.
 
-Before exporting, fill in the placeholders `[Team name]` and `[App URL]`. The repo link is already on the closing slide.
+Before exporting, fill in `[Team name]` on the cover. The app and repo links are already on the closing slide.
 
 ## 1. Cover
 
@@ -186,7 +186,7 @@ Before exporting, fill in the placeholders `[Team name]` and `[App URL]`. The re
 
 - Heard, Chef.
 - The dinner timer you can talk back to.
-- Try it: [App URL]
+- Try it: heard-chef-alpha.vercel.app
 - Code: github.com/thomasKissflow/assemblyAI_hackathon
 - Built on AssemblyAI Universal-Streaming and the Voice Agent API
 - *Image: The service report: served at 8:25 PM, with the number of re-plans, calls made and questions answered*

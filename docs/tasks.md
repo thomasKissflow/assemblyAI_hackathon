@@ -8,8 +8,7 @@ Deadline: **Sep 30, 8:30 PM IST.** Build plan: [plans/2026-09-28-heard-chef.md](
 | Task | Owner | Priority | Status |
 |---|---|---|---|
 | Watch the demo video (`video/out/heard-chef-demo.mp4`, 3:17) and upload it to lablab (MP4, 26 MB) | Thomas | High | Backlog |
-| Fill the deck's placeholders ([Team name], [App URL]), then export it as PDF from the deck's Share menu ([slides.md](slides.md)) | Thomas | High | Backlog |
-| Deploy the app to Vercel: step-by-step in [deploy.md](deploy.md) | Thomas | High | Backlog (Sep 30) |
+| Fill the deck's [Team name] on the cover, then export it as PDF from the deck's Share menu ([slides.md](slides.md)) | Thomas | High | Backlog |
 | Hosting note: the key is visible in the built bundle, so use a separate, limited key and rotate it after judging | Thomas | Medium | Backlog |
 | Submit on lablab.ai as **"Heard Chef"** (the form allows letters and spaces only). Copy is ready in [pitch.md](pitch.md): short and long description, tags. | Thomas | High | Backlog |
 | After judging: rotate the AssemblyAI API key | Thomas | Medium | Backlog |
@@ -49,6 +48,7 @@ Deadline: **Sep 30, 8:30 PM IST.** Build plan: [plans/2026-09-28-heard-chef.md](
 | Fully live, automated demo video (3:17, 1080p): narrator and cook voiced with AssemblyAI voices, Chef live | Claude Code | High | Done (2026-09-30) |
 | Pitch deck (13 slides + notes, claude.ai artifact) and cover image (`docs/cover.png`) | Claude Code | High | Done (2026-09-30) |
 | Pushed to https://github.com/thomasKissflow/assemblyAI_hackathon (no keys in history); make sure the repo is public | Claude Code + Thomas | High | Done (2026-09-30) |
+| Deployed to Vercel: https://heard-chef-alpha.vercel.app (checked: loads, key present, voice session connects) | Thomas + Claude Code | High | Done (2026-09-30) |
 | Fixes found while recording: "Hey Chef" mid-answer now cuts Chef off; fused "heychef" wake; shorter re-plan replies; studio suggestions | Claude Code | High | Done (2026-09-30) |
 
 ## Notes on Priority

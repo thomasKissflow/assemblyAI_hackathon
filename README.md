@@ -7,6 +7,8 @@
 
 Built for the [AssemblyAI Voice Agent Hackathon](https://lablab.ai/ai-hackathons/assemblyai-voice-agent-hackathon).
 
+**Try it:** https://heard-chef-alpha.vercel.app (desktop Chrome, headphones recommended; **Cook without voice** works without a mic)
+
 ![Heard, Chef mid re-plan: serving moved to 8:10, every dish re-flowed](docs/screenshot.png)
 
 | Pick a menu, make it yours | Say or type a recipe; Chef formats and times it |
